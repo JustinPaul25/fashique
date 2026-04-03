@@ -1,0 +1,54 @@
+{% doc %}
+  Renders a semantic button or link styled with the theme's button design tokens.
+
+  Outputs an <a> when `url` is provided; outputs a <button> otherwise.
+  Touch target is enforced at a minimum of 48px height on all viewports.
+
+  @param {string} label     - Visible button text (required)
+  @param {string} [url]     - If set, renders an <a> tag instead of <button>
+  @param {string} [style]   - "solid" (default) | "outline"
+  @param {string} [size]    - "sm" | "md" (default) | "lg"
+  @param {string} [type]    - "button" (default) | "submit" | "reset" — <button> only
+  @param {string} [class]   - Additional CSS class(es) appended to the element
+  @param {boolean} [disabled] - Adds the disabled attribute when truthy — <button> only
+
+  @example
+  {% render 'button', label: 'Shop now', url: collection.url %}
+  {% render 'button', label: 'Add to cart', style: 'solid', size: 'lg', type: 'submit' %}
+  {% render 'button', label: 'View details', url: product.url, style: 'outline' %}
+{% enddoc %}
+
+{%- liquid
+  assign btn_tag   = 'button'
+  if url != blank
+    assign btn_tag = 'a'
+  endif
+
+  assign btn_style   = style | default: 'solid'
+  assign btn_size    = size  | default: 'md'
+  assign btn_type    = type  | default: 'button'
+
+  assign btn_classes = 'btn btn--' | append: btn_style | append: ' btn--' | append: btn_size
+  if class != blank
+    assign btn_classes = btn_classes | append: ' ' | append: class
+  endif
+
+  assign is_external = false
+  if url contains '://'
+    assign is_external = true
+  endif
+-%}
+
+<{{ btn_tag }}
+  class="{{ btn_classes }}"
+  {%- if btn_tag == 'a' %}
+    href="{{ url }}"
+    {%- if is_external %} rel="noopener noreferrer" target="_blank"{% endif %}
+  {%- else %}
+    type="{{ btn_type }}"
+    {%- if disabled %} disabled{% endif %}
+  {%- endif %}
+>
+  {{- label | escape -}}
+</{{ btn_tag }}>
+

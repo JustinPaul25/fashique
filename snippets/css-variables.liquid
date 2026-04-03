@@ -1,0 +1,186 @@
+{% comment %}
+  Outputs all design-token CSS custom properties onto :root.
+  Every value is driven by a theme setting — no hardcoded design values live here.
+  Rendered once inside <head> via {% render 'css-variables' %} in layout/theme.liquid.
+{% endcomment %}
+
+{% comment %} Pre-compute values that require Liquid logic before the style block {% endcomment %}
+{% assign overlay_alpha = settings.color_overlay_opacity | divided_by: 100.0 %}
+
+{% case settings.transition_speed %}
+  {% when 'fast' %}
+    {% assign transition_duration = '150ms' %}
+  {% when 'slow' %}
+    {% assign transition_duration = '400ms' %}
+  {% else %}
+    {% assign transition_duration = '250ms' %}
+{% endcase %}
+
+{% case settings.btn_shape %}
+  {% when 'pill' %}
+    {% assign btn_radius = '9999px' %}
+  {% when 'sharp' %}
+    {% assign btn_radius = '0' %}
+  {% else %}
+    {% assign btn_radius = 'var(--radius-md)' %}
+{% endcase %}
+
+{% style %}
+  {{ settings.type_heading_font | font_face: font_display: 'swap' }}
+  {{ settings.type_heading_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+  {{ settings.type_heading_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {{ settings.type_body_font | font_face: font_display: 'swap' }}
+  {{ settings.type_body_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+  {{ settings.type_body_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {{ settings.type_body_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+
+  :root {
+    /* ── Color tokens ─────────────────────────────────────────────── */
+    --color-background:     {{ settings.background_color }};
+    --color-foreground:     {{ settings.foreground_color }};
+    --color-primary:        {{ settings.color_primary }};
+    --color-primary-hover:  {{ settings.color_primary_hover }};
+    --color-border:         {{ settings.color_border }};
+    --color-overlay:        {{ settings.color_overlay | color_modify: 'alpha', overlay_alpha }};
+
+    /* ── Typography tokens ────────────────────────────────────────── */
+    --font-heading-family:  {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    --font-heading-weight:  {{ settings.type_heading_font.weight }};
+    --font-body-family:     {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    --font-body-size:       {{ settings.font_body_size }}px;
+
+    /* ── Font pair characteristics (letter-spacing, line-height per pair) ─ */
+    {% case settings.font_pair %}
+      {% when 'beauty_store' %}
+        --font-heading-letter-spacing: 0em;
+        --font-heading-line-height:    1.2;
+        --line-height-body:            1.65;
+      {% when 'minimal' %}
+        --font-heading-letter-spacing: 0.06em;
+        --font-heading-line-height:    1.05;
+        --line-height-body:            1.6;
+      {% else %}
+        --font-heading-letter-spacing: -0.02em;
+        --font-heading-line-height:    1.1;
+        --line-height-body:            1.6;
+    {% endcase %}
+
+    /* ── Heading size scale — clamp(min, fluid, max) ──────────────── */
+    {% case settings.heading_size_scale %}
+      {% when 'small' %}
+        --font-size-h1: clamp(1.875rem, 4vw,   2.75rem);
+        --font-size-h2: clamp(1.5rem,   3.25vw, 2.25rem);
+        --font-size-h3: clamp(1.25rem,  2.5vw,  1.75rem);
+        --font-size-h4: clamp(1.125rem, 2vw,    1.375rem);
+        --font-size-h5: clamp(1rem,     1.5vw,  1.125rem);
+        --font-size-h6: clamp(0.875rem, 1.25vw, 1rem);
+      {% when 'large' %}
+        --font-size-h1: clamp(2.75rem,  6.5vw,  5rem);
+        --font-size-h2: clamp(2.25rem,  5vw,    3.75rem);
+        --font-size-h3: clamp(1.875rem, 4vw,    3rem);
+        --font-size-h4: clamp(1.5rem,   3vw,    2.25rem);
+        --font-size-h5: clamp(1.25rem,  2.5vw,  1.5rem);
+        --font-size-h6: clamp(1.125rem, 2vw,    1.25rem);
+      {% else %}
+        --font-size-h1: clamp(2.25rem,  5vw,    3.75rem);
+        --font-size-h2: clamp(1.875rem, 4vw,    3rem);
+        --font-size-h3: clamp(1.5rem,   3vw,    2.25rem);
+        --font-size-h4: clamp(1.25rem,  2.5vw,  1.75rem);
+        --font-size-h5: clamp(1.125rem, 2vw,    1.375rem);
+        --font-size-h6: clamp(1rem,     1.5vw,  1.125rem);
+    {% endcase %}
+
+    /* ── Spacing tokens (driven by spacing_scale setting) ─────────── */
+    {% case settings.spacing_scale %}
+      {% when 'none' %}
+        --spacing-xs:             0;
+        --spacing-sm:             0;
+        --spacing-md:             0;
+        --spacing-lg:             0;
+        --spacing-xl:             0;
+        --spacing-2xl:            0;
+        --section-padding-block:  0;
+        --section-gap:            0;
+      {% when 'compact' %}
+        --spacing-xs:             0.25rem;
+        --spacing-sm:             0.5rem;
+        --spacing-md:             1rem;
+        --spacing-lg:             1.5rem;
+        --spacing-xl:             2rem;
+        --spacing-2xl:            3rem;
+        --section-padding-block:  3rem;
+        --section-gap:            1rem;
+      {% when 'spacious' %}
+        --spacing-xs:             0.5rem;
+        --spacing-sm:             1rem;
+        --spacing-md:             2rem;
+        --spacing-lg:             3rem;
+        --spacing-xl:             4rem;
+        --spacing-2xl:            8rem;
+        --section-padding-block:  8rem;
+        --section-gap:            3rem;
+      {% else %}
+        --spacing-xs:             0.375rem;
+        --spacing-sm:             0.75rem;
+        --spacing-md:             1.5rem;
+        --spacing-lg:             2.5rem;
+        --spacing-xl:             3.5rem;
+        --spacing-2xl:            5rem;
+        --section-padding-block:  5rem;
+        --section-gap:            2rem;
+    {% endcase %}
+
+    /* ── Radius tokens ────────────────────────────────────────────── */
+    --radius-sm:      {{ settings.border_radius_sm }}px;
+    --radius-md:      {{ settings.border_radius_md }}px;
+    --radius-lg:      {{ settings.border_radius_lg }}px;
+
+    /* ── Button tokens ─────────────────────────────────────────────── */
+    /*
+     * Global defaults — sections without a color scheme class use these.
+     * Each .color-scheme-N block below overrides with its own palette.
+     */
+    --color-btn-bg:       var(--color-primary);
+    --color-btn-text:     var(--color-background);
+    --color-btn-bg-hover: var(--color-primary-hover);
+    --btn-radius:         {{ btn_radius }};
+
+    /* ── Transition token ─────────────────────────────────────────── */
+    --transition-base: {{ transition_duration }} ease;
+
+    /* ── Layout tokens ────────────────────────────────────────────── */
+    --page-width:         {{ settings.max_page_width }};
+    --page-margin:        {{ settings.min_page_margin }}px;
+    --radius-inputs:      {{ settings.input_corner_radius }}px;
+
+    /* ── Icon tokens ───────────────────────────────────────────────── */
+    --icon-stroke-width:  1.5;
+
+    /* ── Header height (fixed — not tied to spacing scale) ───────────── */
+    /* JS writes --header-height at runtime for external consumers only.  */
+    --header-height-base:    5rem;
+    --header-height-compact: 3.75rem;
+  }
+
+  /* ── Color schemes — generated from color_scheme_group ───────── */
+  /*
+   * Iterates over every scheme the merchant defines via the native
+   * "Color schemes" editor.  Each scheme outputs a .color-{id} class
+   * (e.g. .color-scheme-1) that overrides the :root token defaults
+   * for any element that carries that class.  Because CSS custom
+   * properties inherit, all buttons, links and components inside a
+   * .color-scheme element automatically pick up the overridden values.
+   */
+  {%- for scheme in settings.color_schemes -%}
+  .color-{{ scheme.id }} {
+    --color-background:    {{ scheme.settings.background }};
+    --color-foreground:    {{ scheme.settings.foreground }};
+    --color-primary:       {{ scheme.settings.primary }};
+    --color-primary-hover: {{ scheme.settings.primary_hover }};
+    --color-border:        {{ scheme.settings.border }};
+    --color-btn-bg:        {{ scheme.settings.btn_bg }};
+    --color-btn-text:      {{ scheme.settings.btn_text }};
+    --color-btn-bg-hover:  {{ scheme.settings.btn_bg_hover }};
+  }
+  {%- endfor -%}
+{% endstyle %}

@@ -1,0 +1,153 @@
+<style>
+  /* ============================================================
+     Critical CSS — inlined in <head> on every page load.
+     Source of truth: assets/critical.css
+     DO NOT add non-critical rules here; keep this file lean.
+     ============================================================ */
+
+  /* Box-sizing reset */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+  }
+
+  /* Scroll-lock: applied when a dialog or details overlay is open */
+  html:has(dialog[scroll-lock][open], details[scroll-lock][open]) {
+    overflow: hidden;
+  }
+
+  /* Base document */
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    font-family: var(--font-primary--family);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  /* Replaced elements — prevent overflow and preserve aspect ratio */
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Form elements inherit the document font */
+  input,
+  textarea,
+  select {
+    font: inherit;
+    border-radius: var(--style-border-radius-inputs);
+  }
+
+  select {
+    background-color: var(--color-background);
+    color: currentcolor;
+  }
+
+  /* Native dialog inherits theme colours */
+  dialog {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  /* Typography rhythm */
+  p {
+    text-wrap: pretty;
+  }
+
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    overflow-wrap: break-word;
+  }
+
+  p:empty {
+    display: none;
+  }
+
+  :is(p, h1, h2, h3, h4, h5, h6):first-child,
+  :empty:first-child + :where(p, h1, h2, h3, h4, h5, h6) {
+    margin-block-start: 0;
+  }
+
+  :is(p, h1, h2, h3, h4, h5, h6):last-child,
+  :where(p, h1, h2, h3, h4, h5, h6) + :has(+ :empty:last-child) {
+    margin-block-end: 0;
+  }
+
+  /* ============================================================
+     Section layout grid
+     Supports both constrained (default) and full-width children.
+     ============================================================ */
+  .shopify-section {
+    --content-width: min(
+      calc(var(--page-width) - var(--page-margin) * 2),
+      calc(100% - var(--page-margin) * 2)
+    );
+    --content-margin: minmax(var(--page-margin), 1fr);
+    --content-grid: var(--content-margin) var(--content-width) var(--content-margin);
+
+    position: relative;
+    display: grid;
+    width: 100%;
+    grid-template-columns: var(--content-grid);
+  }
+
+  /* Default: children sit in the centred column */
+  .shopify-section > * {
+    grid-column: 2;
+  }
+
+  /* Full-width utility: children span the entire viewport */
+  .shopify-section > .full-width {
+    grid-column: 1 / -1;
+  }
+
+  /*
+   * Header and footer section wrappers are always flush — zero block padding
+   * regardless of the spacing_scale theme setting. Placed here (critical inline
+   * styles) so it takes effect immediately, before async stylesheets load.
+   */
+  .shopify-section-group--header-group .shopify-section,
+  .shopify-section-group--footer-group .shopify-section,
+  #shopify-section-header,
+  #shopify-section-footer {
+    padding-block: 0;
+  }
+
+  /* ============================================================
+     Skip-to-content link (accessibility)
+     Visually hidden until focused via keyboard.
+     ============================================================ */
+  .skip-to-content-link {
+    position: absolute;
+    inset-inline-start: 1rem;
+    inset-block-start: 1rem;
+    z-index: 9999;
+    padding: 0.75rem 1.25rem;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-weight: 600;
+    text-decoration: none;
+    border: 2px solid currentcolor;
+    border-radius: var(--radius-sm, 4px);
+    transform: translateY(-150%);
+    transition: transform 0.2s ease;
+  }
+
+  .skip-to-content-link:focus-visible {
+    transform: translateY(0);
+  }
+</style>

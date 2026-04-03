@@ -1,0 +1,68 @@
+{%- comment -%}
+  section-spacing.liquid
+  ─────────────────────────────────────────────────────────────────────────
+  Outputs a scoped <style> block that overrides --section-padding-block
+  for the current section only. Every consumer of that variable inside the
+  section — including .section-padding, .shopify-section padding, and any
+  component CSS that references var(--section-padding-block) — will
+  automatically reflect the merchant's choice via CSS custom property
+  inheritance.
+
+  When the setting value is "default" (or blank) no style is emitted,
+  so the section fully inherits the global spacing_scale token.
+
+  Usage (place near the top of any section template):
+    {%- render 'section-spacing', section: section -%}
+
+  Required schema setting in the calling section:
+    {
+      "type":    "select",
+      "id":      "section_spacing",
+      "label":   "t:labels.section_spacing",
+      "default": "default",
+      "options": [
+        { "value": "default", "label": "t:options.section_spacing.default" },
+        { "value": "none",    "label": "t:options.section_spacing.none"    },
+        { "value": "xs",      "label": "t:options.section_spacing.xs"      },
+        { "value": "sm",      "label": "t:options.section_spacing.sm"      },
+        { "value": "md",      "label": "t:options.section_spacing.md"      },
+        { "value": "lg",      "label": "t:options.section_spacing.lg"      },
+        { "value": "xl",      "label": "t:options.section_spacing.xl"      }
+      ]
+    }
+
+  Spacing values relative to the active global spacing_scale:
+    default → inherits global --section-padding-block  (no override)
+    none    → 0
+    xs      → var(--spacing-md)          ≈  25 % of balanced default
+    sm      → var(--spacing-xl)          ≈  70 % of balanced default
+    md      → var(--spacing-2xl)         = 100 % of balanced default (same as global)
+    lg      → calc(var(--spacing-2xl) * 1.5)   ≈ 150 %
+    xl      → calc(var(--spacing-2xl) * 2)      = 200 %
+
+  Note: --spacing-2xl equals --section-padding-block across all spacing_scale
+  modes (compact / balanced / spacious), so "md" is always equivalent to
+  "default" — useful as an explicit reset when nested components might
+  otherwise multiply spacing.
+{%- endcomment -%}
+
+{%- assign sp = section.settings.section_spacing -%}
+
+{%- unless sp == blank or sp == 'default' -%}
+  {%- case sp -%}
+    {%- when 'none' -%}{%- assign sp_value = '0' -%}
+    {%- when 'xs'   -%}{%- assign sp_value = 'var(--spacing-md)' -%}
+    {%- when 'sm'   -%}{%- assign sp_value = 'var(--spacing-xl)' -%}
+    {%- when 'md'   -%}{%- assign sp_value = 'var(--spacing-2xl)' -%}
+    {%- when 'lg'   -%}{%- assign sp_value = 'calc(var(--spacing-2xl) * 1.5)' -%}
+    {%- when 'xl'   -%}{%- assign sp_value = 'calc(var(--spacing-2xl) * 2)' -%}
+  {%- endcase -%}
+
+  {%- if sp_value -%}
+    <style>
+      #shopify-section-{{ section.id }} {
+        --section-padding-block: {{ sp_value }};
+      }
+    </style>
+  {%- endif -%}
+{%- endunless -%}

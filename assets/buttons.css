@@ -1,0 +1,106 @@
+/**
+ * Button system
+ *
+ * All color and shape values come from CSS custom properties set by
+ * snippets/css-variables.liquid. Per-scheme button colours override
+ * the root defaults automatically via CSS inheritance:
+ *
+ *   --color-btn-bg       → solid button fill / outline button border & text
+ *   --color-btn-text     → solid button label / outline hover label
+ *   --color-btn-bg-hover → solid button hover fill
+ *   --btn-radius         → corner style (rounded / pill / sharp)
+ *
+ * These tokens are defined on :root (global defaults) and overridden on
+ * .color-scheme-1 through .color-scheme-4 by css-variables.liquid.
+ */
+
+/* ── Button base ──────────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  font-family: var(--font-body-family);
+  font-size: var(--btn-font-size, 0.9375rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  border: 2px solid transparent;
+  border-radius: var(--btn-radius, var(--radius-md));
+  padding: var(--btn-padding-block, 0.75rem) var(--btn-padding-inline, 1.5rem);
+  min-height: 3rem; /* 48 px touch target */
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color var(--transition-base),
+    color            var(--transition-base),
+    border-color     var(--transition-base),
+    opacity          var(--transition-base);
+}
+
+/* ── Size modifiers ───────────────────────────────────────────────────── */
+
+.btn--sm {
+  --btn-font-size:      0.8125rem;
+  --btn-padding-block:  0.5rem;
+  --btn-padding-inline: 1rem;
+}
+
+.btn--md {
+  --btn-font-size:      0.9375rem;
+  --btn-padding-block:  0.75rem;
+  --btn-padding-inline: 1.5rem;
+}
+
+.btn--lg {
+  --btn-font-size:      1rem;
+  --btn-padding-block:  1rem;
+  --btn-padding-inline: 2rem;
+}
+
+/* ── Style: solid ─────────────────────────────────────────────────────── */
+
+.btn--solid {
+  background-color: var(--color-btn-bg);
+  color:            var(--color-btn-text);
+  border-color:     var(--color-btn-bg);
+}
+
+.btn--solid:hover,
+.btn--solid:focus-visible {
+  background-color: var(--color-btn-bg-hover);
+  border-color:     var(--color-btn-bg-hover);
+  color:            var(--color-btn-text);
+}
+
+/* ── Style: outline ───────────────────────────────────────────────────── */
+
+.btn--outline {
+  background-color: transparent;
+  color:            var(--color-btn-bg);
+  border-color:     var(--color-btn-bg);
+}
+
+.btn--outline:hover,
+.btn--outline:focus-visible {
+  background-color: var(--color-btn-bg);
+  color:            var(--color-btn-text);
+}
+
+/* ── Focus ring ───────────────────────────────────────────────────────── */
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-btn-bg);
+  outline-offset: 3px;
+}
+
+/* ── Disabled state ───────────────────────────────────────────────────── */
+
+.btn[disabled],
+.btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}

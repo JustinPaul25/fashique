@@ -1,0 +1,91 @@
+<!doctype html>
+{%- liquid
+  assign rtl_locales = 'ar,he,fa,ur'
+  assign locale_prefix = request.locale.iso_code | split: '-' | first
+  if rtl_locales contains locale_prefix
+    assign page_dir = 'rtl'
+  else
+    assign page_dir = 'ltr'
+  endif
+-%}
+<html lang="{{ request.locale.iso_code }}" dir="{{ page_dir }}">
+  <head>
+    {% comment %}
+      1. CSS custom properties (font-face declarations + :root tokens) — inlined first
+         so every subsequent rule can reference the tokens without a FOUC.
+    {% endcomment %}
+    {% render 'css-variables' %}
+
+    {% comment %}
+      2. Critical CSS — inlined directly; zero network round-trip for above-fold styles.
+         Source of truth lives in assets/critical.css; snippet mirrors it.
+         All non-critical CSS must be loaded AFTER this block (see step 4).
+    {% endcomment %}
+    {% render 'critical-css' %}
+
+    {% comment %}
+      3. Font preloading — preconnect + preload the base weight only.
+         Additional weights/styles are loaded on-demand via @font-face (swap).
+    {% endcomment %}
+    {% unless settings.type_heading_font.system? and settings.type_body_font.system? %}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {% endunless %}
+    {% unless settings.type_heading_font.system? %}
+      {{ settings.type_heading_font | font_url | preload_tag: as: 'font', crossorigin: 'anonymous' }}
+    {% endunless %}
+    {% unless settings.type_body_font.system? %}
+      {{ settings.type_body_font | font_url | preload_tag: as: 'font', crossorigin: 'anonymous' }}
+    {% endunless %}
+
+    {% comment %}
+      4. Non-critical stylesheets — loaded asynchronously after critical CSS.
+         Convention: add section-specific or component CSS via:
+           <link rel="stylesheet" href="{{ 'section-name.css' | asset_url }}" media="print" onload="this.media='all'">
+         Always pair with a <noscript> fallback.
+    {% endcomment %}
+    <link rel="stylesheet" href="{{ 'color-schemes.css' | asset_url }}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{{ 'color-schemes.css' | asset_url }}"></noscript>
+    <link rel="stylesheet" href="{{ 'typography.css' | asset_url }}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{{ 'typography.css' | asset_url }}"></noscript>
+    <link rel="stylesheet" href="{{ 'spacing.css' | asset_url }}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{{ 'spacing.css' | asset_url }}"></noscript>
+    <link rel="stylesheet" href="{{ 'buttons.css' | asset_url }}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{{ 'buttons.css' | asset_url }}"></noscript>
+
+    {% comment %} Page metadata, OG tags, canonical URL, etc. {% endcomment %}
+    {% render 'meta-tags' %}
+
+    {% comment %}
+      5. Shopify required tag — always last in <head>.
+         Injects: Shopify analytics, app scripts, consent APIs.
+    {% endcomment %}
+    {{ content_for_header }}
+  </head>
+
+  <body>
+    {% comment %} Skip-to-content anchor — visible on keyboard focus only. {% endcomment %}
+    <a href="#main-content" class="skip-to-content-link">
+      {{- 'accessibility.skip_to_content' | t -}}
+    </a>
+
+    {% sections 'header-group' %}
+
+    <main id="main-content" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {% comment %}
+      Global utility snippets — rendered after page content so they never block
+      above-fold paint. Each snippet self-defers its own scripts.
+    {% endcomment %}
+    {%- if settings.show_back_to_top != false -%}
+      {% render 'back-to-top' %}
+    {%- endif -%}
+
+    {%- if settings.enable_age_verifier -%}
+      {% render 'age-verifier' %}
+    {%- endif -%}
+  </body>
+</html>

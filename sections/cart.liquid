@@ -1,0 +1,63 @@
+{% comment %}
+  This section is used in the cart template to render /cart page with an
+  overview of the items in customer's cart.
+
+  https://shopify.dev/docs/storefronts/themes/architecture/templates/cart
+{% endcomment %}
+
+{%- render 'section-spacing', section: section -%}
+<div class="color-scheme color-{{ section.settings.color_scheme }}">
+<h1>{{ 'cart.title' | t }}</h1>
+
+<form action="{{ routes.cart_url }}" method="post">
+  <table>
+    {% for item in cart.items %}
+      <tr>
+        <td>
+          {% render 'image', image: item.image, url: item.url %}
+        </td>
+        <td>
+          <p>{{ item.product.title }}</p>
+          {{ 'cart.remove' | t | link_to: item.url_to_remove }}
+        </td>
+        <td>
+          <input type="text" name="updates[]" value="{{ item.quantity }}">
+          <input type="submit" value="{{ 'cart.update' | t }}">
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <input type="submit" name="checkout" value="{{ 'cart.checkout' | t }}">
+</form>
+</div>
+
+{% schema %}
+{
+  "name": "t:general.cart",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "t:labels.section_spacing",
+      "info": "t:info.section_spacing",
+      "options": [
+        { "value": "default", "label": "t:options.section_spacing.default" },
+        { "value": "none",    "label": "t:options.section_spacing.none"    },
+        { "value": "xs",      "label": "t:options.section_spacing.xs"      },
+        { "value": "sm",      "label": "t:options.section_spacing.sm"      },
+        { "value": "md",      "label": "t:options.section_spacing.md"      },
+        { "value": "lg",      "label": "t:options.section_spacing.lg"      },
+        { "value": "xl",      "label": "t:options.section_spacing.xl"      }
+      ],
+      "default": "default"
+    }
+  ]
+}
+{% endschema %}

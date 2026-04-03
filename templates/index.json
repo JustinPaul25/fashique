@@ -1,0 +1,282 @@
+{
+  "sections": {
+    "slideshow": {
+      "type": "slideshow",
+      "blocks": {
+        "slide-1": {
+          "type": "slide",
+          "settings": {
+            "heading": "New Collection",
+            "subheading": "Discover the latest arrivals — refined elegance for every occasion.",
+            "cta_label": "Shop now",
+            "cta_url": "/collections/all",
+            "text_position": "center",
+            "overlay_opacity": 35
+          }
+        },
+        "slide-2": {
+          "type": "slide",
+          "settings": {
+            "heading": "Timeless Style",
+            "subheading": "Curated essentials that never go out of fashion.",
+            "cta_label": "Explore",
+            "cta_url": "/collections/all",
+            "text_position": "bottom_left",
+            "overlay_opacity": 40
+          }
+        }
+      },
+      "block_order": ["slide-1", "slide-2"],
+      "settings": {
+        "slide_height": "large",
+        "show_arrows": true,
+        "show_dots": true,
+        "autoplay": true,
+        "autoplay_speed": 5,
+        "color_scheme": "color-scheme-2"
+      }
+    },
+    "featured-collection": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "New Arrivals",
+        "layout": "grid",
+        "products_count": 4,
+        "columns_desktop": "4",
+        "show_vendor": false,
+        "show_view_all": true,
+        "color_scheme": "color-scheme-1"
+      }
+    },
+    "image-banner": {
+      "type": "image-banner",
+      "settings": {
+        "heading": "Bold statement. Pure style.",
+        "text": "Discover the collection that defines the season.",
+        "button_label": "Shop the collection",
+        "text_position": "left",
+        "overlay_opacity": 30,
+        "height": "medium",
+        "color_scheme": "color-scheme-2"
+      }
+    },
+    "multicolumn": {
+      "type": "multicolumn",
+      "blocks": {
+        "col-1": {
+          "type": "column",
+          "settings": {
+            "heading": "Free shipping",
+            "text": "<p>Complimentary shipping on all orders over $100.</p>"
+          }
+        },
+        "col-2": {
+          "type": "column",
+          "settings": {
+            "heading": "Easy returns",
+            "text": "<p>Hassle-free returns within 30 days of purchase.</p>"
+          }
+        },
+        "col-3": {
+          "type": "column",
+          "settings": {
+            "heading": "Secure checkout",
+            "text": "<p>Your payment is protected with industry-leading encryption.</p>"
+          }
+        }
+      },
+      "block_order": ["col-1", "col-2", "col-3"],
+      "settings": {
+        "title": "",
+        "columns_desktop": "3",
+        "alignment": "center",
+        "color_scheme": "color-scheme-3"
+      }
+    },
+    "featured-product": {
+      "type": "featured-product",
+      "settings": {
+        "show_vendor": false,
+        "show_quantity": true,
+        "show_description": true,
+        "button_label": "Add to cart",
+        "color_scheme": "color-scheme-3"
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "testimonial-1": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "The craftsmanship is incredible. Every detail is considered and the fit is perfect.",
+            "author": "Sarah M.",
+            "role": "Verified buyer"
+          }
+        },
+        "testimonial-2": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "I get compliments every time I wear this. Worth every penny.",
+            "author": "Emma T.",
+            "role": "Verified buyer"
+          }
+        },
+        "testimonial-3": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "Sustainable, beautiful, and luxurious. This brand is everything.",
+            "author": "Priya K.",
+            "role": "Verified buyer"
+          }
+        }
+      },
+      "block_order": ["testimonial-1", "testimonial-2", "testimonial-3"],
+      "settings": {
+        "title": "What our customers say",
+        "layout": "grid",
+        "color_scheme": "color-scheme-3"
+      }
+    },
+    "ugc-grid": {
+      "type": "ugc-grid",
+      "blocks": {
+        "photo-1": { "type": "photo", "settings": { "caption": "" } },
+        "photo-2": { "type": "photo", "settings": { "caption": "" } },
+        "photo-3": { "type": "photo", "settings": { "caption": "" } },
+        "photo-4": { "type": "photo", "settings": { "caption": "" } },
+        "photo-5": { "type": "photo", "settings": { "caption": "" } },
+        "photo-6": { "type": "photo", "settings": { "caption": "" } },
+        "photo-7": { "type": "photo", "settings": { "caption": "" } },
+        "photo-8": { "type": "photo", "settings": { "caption": "" } }
+      },
+      "block_order": ["photo-1","photo-2","photo-3","photo-4","photo-5","photo-6","photo-7","photo-8"],
+      "settings": {
+        "title": "Styled by you",
+        "columns_desktop": "4",
+        "color_scheme": "color-scheme-1"
+      }
+    },
+    "countdown-timer": {
+      "type": "countdown-timer",
+      "settings": {
+        "title": "Sale ends in",
+        "end_date": "2026-12-31T23:59:59",
+        "timezone_offset": 0,
+        "show_days": true,
+        "expired_message": "The sale has ended — check back soon.",
+        "button_label": "Shop the sale",
+        "button_url": "/collections/sale",
+        "color_scheme": "color-scheme-4"
+      }
+    },
+    "before-after": {
+      "type": "before-after",
+      "settings": {
+        "before_label": "Before",
+        "after_label": "After",
+        "orientation": "horizontal",
+        "heading": "See the transformation",
+        "subtext": "Drag the slider to compare before and after.",
+        "color_scheme": "color-scheme-1"
+      }
+    },
+    "rich-text": {
+      "type": "rich-text",
+      "settings": {
+        "eyebrow": "Our story",
+        "heading": "Crafted with intention",
+        "text": "<p>We believe fashion should be both beautiful and conscious. Every piece in our collection is designed to last — in quality and in style.</p>",
+        "button_label": "About us",
+        "button_url": "/pages/about",
+        "alignment": "center",
+        "color_scheme": "color-scheme-1"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "faq-1": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>We accept returns within 30 days of purchase. Items must be unworn, unwashed, and in original condition with all tags attached.</p>"
+          }
+        },
+        "faq-2": {
+          "type": "faq_item",
+          "settings": {
+            "question": "How long does shipping take?",
+            "answer": "<p>Standard shipping takes 3–7 business days. Express options are available at checkout. Free shipping on orders over $100.</p>"
+          }
+        },
+        "faq-3": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you ship internationally?",
+            "answer": "<p>Yes — we ship to over 40 countries. International delivery typically takes 7–14 business days.</p>"
+          }
+        }
+      },
+      "block_order": ["faq-1", "faq-2", "faq-3"],
+      "settings": {
+        "title": "Frequently asked questions",
+        "color_scheme": "color-scheme-1"
+      }
+    },
+    "logo-list": {
+      "type": "logo-list",
+      "blocks": {
+        "logo-1": { "type": "logo", "settings": { "name": "Vogue" } },
+        "logo-2": { "type": "logo", "settings": { "name": "Harper's Bazaar" } },
+        "logo-3": { "type": "logo", "settings": { "name": "Elle" } },
+        "logo-4": { "type": "logo", "settings": { "name": "Refinery29" } },
+        "logo-5": { "type": "logo", "settings": { "name": "Who What Wear" } }
+      },
+      "block_order": ["logo-1","logo-2","logo-3","logo-4","logo-5"],
+      "settings": {
+        "title": "As seen in",
+        "grayscale": true,
+        "logo_height": 40,
+        "color_scheme": "color-scheme-3"
+      }
+    },
+    "video": {
+      "type": "video",
+      "settings": {
+        "heading": "Behind the craft",
+        "description": "A closer look at how our pieces are made.",
+        "color_scheme": "color-scheme-2"
+      }
+    },
+    "email-signup": {
+      "type": "email-signup",
+      "settings": {
+        "heading": "Stay in the loop",
+        "subtext": "New arrivals, exclusive offers, and style inspiration — straight to your inbox.",
+        "button_label": "Subscribe",
+        "overlay_opacity": 0,
+        "color_scheme": "color-scheme-3"
+      }
+    }
+  },
+  "order": [
+    "slideshow",
+    "featured-collection",
+    "image-banner",
+    "multicolumn",
+    "featured-product",
+    "testimonials",
+    "ugc-grid",
+    "countdown-timer",
+    "before-after",
+    "rich-text",
+    "faq",
+    "logo-list",
+    "video",
+    "email-signup"
+  ]
+}

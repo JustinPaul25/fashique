@@ -1,0 +1,371 @@
+{% doc %}
+  Renders a product card for grids, carousels, and search results.
+  Depends on snippets/image.liquid (Phase 4.1).
+
+  @param {product} product             - The Shopify product object (required)
+  @param {boolean} [show_vendor]       - Show vendor name above the title (default: false)
+  @param {boolean} [show_quick_view]   - Render the Quick View trigger button (default: true)
+  @param {boolean} [show_overlay_atc]  - Render an overlay Add-to-Cart button (default: false)
+  @param {boolean} [show_swatches]     - Render inline color swatches (default: true)
+  @param {string}  [sizes]             - HTML sizes attribute for the product image
+  @param {string}  [loading]           - "lazy" (default) or "eager"
+  @param {string}  [class]             - Extra CSS classes on the card root
+
+  @example
+  {% render 'product-card', product: product %}
+  {% render 'product-card',
+    product: product,
+    show_vendor: true,
+    show_overlay_atc: true,
+    sizes: "(min-width: 1200px) 33vw, 50vw"
+  %}
+{% enddoc %}
+
+{%- liquid
+  assign is_sold_out       = false
+  unless product.available
+    assign is_sold_out = true
+  endunless
+
+  assign on_sale = false
+  if product.compare_at_price > product.price
+    assign on_sale = true
+  endif
+
+  assign has_single_variant  = false
+  if product.variants.size == 1
+    assign has_single_variant = true
+  endif
+
+  assign render_vendor      = show_vendor      | default: false
+  assign render_quick_view  = show_quick_view  | default: true
+  assign render_overlay_atc = show_overlay_atc | default: false
+  assign render_swatches    = show_swatches    | default: true
+
+  assign sizes   = sizes   | default: '(min-width: 1200px) 25vw, (min-width: 750px) 33vw, 50vw'
+  assign loading = loading | default: 'lazy'
+
+  assign color_option = nil
+  for option in product.options_with_values
+    assign option_name_lower = option.name | downcase
+    if option_name_lower == 'color' or option_name_lower == 'colour'
+      assign color_option = option
+    endif
+  endfor
+
+  assign pcard_placeholder_num = product.id | modulo: 6 | plus: 1
+  assign pcard_placeholder = 'product-' | append: pcard_placeholder_num
+-%}
+
+<div class="product-card{% if class != blank %} {{ class }}{% endif %}">
+
+  {%- comment -%}── Media ────────────────────────────────────────────────────{%- endcomment -%}
+  <div class="product-card__media" data-img-sizes="{{ sizes }}" data-img-loading="{{ loading }}">
+
+    {%- comment -%} Image link — aria-hidden; the title link is the accessible entry point {%- endcomment -%}
+    <a
+      href="{{ product.url }}"
+      class="product-card__media-link"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      {%- render 'image',
+        image: product.featured_image,
+        widths: '360,540,720,1080',
+        sizes: sizes,
+        alt: product.featured_image.alt | default: product.title,
+        class: 'product-card__img',
+        loading: loading,
+        placeholder_type: pcard_placeholder
+      -%}
+      {%- if product.images.size > 1 -%}
+        {%- render 'image',
+          image: product.images[1],
+          widths: '360,540,720,1080',
+          sizes: sizes,
+          alt: product.images[1].alt | default: product.title,
+          class: 'product-card__img product-card__img--hover',
+          loading: 'lazy'
+        -%}
+      {%- endif -%}
+    </a>
+
+    {%- comment -%} Badges {%- endcomment -%}
+    {%- if is_sold_out -%}
+      <span class="product-card__badge product-card__badge--sold-out">
+        {{- 'products.card.sold_out' | t -}}
+      </span>
+    {%- elsif on_sale -%}
+      <span class="product-card__badge product-card__badge--sale">
+        {{- 'products.card.sale' | t -}}
+      </span>
+    {%- endif -%}
+
+    {%- comment -%} Hover / focus actions {%- endcomment -%}
+    <div class="product-card__actions">
+      {%- if render_quick_view -%}
+        <button
+          type="button"
+          class="product-card__quick-view btn btn--solid btn--sm"
+          data-quick-view="{{ product.handle }}"
+          aria-label="{{ 'accessibility.quick_view_product' | t: title: product.title | escape }}"
+        >
+          {{- 'products.card.quick_view' | t -}}
+        </button>
+      {%- endif -%}
+
+      {%- if render_overlay_atc -%}
+        {%- if is_sold_out -%}
+          <span class="product-card__atc btn btn--outline btn--sm" aria-disabled="true">
+            {{- 'products.card.sold_out' | t -}}
+          </span>
+        {%- elsif has_single_variant -%}
+          <form action="{{ routes.cart_add_url }}" method="post" class="product-card__atc-form">
+            <input type="hidden" name="id" value="{{ product.first_available_variant.id }}">
+            <input type="hidden" name="quantity" value="1">
+            <button type="submit" class="product-card__atc btn btn--outline btn--sm">
+              {{- 'products.card.add_to_cart' | t -}}
+            </button>
+          </form>
+        {%- else -%}
+          <a href="{{ product.url }}" class="product-card__atc btn btn--outline btn--sm">
+            {{- 'products.card.choose_options' | t -}}
+          </a>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+
+  </div>
+
+  {%- comment -%}── Info ─────────────────────────────────────────────────────{%- endcomment -%}
+  <div class="product-card__info">
+
+    {%- if render_vendor and product.vendor != blank -%}
+      <p class="product-card__vendor">{{ product.vendor }}</p>
+    {%- endif -%}
+
+    <h3 class="product-card__title">
+      <a href="{{ product.url }}" class="product-card__title-link">
+        {{- product.title | escape -}}
+      </a>
+    </h3>
+
+    {%- comment -%} Color swatches — Phase 7.3 will enhance with hex/image-based colors {%- endcomment -%}
+    {%- if render_swatches and color_option != nil -%}
+      <div
+        class="product-card__swatches"
+        role="list"
+        aria-label="{{ color_option.name | escape }}"
+      >
+        {%- for value in color_option.values -%}
+          <div class="product-card__swatch-item" role="listitem">
+            <button
+              type="button"
+              class="swatch swatch--card"
+              title="{{ value | escape }}"
+              aria-label="{{ value | escape }}"
+              data-swatch-value="{{ value | escape }}"
+              data-swatch-handle="{{ value | handleize }}"
+              data-product-url="{{ product.url }}"
+              style="--swatch-color: {{ value | downcase }}"
+            >
+              <span class="swatch__inner" aria-hidden="true"></span>
+              <span class="visually-hidden">{{ value }}</span>
+            </button>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- render 'price', product: product -%}
+
+  </div>
+</div>
+
+{% stylesheet %}
+  /* ── Product Card ─────────────────────────────────────────────── */
+  .product-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Media wrapper ──────────────────────────────────────────────── */
+  .product-card__media {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    aspect-ratio: 3 / 4;
+    background-color: var(--color-border);
+  }
+
+  .product-card__media-link {
+    display: block;
+    height: 100%;
+  }
+
+  .product-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity var(--transition-base);
+  }
+
+  .product-card__img--hover {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+  }
+
+  @media (hover: hover) {
+    .product-card:hover .product-card__img--hover { opacity: 1; }
+    .product-card:hover .product-card__img:not(.product-card__img--hover) { opacity: 0; }
+  }
+
+  /* ── Badges ─────────────────────────────────────────────────────── */
+  .product-card__badge {
+    position: absolute;
+    top: var(--spacing-sm);
+    inset-inline-start: var(--spacing-sm);
+    padding: 0.25em 0.625em;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.5;
+    border-radius: var(--radius-sm);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .product-card__badge--sale {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+  }
+
+  .product-card__badge--sold-out {
+    background-color: color-mix(in srgb, var(--color-foreground) 12%, transparent);
+    color: var(--color-foreground);
+  }
+
+  /* ── Hover / focus actions ──────────────────────────────────────── */
+  .product-card__actions {
+    position: absolute;
+    inset-inline: var(--spacing-sm);
+    bottom: var(--spacing-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    opacity: 0;
+    translate: 0 0.5rem;
+    transition:
+      opacity var(--transition-base),
+      translate var(--transition-base);
+    z-index: 2;
+  }
+
+  @media (hover: hover) {
+    .product-card:hover .product-card__actions,
+    .product-card:focus-within .product-card__actions {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
+  /* Touch devices: always show actions */
+  @media (hover: none) {
+    .product-card__actions {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
+  .product-card__atc-form {
+    display: contents;
+  }
+
+  /* ── Info area ──────────────────────────────────────────────────── */
+  .product-card__info {
+    padding-block: var(--spacing-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+  }
+
+  .product-card__vendor {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin: 0;
+  }
+
+  .product-card__title {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.3;
+    margin: 0;
+  }
+
+  .product-card__title-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .product-card__title-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  /* ── Swatches ───────────────────────────────────────────────────── */
+  .product-card__swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3125rem;
+    margin-block: 0.125rem;
+  }
+
+  .swatch {
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .swatch--card {
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-border);
+    transition: border-color var(--transition-base), scale var(--transition-base);
+  }
+
+  .swatch__inner {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    /* --swatch-color is set inline per swatch; CSS named colours work for standard names.
+       Phase 7.3 will replace this with hex/image-based values via JS. */
+    background-color: var(--swatch-color, var(--color-border));
+  }
+
+  .swatch--card:hover,
+  .swatch--card.is-active {
+    border-color: var(--color-primary);
+    scale: 1.2;
+  }
+
+  .swatch--card:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    scale: 1.2;
+  }
+
+  /* ── Price (card context) ────────────────────────────────────────── */
+  /* snippets/price.liquid owns the base .price styles.
+     This block only adds the card-specific top margin. */
+  .product-card__info .price {
+    margin-block-start: 0.125rem;
+  }
+{% endstylesheet %}

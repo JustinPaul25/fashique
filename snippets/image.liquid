@@ -1,0 +1,80 @@
+{% doc %}
+  Renders a responsive <img> tag with srcset, sizes, and explicit width/height
+  for CLS prevention. Falls back to a Shopify placeholder SVG when image is nil.
+
+  @param {image}  image            - The Shopify image object to render
+  @param {string} [widths]         - Comma-separated widths for srcset (default: "360,540,720,1080,1440,2160")
+  @param {string} [sizes]          - The HTML sizes attribute value (default: "100vw")
+  @param {string} [alt]            - Alt text override; falls back to image.alt
+  @param {string} [class]          - CSS class(es) added to the <img> or the placeholder wrapper
+  @param {string} [loading]        - "lazy" (default) or "eager"; sets fetchpriority="high" when "eager"
+  @param {string} [placeholder_type] - Shopify placeholder type when image is nil.
+                                       Options: product-1…6, collection-1…6, lifestyle-1…6, image (default)
+
+  @example
+  {% render 'image', image: product.featured_image, placeholder_type: 'product-1' %}
+  {% render 'image',
+    image: section.settings.hero_image,
+    widths: "540,720,1080,1440,2160",
+    sizes: "(min-width: 1200px) 50vw, 100vw",
+    alt: "Hero banner",
+    class: "hero__image",
+    loading: "eager",
+    placeholder_type: "lifestyle-1"
+  %}
+{% enddoc %}
+
+{%- liquid
+  assign loading_value    = loading | default: 'lazy'
+  assign alt_value        = alt | default: image.alt | default: '' | escape
+  assign sizes_value      = sizes | default: '100vw'
+  assign widths_list      = widths | default: '360,540,720,1080,1440,2160'
+  assign widths_array     = widths_list | split: ','
+  assign placeholder_name = placeholder_type | default: 'image'
+-%}
+
+{%- if image != blank -%}
+  {%- capture srcset_parts -%}
+    {%- for w in widths_array -%}
+      {%- assign w_int = w | strip | plus: 0 -%}
+      {{- image | image_url: width: w_int }} {{ w_int }}w
+      {%- unless forloop.last -%}, {% endunless -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+  <img
+    src="{{ image | image_url: width: 1080 }}"
+    srcset="{{ srcset_parts }}"
+    sizes="{{ sizes_value }}"
+    width="{{ image.width }}"
+    height="{{ image.height }}"
+    alt="{{ alt_value }}"
+    loading="{{ loading_value }}"
+    {%- if loading_value == 'eager' %} fetchpriority="high"{% endif -%}
+    {%- if class != blank %} class="{{ class }}"{% endif -%}
+  >
+{%- else -%}
+  <div
+    class="image-placeholder{% if class != blank %} {{ class }}{% endif %}"
+    aria-hidden="true"
+  >
+    {{- placeholder_name | placeholder_svg_tag: 'placeholder-svg' -}}
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  /* ── Shopify placeholder SVG base styles ─────────────────────────── */
+  .image-placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .placeholder-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: #BABEC3;
+    background-color: #F4F6F8;
+  }
+{% endstylesheet %}

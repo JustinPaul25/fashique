@@ -1,0 +1,431 @@
+{%- comment -%}
+  Before / After Slider  (Phase 5.1 / Feature #4)
+  ──────────────────────────────────────────────────
+  • Draggable vertical or horizontal divider using Pointer Events API.
+  • Keyboard accessible: Arrow keys move the divider by 5% increments.
+  • Optional heading and subtext above the slider.
+  • Respects prefers-reduced-motion — animations disabled but interaction works.
+{%- endcomment -%}
+
+{%- render 'section-spacing', section: section -%}
+<section
+  class="before-after section-padding color-scheme color-{{ section.settings.color_scheme }}"
+  data-section-id="{{ section.id }}"
+>
+  <div class="page-width">
+
+    {%- if section.settings.heading != blank or section.settings.subtext != blank -%}
+      <div class="before-after__header">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="before-after__heading section-heading">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtext != blank -%}
+          <p class="before-after__subtext">{{ section.settings.subtext | escape }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- assign before_image = section.settings.before_image -%}
+    {%- assign after_image  = section.settings.after_image -%}
+
+    <div
+      class="before-after__slider before-after__slider--{{ section.settings.orientation }}"
+      id="before-after-{{ section.id }}"
+      role="group"
+      aria-label="{{ section.settings.before_label | escape }} / {{ section.settings.after_label | escape }}"
+    >
+      {%- comment -%} After image (bottom layer) {%- endcomment -%}
+      <div class="before-after__after-wrap">
+        {%- render 'image',
+          image: after_image,
+          widths: '400,700,1000,1400',
+          sizes: '(min-width: 1024px) 80vw, 100vw',
+          alt: after_image.alt | default: section.settings.after_label,
+          class: 'before-after__img before-after__img--after',
+          loading: 'lazy',
+          placeholder_type: 'lifestyle-2'
+        -%}
+        <span class="before-after__badge before-after__badge--after" aria-hidden="true">
+          {%- if section.settings.after_label != blank -%}
+            {{- section.settings.after_label | escape -}}
+          {%- else -%}
+            {{- 'sections.before_after.after' | t -}}
+          {%- endif -%}
+        </span>
+      </div>
+
+      {%- comment -%} Before image (top layer — clipped) {%- endcomment -%}
+      <div class="before-after__before-wrap" id="before-wrap-{{ section.id }}">
+        {%- render 'image',
+          image: before_image,
+          widths: '400,700,1000,1400',
+          sizes: '(min-width: 1024px) 80vw, 100vw',
+          alt: before_image.alt | default: section.settings.before_label,
+          class: 'before-after__img before-after__img--before',
+          loading: 'lazy',
+          placeholder_type: 'lifestyle-1'
+        -%}
+        <span class="before-after__badge before-after__badge--before" aria-hidden="true">
+          {%- if section.settings.before_label != blank -%}
+            {{- section.settings.before_label | escape -}}
+          {%- else -%}
+            {{- 'sections.before_after.before' | t -}}
+          {%- endif -%}
+        </span>
+      </div>
+
+      {%- comment -%} Draggable divider {%- endcomment -%}
+      <div
+        class="before-after__divider"
+        id="divider-{{ section.id }}"
+        role="slider"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="50"
+        aria-label="{{ 'accessibility.drag_handle' | t }}"
+        tabindex="0"
+      >
+        <div class="before-after__handle" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+            <path d="m9 18 6-6-6-6"/>
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+
+      <script>
+        (function () {
+          'use strict';
+
+          const slider      = document.getElementById('before-after-{{ section.id }}');
+          if (!slider) return;
+
+          const beforeWrap  = document.getElementById('before-wrap-{{ section.id }}');
+          const divider     = document.getElementById('divider-{{ section.id }}');
+          const isVertical  = slider.classList.contains('before-after__slider--vertical');
+
+          let isDragging = false;
+          let position   = 50; /* percentage */
+
+          function applyPosition(pct) {
+            position = Math.max(0, Math.min(100, pct));
+            divider.setAttribute('aria-valuenow', Math.round(position));
+            const prop = isVertical ? 'height' : 'width';
+            beforeWrap.style[prop] = position + '%';
+            divider.style[isVertical ? 'top' : 'left'] = position + '%';
+          }
+
+          function getPointerPosition(e) {
+            const rect = slider.getBoundingClientRect();
+            if (isVertical) {
+              return ((e.clientY - rect.top) / rect.height) * 100;
+            }
+            return ((e.clientX - rect.left) / rect.width) * 100;
+          }
+
+          /* Pointer events */
+          divider.addEventListener('pointerdown', function (e) {
+            isDragging = true;
+            divider.setPointerCapture(e.pointerId);
+            e.preventDefault();
+          });
+
+          slider.addEventListener('pointermove', function (e) {
+            if (!isDragging) return;
+            applyPosition(getPointerPosition(e));
+          });
+
+          slider.addEventListener('pointerup',     function () { isDragging = false; });
+          slider.addEventListener('pointercancel', function () { isDragging = false; });
+
+          /* Keyboard navigation */
+          divider.addEventListener('keydown', function (e) {
+            const step = 5;
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+              applyPosition(position - step);
+              e.preventDefault();
+            } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+              applyPosition(position + step);
+              e.preventDefault();
+            } else if (e.key === 'Home') {
+              applyPosition(0);
+              e.preventDefault();
+            } else if (e.key === 'End') {
+              applyPosition(100);
+              e.preventDefault();
+            }
+          });
+
+          /* Init */
+          applyPosition(50);
+        })();
+      </script>
+
+  </div>
+</section>
+
+{% stylesheet %}
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     BEFORE / AFTER SLIDER
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .before-after {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    padding-block: var(--section-padding-block);
+  }
+
+  .before-after__header {
+    text-align: center;
+    margin-block-end: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: center;
+  }
+
+  .before-after__heading {
+    font-size: var(--font-size-h2);
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    letter-spacing: var(--font-heading-letter-spacing, -0.02em);
+    line-height: var(--font-heading-line-height, 1.1);
+    margin: 0;
+  }
+
+  .before-after__subtext {
+    font-size: 1rem;
+    line-height: 1.6;
+    opacity: 0.75;
+    max-width: 44ch;
+    margin: 0;
+  }
+
+  /* ── Slider container ────────────────────────────────────────────── */
+  .before-after__slider {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    aspect-ratio: 16 / 9;
+    user-select: none;
+    touch-action: none;
+    cursor: col-resize;
+  }
+
+  .before-after__slider--vertical {
+    cursor: row-resize;
+    aspect-ratio: 4 / 3;
+  }
+
+  /* ── After layer (full size, sits behind) ────────────────────────── */
+  .before-after__after-wrap {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* ── Before layer (top, clipped by JS-set width/height) ──────────── */
+  .before-after__before-wrap {
+    position: absolute;
+    inset: 0;
+    width: 50%;
+    overflow: hidden;
+  }
+
+  .before-after__slider--vertical .before-after__before-wrap {
+    width: 100%;
+    height: 50%;
+  }
+
+  /* Images */
+  .before-after__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+
+  .before-after__img--before {
+    /* Counteract the clipping container so the image fills the original frame */
+    width: 100%;
+    max-width: none;
+  }
+
+  /* ── Badges ──────────────────────────────────────────────────────── */
+  .before-after__badge {
+    position: absolute;
+    bottom: var(--spacing-sm);
+    padding: 0.25em 0.75em;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background-color: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    border-radius: var(--radius-sm);
+    pointer-events: none;
+    backdrop-filter: blur(4px);
+  }
+
+  .before-after__badge--before { inset-inline-start: var(--spacing-sm); }
+  .before-after__badge--after  { inset-inline-end: var(--spacing-sm); }
+
+  /* ── Divider line ────────────────────────────────────────────────── */
+  .before-after__divider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 3px;
+    background-color: #fff;
+    translate: -50% 0;
+    cursor: col-resize;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .before-after__slider--vertical .before-after__divider {
+    top: 50%;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    width: 100%;
+    height: 3px;
+    translate: 0 -50%;
+    cursor: row-resize;
+    flex-direction: row;
+  }
+
+  .before-after__divider:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* ── Handle circle ───────────────────────────────────────────────── */
+  .before-after__handle {
+    position: relative;
+    z-index: 11;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    background-color: #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    color: #1a1a1a;
+    flex-shrink: 0;
+  }
+
+  .before-after__slider--vertical .before-after__handle {
+    flex-direction: column;
+  }
+
+  /* ── Placeholder SVG inside image panels ─────────────────────────── */
+  .before-after__after-wrap .image-placeholder,
+  .before-after__before-wrap .image-placeholder {
+    position: absolute;
+    inset: 0;
+  }
+
+  .before-after__after-wrap .placeholder-svg,
+  .before-after__before-wrap .placeholder-svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.before_after.name",
+  "tag": "section",
+  "class": "section-before-after",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "before_image",
+      "label": "t:sections.before_after.settings.before_image.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "after_image",
+      "label": "t:sections.before_after.settings.after_image.label"
+    },
+    {
+      "type": "text",
+      "id": "before_label",
+      "label": "t:sections.before_after.settings.before_label.label",
+      "default": "Before"
+    },
+    {
+      "type": "text",
+      "id": "after_label",
+      "label": "t:sections.before_after.settings.after_label.label",
+      "default": "After"
+    },
+    {
+      "type": "select",
+      "id": "orientation",
+      "label": "t:sections.before_after.settings.orientation.label",
+      "options": [
+        { "value": "horizontal", "label": "t:options.orientation.horizontal" },
+        { "value": "vertical",   "label": "t:options.orientation.vertical" }
+      ],
+      "default": "horizontal"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:sections.before_after.settings.heading.label"
+    },
+    {
+      "type": "text",
+      "id": "subtext",
+      "label": "t:sections.before_after.settings.subtext.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "t:labels.section_spacing",
+      "info": "t:info.section_spacing",
+      "options": [
+        { "value": "default", "label": "t:options.section_spacing.default" },
+        { "value": "none",    "label": "t:options.section_spacing.none"    },
+        { "value": "xs",      "label": "t:options.section_spacing.xs"      },
+        { "value": "sm",      "label": "t:options.section_spacing.sm"      },
+        { "value": "md",      "label": "t:options.section_spacing.md"      },
+        { "value": "lg",      "label": "t:options.section_spacing.lg"      },
+        { "value": "xl",      "label": "t:options.section_spacing.xl"      }
+      ],
+      "default": "default"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.before_after.name",
+      "settings": {
+        "before_label": "Before",
+        "after_label": "After",
+        "orientation": "horizontal",
+        "heading": "See the transformation",
+        "subtext": "Drag the slider to compare before and after."
+      }
+    }
+  ]
+}
+{% endschema %}

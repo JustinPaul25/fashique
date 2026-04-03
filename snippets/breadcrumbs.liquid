@@ -1,0 +1,194 @@
+{% doc %}
+  Renders breadcrumb navigation with BreadcrumbList JSON-LD structured data.
+  Derives the correct hierarchy automatically from request.page_type.
+  Returns nothing on the home page or for page types that don't use breadcrumbs.
+
+  @param {boolean} [show] - Pass false to suppress rendering (default: true).
+                            Sections should expose a `show_breadcrumbs` setting
+                            and forward it here so merchants can toggle per page.
+
+  @example
+  {% render 'breadcrumbs' %}
+  {% render 'breadcrumbs', show: section.settings.show_breadcrumbs %}
+{% enddoc %}
+
+{%- liquid
+  comment
+    Build the breadcrumb levels. We support three levels:
+      crumb_1 — Home (always a link)
+      crumb_2 — Optional middle level (linked when crumb_3 exists)
+      crumb_3 — Current page (never linked; carries aria-current="page")
+
+    When only two levels are needed (e.g. Home > Page Title), crumb_2 holds
+    the current page name (no URL assigned), and crumb_3 stays blank.
+  endcomment
+
+  assign crumb_1_name = 'breadcrumbs.home' | t
+  assign crumb_1_url  = routes.root_url
+  assign crumb_2_name = ''
+  assign crumb_2_url  = ''
+  assign crumb_3_name = ''
+
+  case request.page_type
+
+    when 'product'
+      if collection
+        assign crumb_2_name = collection.title
+        assign crumb_2_url  = collection.url
+        assign crumb_3_name = product.title
+      else
+        assign crumb_2_name = product.title
+      endif
+
+    when 'collection'
+      assign crumb_2_name = collection.title
+
+    when 'list-collections'
+      assign crumb_2_name = 'collections.title' | t
+
+    when 'article'
+      assign crumb_2_name = blog.title
+      assign crumb_2_url  = blog.url
+      assign crumb_3_name = article.title
+
+    when 'blog'
+      assign crumb_2_name = blog.title
+
+    when 'page'
+      assign crumb_2_name = page.title
+
+    when 'search'
+      assign crumb_2_name = 'search.title' | t
+
+    when 'cart'
+      assign crumb_2_name = 'cart.title' | t
+
+  endcase
+
+  comment
+    crumb_2 is the current page when it has no URL and there is no crumb_3.
+  endcomment
+  assign crumb_2_is_current = false
+  if crumb_2_url == blank and crumb_3_name == blank and crumb_2_name != blank
+    assign crumb_2_is_current = true
+  endif
+-%}
+
+{%- if show != false and crumb_2_name != blank -%}
+
+<nav class="breadcrumbs" aria-label="{{ 'breadcrumbs.nav_label' | t }}">
+  <ol class="breadcrumbs__list">
+
+    <li class="breadcrumbs__item">
+      <a href="{{ crumb_1_url }}" class="breadcrumbs__link">
+        {{- crumb_1_name -}}
+      </a>
+    </li>
+
+    <li
+      class="breadcrumbs__item{% if crumb_2_is_current %} breadcrumbs__item--current{% endif %}"
+      {%- if crumb_2_is_current %} aria-current="page"{% endif %}
+    >
+      {%- if crumb_2_url != blank -%}
+        <a href="{{ crumb_2_url }}" class="breadcrumbs__link">{{ crumb_2_name }}</a>
+      {%- else -%}
+        <span class="breadcrumbs__current">{{ crumb_2_name }}</span>
+      {%- endif -%}
+    </li>
+
+    {%- if crumb_3_name != blank -%}
+      <li class="breadcrumbs__item breadcrumbs__item--current" aria-current="page">
+        <span class="breadcrumbs__current">{{ crumb_3_name }}</span>
+      </li>
+    {%- endif -%}
+
+  </ol>
+</nav>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": {{ crumb_1_name | json }},
+      "item": "{{ shop.url }}{{ crumb_1_url }}"
+    }
+    {%- if crumb_2_name != blank -%}
+    ,{
+      "@type": "ListItem",
+      "position": 2,
+      "name": {{ crumb_2_name | json }},
+      "item": "{{ shop.url }}{% if crumb_2_url != blank %}{{ crumb_2_url }}{% else %}{{ request.path }}{% endif %}"
+    }
+    {%- if crumb_3_name != blank -%}
+    ,{
+      "@type": "ListItem",
+      "position": 3,
+      "name": {{ crumb_3_name | json }},
+      "item": "{{ shop.url }}{{ request.path }}"
+    }
+    {%- endif -%}
+    {%- endif -%}
+  ]
+}
+</script>
+
+{%- endif -%}
+
+{% stylesheet %}
+  /* ── Breadcrumbs ────────────────────────────────────────────────── */
+  .breadcrumbs {
+    padding-block: var(--spacing-sm);
+  }
+
+  .breadcrumbs__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 0;
+    font-size: 0.8125rem;
+  }
+
+  /* Chevron separator between items via CSS — not read by screen readers */
+  .breadcrumbs__item + .breadcrumbs__item::before {
+    content: '/';
+    margin-inline: 0.4em;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  .breadcrumbs__link {
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.65;
+    transition: opacity var(--transition-base);
+  }
+
+  .breadcrumbs__link:hover {
+    opacity: 1;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .breadcrumbs__link:focus-visible {
+    opacity: 1;
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Current page item — slightly de-emphasised, not interactive */
+  .breadcrumbs__item--current {
+    opacity: 0.65;
+  }
+
+  .breadcrumbs__current {
+    /* Inline span; no extra styling beyond inherited opacity */
+  }
+{% endstylesheet %}

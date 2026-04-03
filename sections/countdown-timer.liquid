@@ -1,0 +1,320 @@
+{%- comment -%}
+  Countdown Timer  (Phase 5.1 / Feature #8)
+  ───────────────────────────────────────────
+  • Pure JS countdown — no external library.
+  • Schema settings: end_date (ISO 8601 string), timezone UTC offset, label, expired message.
+  • Display: DD : HH : MM : SS (days unit is optional).
+  • When countdown reaches zero: timer hides, expired message is shown.
+  • Urgency is always tied to a real, configurable date — never hardcoded.
+  • Respects prefers-reduced-motion (digits still update; animations disabled).
+{%- endcomment -%}
+
+{%- assign end_date = section.settings.end_date -%}
+
+{%- render 'section-spacing', section: section -%}
+<section
+  class="countdown section-padding color-scheme color-{{ section.settings.color_scheme }}"
+  data-section-id="{{ section.id }}"
+>
+  <div class="page-width countdown__container">
+
+    {%- if section.settings.title != blank -%}
+      <p class="countdown__label">{{ section.settings.title | escape }}</p>
+    {%- endif -%}
+
+    {%- if end_date != blank -%}
+
+      <div
+        class="countdown__timer"
+        id="countdown-timer-{{ section.id }}"
+        aria-live="off"
+        data-end="{{ end_date | escape }}"
+        data-tz-offset="{{ section.settings.timezone_offset }}"
+        data-show-days="{{ section.settings.show_days }}"
+      >
+        {%- if section.settings.show_days -%}
+          <div class="countdown__unit" data-unit="days">
+            <span class="countdown__digits" aria-hidden="true">00</span>
+            <span class="countdown__unit-label">{{ 'sections.countdown_timer.days' | t }}</span>
+          </div>
+          <span class="countdown__sep" aria-hidden="true">:</span>
+        {%- endif -%}
+        <div class="countdown__unit" data-unit="hours">
+          <span class="countdown__digits" aria-hidden="true">00</span>
+          <span class="countdown__unit-label">{{ 'sections.countdown_timer.hours' | t }}</span>
+        </div>
+        <span class="countdown__sep" aria-hidden="true">:</span>
+        <div class="countdown__unit" data-unit="minutes">
+          <span class="countdown__digits" aria-hidden="true">00</span>
+          <span class="countdown__unit-label">{{ 'sections.countdown_timer.minutes' | t }}</span>
+        </div>
+        <span class="countdown__sep" aria-hidden="true">:</span>
+        <div class="countdown__unit" data-unit="seconds">
+          <span class="countdown__digits" aria-hidden="true">00</span>
+          <span class="countdown__unit-label">{{ 'sections.countdown_timer.seconds' | t }}</span>
+        </div>
+      </div>
+
+      <p
+        class="countdown__expired hidden"
+        id="countdown-expired-{{ section.id }}"
+        role="status"
+      >
+        {{- section.settings.expired_message | default: 'sections.countdown_timer.expired' | t | escape -}}
+      </p>
+
+      {%- if section.settings.button_label != blank and section.settings.button_url != blank -%}
+        <a
+          href="{{ section.settings.button_url }}"
+          class="countdown__cta btn btn--solid"
+        >
+          {{- section.settings.button_label | escape -}}
+        </a>
+      {%- endif -%}
+
+    {%- elsif request.design_mode -%}
+      <p class="countdown__placeholder-hint">Set an end date in the editor to preview the countdown.</p>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{%- if end_date != blank -%}
+  <script>
+    (function () {
+      'use strict';
+
+      const timerEl   = document.getElementById('countdown-timer-{{ section.id }}');
+      const expiredEl = document.getElementById('countdown-expired-{{ section.id }}');
+      if (!timerEl) return;
+
+      /* Parse ISO 8601 end date and apply UTC offset */
+      const rawDate  = timerEl.dataset.end;
+      const tzOffset = parseFloat(timerEl.dataset.tzOffset) || 0;
+      const endTime  = new Date(rawDate).getTime() - tzOffset * 3600 * 1000;
+      const showDays = timerEl.dataset.showDays === 'true';
+
+      function pad(n) { return String(n).padStart(2, '0'); }
+
+      function getUnit(name) {
+        return timerEl.querySelector('[data-unit="' + name + '"] .countdown__digits');
+      }
+
+      const dEl  = showDays ? getUnit('days')    : null;
+      const hEl  = getUnit('hours');
+      const mEl  = getUnit('minutes');
+      const sEl  = getUnit('seconds');
+
+      function updateTimer() {
+        const now  = Date.now();
+        const diff = Math.max(0, Math.floor((endTime - now) / 1000));
+
+        if (diff === 0) {
+          timerEl.classList.add('hidden');
+          expiredEl.classList.remove('hidden');
+          clearInterval(intervalId);
+          return;
+        }
+
+        let remaining = diff;
+
+        const days    = showDays ? Math.floor(remaining / 86400) : 0;
+        if (showDays) remaining -= days * 86400;
+
+        const hours   = Math.floor(remaining / 3600);
+        remaining    -= hours * 3600;
+
+        const minutes = Math.floor(remaining / 60);
+        const seconds = remaining % 60;
+
+        if (dEl) dEl.textContent = showDays ? String(days) : '00';
+        hEl.textContent = pad(hours);
+        mEl.textContent = pad(minutes);
+        sEl.textContent = pad(seconds);
+      }
+
+      updateTimer();
+      var intervalId = setInterval(updateTimer, 1000);
+    })();
+  </script>
+{%- endif -%}
+
+{% stylesheet %}
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     COUNTDOWN TIMER
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .countdown {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    padding-block: var(--section-padding-block);
+  }
+
+  .countdown__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-lg);
+    text-align: center;
+  }
+
+  .countdown__label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin: 0;
+  }
+
+  /* ── Timer row ───────────────────────────────────────────────────── */
+  .countdown__timer {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .countdown__unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.375rem;
+    min-width: 4.5rem;
+  }
+
+  .countdown__digits {
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    letter-spacing: var(--font-heading-letter-spacing, -0.02em);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    min-width: 2ch;
+    display: inline-block;
+  }
+
+  .countdown__unit-label {
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+
+  .countdown__sep {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    line-height: 1;
+    opacity: 0.4;
+    align-self: flex-start;
+    padding-block-start: 0.1em;
+  }
+
+  /* ── Expired message ─────────────────────────────────────────────── */
+  .countdown__expired {
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .hidden { display: none !important; }
+
+  /* ── Placeholder ─────────────────────────────────────────────────── */
+  .countdown__placeholder-hint {
+    opacity: 0.5;
+    font-size: 0.875rem;
+    margin: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.countdown_timer.name",
+  "tag": "section",
+  "class": "section-countdown-timer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.countdown_timer.settings.title.label",
+      "default": "Offer ends in"
+    },
+    {
+      "type": "text",
+      "id": "end_date",
+      "label": "t:sections.countdown_timer.settings.end_date.label",
+      "info": "t:sections.countdown_timer.settings.end_date.info",
+      "default": "2026-12-31T23:59:59"
+    },
+    {
+      "type": "range",
+      "id": "timezone_offset",
+      "label": "t:sections.countdown_timer.settings.timezone_offset.label",
+      "info": "t:sections.countdown_timer.settings.timezone_offset.info",
+      "min": -12,
+      "max": 14,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "show_days",
+      "label": "t:sections.countdown_timer.settings.show_days.label",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "expired_message",
+      "label": "t:sections.countdown_timer.settings.expired_message.label",
+      "default": "This offer has ended."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "t:sections.countdown_timer.settings.button_label.label"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "t:sections.countdown_timer.settings.button_url.label"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-4"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "t:labels.section_spacing",
+      "info": "t:info.section_spacing",
+      "options": [
+        { "value": "default", "label": "t:options.section_spacing.default" },
+        { "value": "none",    "label": "t:options.section_spacing.none"    },
+        { "value": "xs",      "label": "t:options.section_spacing.xs"      },
+        { "value": "sm",      "label": "t:options.section_spacing.sm"      },
+        { "value": "md",      "label": "t:options.section_spacing.md"      },
+        { "value": "lg",      "label": "t:options.section_spacing.lg"      },
+        { "value": "xl",      "label": "t:options.section_spacing.xl"      }
+      ],
+      "default": "default"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.countdown_timer.name",
+      "settings": {
+        "title": "Sale ends in",
+        "end_date": "2026-12-31T23:59:59",
+        "show_days": true,
+        "button_label": "Shop the sale",
+        "expired_message": "The sale has ended — check back soon."
+      }
+    }
+  ]
+}
+{% endschema %}

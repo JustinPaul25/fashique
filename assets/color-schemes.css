@@ -1,0 +1,37 @@
+/**
+ * Color scheme structural rules
+ *
+ * The .color-scheme class is added to every section wrapper that carries a
+ * color scheme.  It applies the CSS custom property tokens that the
+ * snippets/css-variables.liquid loop outputs for each scheme
+ * (e.g. .color-scheme-1, .color-scheme-2, …).
+ *
+ * Using a shared .color-scheme class here — instead of targeting each
+ * individual .color-{id} class — means merchants can add unlimited new
+ * schemes via the native "Color schemes" editor and the structural rules
+ * below apply automatically to every one of them.
+ */
+
+.color-scheme {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+/* Links inherit foreground by default; individual sections may override */
+.color-scheme a {
+  color: inherit;
+}
+
+/* Horizontal rules and explicit borders use the scheme border token */
+.color-scheme hr {
+  border-color: var(--color-border);
+}
+
+/* Input / select fields pick up scheme background so they don't clash */
+.color-scheme input,
+.color-scheme select,
+.color-scheme textarea {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  border-color: var(--color-border);
+}

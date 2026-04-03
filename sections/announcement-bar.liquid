@@ -1,0 +1,323 @@
+{%- comment -%}
+  Announcement Bar
+  ─────────────────
+  • One or more message blocks, each with text + optional link.
+  • Multiple messages automatically use the Splide carousel (local asset).
+  • Dismissible close button; dismissed state stored in sessionStorage.
+  • Uses position: sticky so it remains visible alongside the sticky header.
+  • Sets --announcement-bar-height on :root so the sticky header can offset itself.
+{%- endcomment -%}
+
+{%- assign announcement_blocks = section.blocks | where: 'type', 'announcement' -%}
+{%- assign message_count = announcement_blocks.size -%}
+
+{%- if section.settings.show_bar and message_count > 0 -%}
+
+  {%- comment -%}
+    Inline CSS sets an approximate height for --announcement-bar-height so the
+    sticky header does not overlap the bar before the deferred script executes.
+    The JS will update this to the exact measured value on DOMContentLoaded.
+  {%- endcomment -%}
+  <style>:root { --announcement-bar-height: 2.5rem; }</style>
+
+  {%- comment -%} Synchronous dismissal check — prevents flash of dismissed bar {%- endcomment -%}
+  <script>
+    (function(){
+      if(sessionStorage.getItem('fq-ab-dismissed-{{ section.id }}')){
+        document.write('<style>[data-announcement-bar="{{ section.id }}"]{display:none}<\/style>');
+        document.write('<style>:root{--announcement-bar-height:0px}<\/style>');
+      }
+    })();
+  </script>
+
+  <div
+    class="announcement-bar color-scheme color-{{ section.settings.color_scheme }}"
+    data-announcement-bar="{{ section.id }}"
+    role="region"
+    aria-label="{{ 'accessibility.announcement_bar' | t }}"
+  >
+    <div class="announcement-bar__inner">
+
+      {%- if message_count > 1 -%}
+
+        {%- comment -%} Multiple messages — Splide loop carousel {%- endcomment -%}
+        <div
+          class="splide announcement-bar__slider"
+          data-splide-config='{"type":"loop","interval":5000,"arrows":true,"pagination":false,"speed":350,"perPage":1,"gap":0}'
+          aria-label="{{ 'accessibility.announcement_bar' | t }}"
+        >
+          <div class="splide__track">
+            <ul class="splide__list">
+              {%- for block in announcement_blocks -%}
+                <li
+                  class="splide__slide announcement-bar__slide"
+                  {{ block.shopify_attributes }}
+                >
+                  {%- if block.settings.link != blank -%}
+                    <a
+                      href="{{ block.settings.link }}"
+                      class="announcement-bar__text announcement-bar__link"
+                    >{{- block.settings.text -}}</a>
+                  {%- else -%}
+                    <span class="announcement-bar__text">{{- block.settings.text -}}</span>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        </div>
+
+      {%- else -%}
+
+        {%- comment -%} Single message — no carousel overhead {%- endcomment -%}
+        {%- for block in announcement_blocks -%}
+          <div class="announcement-bar__slide" {{ block.shopify_attributes }}>
+            {%- if block.settings.link != blank -%}
+              <a
+                href="{{ block.settings.link }}"
+                class="announcement-bar__text announcement-bar__link"
+              >{{- block.settings.text -}}</a>
+            {%- else -%}
+              <span class="announcement-bar__text">{{- block.settings.text -}}</span>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+
+      {%- endif -%}
+
+      {%- if section.settings.show_close -%}
+        <button
+          type="button"
+          class="announcement-bar__close"
+          aria-label="{{ 'accessibility.close_announcement_bar' | t }}"
+          data-announcement-close
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="14" height="14">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      {%- endif -%}
+
+    </div>
+  </div>
+
+  {%- comment -%} Load Splide only when needed {%- endcomment -%}
+  {%- if message_count > 1 -%}
+    <link
+      rel="stylesheet"
+      href="{{ 'splide.min.css' | asset_url }}"
+      media="print"
+      onload="this.media='all'"
+    >
+    <noscript>
+      <link rel="stylesheet" href="{{ 'splide.min.css' | asset_url }}">
+    </noscript>
+    <script src="{{ 'splide.min.js' | asset_url }}" defer></script>
+    <script src="{{ 'splide-init.js' | asset_url }}" defer></script>
+  {%- endif -%}
+
+  <script src="{{ 'component-announcement-bar.js' | asset_url }}" defer></script>
+
+{%- endif -%}
+
+{% stylesheet %}
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     ANNOUNCEMENT BAR
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .announcement-bar {
+    position: sticky;
+    top: 0;
+    z-index: 300; /* above sticky header (z-index: 200) */
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    overflow: hidden;
+    /* Smooth collapse on dismiss */
+    max-height: 10rem;
+    transition:
+      max-height 0.35s ease,
+      opacity 0.2s ease,
+      padding 0.35s ease;
+  }
+
+  .announcement-bar.is-dismissed {
+    max-height: 0;
+    opacity: 0;
+  }
+
+  .announcement-bar__inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    padding-block: 0.5625rem;
+    padding-inline: 3rem; /* gutters for the close button */
+    max-width: var(--page-width);
+    margin-inline: auto;
+  }
+
+  /* ── Single-slide layout ────────────────────────────────────────────── */
+  .announcement-bar__slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .announcement-bar__text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1.4;
+  }
+
+  .announcement-bar__link {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: opacity var(--transition-base, 0.25s ease);
+  }
+
+  .announcement-bar__link:hover {
+    opacity: 0.7;
+  }
+
+  /* ── Close button ───────────────────────────────────────────────────── */
+  .announcement-bar__close {
+    position: absolute;
+    inset-inline-end: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.65;
+    transition:
+      opacity var(--transition-base, 0.25s ease),
+      background-color var(--transition-base, 0.25s ease);
+  }
+
+  .announcement-bar__close:hover {
+    opacity: 1;
+    background-color: color-mix(in srgb, currentColor 10%, transparent);
+  }
+
+  .announcement-bar__close:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    opacity: 1;
+  }
+
+  /* ── Splide overrides ───────────────────────────────────────────────── */
+  .announcement-bar .splide {
+    width: 100%;
+  }
+
+  .announcement-bar .splide__slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-block: 0.5625rem;
+    min-height: 2.5rem;
+  }
+
+  /* Arrow buttons: compact, inherits bar colour */
+  .announcement-bar .splide__arrow {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    opacity: 0.65;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: opacity var(--transition-base, 0.25s ease);
+  }
+
+  .announcement-bar .splide__arrow--prev { left: 0.5rem; }
+  .announcement-bar .splide__arrow--next { right: 0.5rem; }
+
+  /* Push arrows inward when the close button is present */
+  .announcement-bar .splide__arrow--next { right: 2.75rem; }
+
+  .announcement-bar .splide__arrow:hover  { opacity: 1; }
+  .announcement-bar .splide__arrow:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    opacity: 1;
+  }
+
+  .announcement-bar .splide__arrow svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
+  /* Hide the Splide progress bar that appears at the very bottom */
+  .announcement-bar .splide__progress { display: none; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.announcement_bar.name",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_bar",
+      "label": "t:labels.show_announcement_bar",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_close",
+      "label": "t:labels.show_close_button",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "t:blocks.announcement.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "t:blocks.announcement.settings.text.label",
+          "default": "Use code WELCOME for 15% off your first order"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:blocks.announcement.settings.link.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.announcement_bar.name",
+      "blocks": [
+        { "type": "announcement" }
+      ]
+    }
+  ]
+}
+{% endschema %}

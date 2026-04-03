@@ -1,0 +1,415 @@
+{%- comment -%}
+  Testimonials  (Phase 5.1 / Phase 6.4)
+  ───────────────────────────────────────
+  • Grid or Splide carousel layout (schema-configurable).
+  • Each block: quote, reviewer name, title/location, star rating 1–5, optional photo.
+  • Star rating via inline SVG stars.
+  • Splide loaded conditionally for carousel mode.
+{%- endcomment -%}
+
+{%- assign testimonial_blocks = section.blocks | where: 'type', 'testimonial' -%}
+{%- assign use_carousel = false -%}
+{%- if section.settings.layout == 'carousel' and testimonial_blocks.size > 1 -%}
+  {%- assign use_carousel = true -%}
+{%- endif -%}
+
+{%- render 'section-spacing', section: section -%}
+<section
+  class="testimonials section-padding color-scheme color-{{ section.settings.color_scheme }}"
+  data-section-id="{{ section.id }}"
+>
+  <div class="page-width">
+
+    {%- if section.settings.title != blank -%}
+      <h2 class="testimonials__title section-heading">{{ section.settings.title | escape }}</h2>
+    {%- endif -%}
+
+    {%- if testimonial_blocks.size > 0 -%}
+
+      {%- if use_carousel -%}
+        <div
+          class="splide testimonials__splide"
+          data-splide-config='{"type":"loop","perPage":3,"perMove":1,"gap":"var(--spacing-lg)","arrows":false,"pagination":true,"breakpoints":{"1024":{"perPage":2},"640":{"perPage":1}}}'
+        >
+          <div class="splide__track">
+            <ul class="splide__list">
+              {%- for block in testimonial_blocks -%}
+                <li class="splide__slide" {{ block.shopify_attributes }}>
+                  {%- render 'testimonial-card',
+                    block: block
+                  -%}
+                  {%- comment -%} Inline card markup (render doesn't support block passthrough) {%- endcomment -%}
+                  <article class="testimonial-card">
+                    {%- assign rating = block.settings.rating | default: 5 | plus: 0 -%}
+                    <div class="testimonial-card__stars" aria-label="{{ 'accessibility.star_rating' | t: rating: rating }}">
+                      {%- for i in (1..5) -%}
+                        <svg class="star{% if i <= rating %} star--filled{% endif %}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                      {%- endfor -%}
+                    </div>
+                    {%- if block.settings.quote != blank -%}
+                      <blockquote class="testimonial-card__quote">
+                        <p>{{ block.settings.quote | escape }}</p>
+                      </blockquote>
+                    {%- endif -%}
+                    <footer class="testimonial-card__footer">
+                      <div class="testimonial-card__avatar-wrap">
+                        {%- render 'image',
+                          image: block.settings.image,
+                          widths: '80,160',
+                          sizes: '2.5rem',
+                          alt: block.settings.author,
+                          class: 'testimonial-card__avatar',
+                          placeholder_type: 'image'
+                        -%}
+                      </div>
+                      <div class="testimonial-card__author-info">
+                        {%- if block.settings.author != blank -%}
+                          <cite class="testimonial-card__author">{{ block.settings.author | escape }}</cite>
+                        {%- endif -%}
+                        {%- if block.settings.role != blank -%}
+                          <p class="testimonial-card__role">{{ block.settings.role | escape }}</p>
+                        {%- endif -%}
+                      </div>
+                    </footer>
+                  </article>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        </div>
+
+        <link rel="stylesheet" href="{{ 'splide.min.css' | asset_url }}" media="print" onload="this.media='all'">
+        <noscript><link rel="stylesheet" href="{{ 'splide.min.css' | asset_url }}"></noscript>
+        <script src="{{ 'splide.min.js' | asset_url }}" defer></script>
+        <script src="{{ 'splide-init.js' | asset_url }}" defer></script>
+
+      {%- else -%}
+
+        <ul class="testimonials__grid list-unstyled" role="list">
+          {%- for block in testimonial_blocks -%}
+            <li {{ block.shopify_attributes }}>
+              {%- assign rating = block.settings.rating | default: 5 | plus: 0 -%}
+              <article class="testimonial-card">
+                <div class="testimonial-card__stars" aria-label="{{ 'accessibility.star_rating' | t: rating: rating }}">
+                  {%- for i in (1..5) -%}
+                    <svg class="star{% if i <= rating %} star--filled{% endif %}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                  {%- endfor -%}
+                </div>
+                {%- if block.settings.quote != blank -%}
+                  <blockquote class="testimonial-card__quote">
+                    <p>{{ block.settings.quote | escape }}</p>
+                  </blockquote>
+                {%- endif -%}
+                <footer class="testimonial-card__footer">
+                  <div class="testimonial-card__avatar-wrap">
+                    {%- render 'image',
+                      image: block.settings.image,
+                      widths: '80,160',
+                      sizes: '2.5rem',
+                      alt: block.settings.author,
+                      class: 'testimonial-card__avatar',
+                      placeholder_type: 'image'
+                    -%}
+                  </div>
+                  <div class="testimonial-card__author-info">
+                    {%- if block.settings.author != blank -%}
+                      <cite class="testimonial-card__author">{{ block.settings.author | escape }}</cite>
+                    {%- endif -%}
+                    {%- if block.settings.role != blank -%}
+                      <p class="testimonial-card__role">{{ block.settings.role | escape }}</p>
+                    {%- endif -%}
+                  </div>
+                </footer>
+              </article>
+            </li>
+          {%- endfor -%}
+        </ul>
+
+      {%- endif -%}
+
+    {%- elsif request.design_mode -%}
+      <p class="testimonials__empty-hint">Add testimonial blocks to populate this section.</p>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% stylesheet %}
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     TESTIMONIALS
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .testimonials {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    padding-block: var(--section-padding-block);
+  }
+
+  .testimonials__title {
+    font-size: var(--font-size-h2);
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    letter-spacing: var(--font-heading-letter-spacing, -0.02em);
+    line-height: var(--font-heading-line-height, 1.1);
+    text-align: center;
+    margin: 0 0 var(--spacing-xl);
+  }
+
+  /* ── Grid layout ─────────────────────────────────────────────────── */
+  .testimonials__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: var(--spacing-lg);
+    padding: 0;
+    margin: 0;
+  }
+
+  /* ── Testimonial card ────────────────────────────────────────────── */
+  .testimonial-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background-color: color-mix(in srgb, var(--color-foreground) 4%, transparent);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  /* ── Stars ───────────────────────────────────────────────────────── */
+  .testimonial-card__stars {
+    display: flex;
+    gap: 0.125rem;
+  }
+
+  .star {
+    fill: var(--color-border);
+    stroke: none;
+    flex-shrink: 0;
+  }
+
+  .star--filled {
+    fill: #F5A623;
+  }
+
+  /* ── Quote ───────────────────────────────────────────────────────── */
+  .testimonial-card__quote {
+    margin: 0;
+    padding: 0;
+    flex: 1;
+  }
+
+  .testimonial-card__quote p {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    font-style: italic;
+    margin: 0;
+    color: color-mix(in srgb, var(--color-foreground) 85%, transparent);
+  }
+
+  /* ── Author footer ───────────────────────────────────────────────── */
+  .testimonial-card__footer {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  .testimonial-card__avatar-wrap {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background-color: #F4F6F8;
+  }
+
+  .testimonial-card__avatar-wrap .image-placeholder,
+  .testimonial-card__avatar-wrap .placeholder-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .testimonial-card__avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .testimonial-card__author-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .testimonial-card__author {
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-style: normal;
+    display: block;
+  }
+
+  .testimonial-card__role {
+    font-size: 0.75rem;
+    opacity: 0.55;
+    margin: 0;
+  }
+
+  /* ── Splide overrides ────────────────────────────────────────────── */
+  .testimonials .splide__pagination {
+    bottom: -2rem;
+  }
+
+  .testimonials .splide__pagination__page {
+    background-color: var(--color-border);
+    border: none;
+    border-radius: 50%;
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+
+  .testimonials .splide__pagination__page.is-active {
+    background-color: var(--color-primary);
+    width: 1.25rem;
+    border-radius: 0.25rem;
+  }
+
+  .testimonials__splide {
+    padding-block-end: 2.5rem;
+  }
+
+  /* ── Placeholder ─────────────────────────────────────────────────── */
+  .testimonials__empty-hint {
+    text-align: center;
+    opacity: 0.5;
+    font-size: 0.875rem;
+    padding-block: var(--spacing-xl);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.testimonials.name",
+  "tag": "section",
+  "class": "section-testimonials",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.testimonials.settings.title.label",
+      "default": "What our customers say"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "t:sections.testimonials.settings.layout.label",
+      "options": [
+        { "value": "grid",     "label": "t:options.layout.grid" },
+        { "value": "carousel", "label": "t:options.layout.carousel" }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-3"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "t:labels.section_spacing",
+      "info": "t:info.section_spacing",
+      "options": [
+        { "value": "default", "label": "t:options.section_spacing.default" },
+        { "value": "none",    "label": "t:options.section_spacing.none"    },
+        { "value": "xs",      "label": "t:options.section_spacing.xs"      },
+        { "value": "sm",      "label": "t:options.section_spacing.sm"      },
+        { "value": "md",      "label": "t:options.section_spacing.md"      },
+        { "value": "lg",      "label": "t:options.section_spacing.lg"      },
+        { "value": "xl",      "label": "t:options.section_spacing.xl"      }
+      ],
+      "default": "default"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "t:blocks.testimonial.name",
+      "settings": [
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "t:blocks.testimonial.settings.rating.label",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "t:blocks.testimonial.settings.quote.label",
+          "default": "Absolutely love this brand. The quality is exceptional and the style is effortless."
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "t:blocks.testimonial.settings.author.label",
+          "default": "Jane D."
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "t:blocks.testimonial.settings.role.label",
+          "default": "Verified buyer"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:blocks.testimonial.settings.image.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.testimonials.name",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "The craftsmanship is incredible. Every detail is considered and the fit is perfect.",
+            "author": "Sarah M.",
+            "role": "Verified buyer"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "I get compliments every time I wear this. Worth every penny.",
+            "author": "Emma T.",
+            "role": "Verified buyer"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "Sustainable, beautiful, and luxurious. This brand is everything.",
+            "author": "Priya K.",
+            "role": "Verified buyer"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

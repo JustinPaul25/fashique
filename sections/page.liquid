@@ -1,0 +1,42 @@
+{% comment %}
+  This section is used in the page template to render store pages like About us
+  or Contact us.
+
+  https://shopify.dev/docs/storefronts/themes/architecture/templates/page
+{% endcomment %}
+
+{%- render 'section-spacing', section: section -%}
+<div class="color-scheme color-{{ section.settings.color_scheme }}">
+  <h1>{{ page.title }}</h1>
+  {{ page.content }}
+</div>
+
+{% schema %}
+{
+  "name": "t:general.page",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "t:labels.section_spacing",
+      "info": "t:info.section_spacing",
+      "options": [
+        { "value": "default", "label": "t:options.section_spacing.default" },
+        { "value": "none",    "label": "t:options.section_spacing.none"    },
+        { "value": "xs",      "label": "t:options.section_spacing.xs"      },
+        { "value": "sm",      "label": "t:options.section_spacing.sm"      },
+        { "value": "md",      "label": "t:options.section_spacing.md"      },
+        { "value": "lg",      "label": "t:options.section_spacing.lg"      },
+        { "value": "xl",      "label": "t:options.section_spacing.xl"      }
+      ],
+      "default": "default"
+    }
+  ]
+}
+{% endschema %}

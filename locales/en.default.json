@@ -1,0 +1,164 @@
+{
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "back_to_top": "Back to top",
+    "quick_view_product": "Quick view {{ title }}",
+    "account": "Account",
+    "announcement_bar": "Announcement",
+    "cart_count": "Cart ({{ count }} items)",
+    "close": "Close",
+    "close_announcement_bar": "Close announcement",
+    "close_menu": "Close menu",
+    "currency_select": "Select currency",
+    "language_select": "Select language",
+    "navigation": "Main navigation",
+    "open_menu": "Open menu",
+    "open_search": "Open search",
+    "submit": "Submit",
+    "play_slideshow": "Play slideshow",
+    "pause_slideshow": "Pause slideshow",
+    "previous_slide": "Previous slide",
+    "next_slide": "Next slide",
+    "slide_of": "Slide {{ current }} of {{ total }}",
+    "open_video": "Open video",
+    "drag_handle": "Drag to compare",
+    "before_label": "Before",
+    "after_label": "After",
+    "star_rating": "{{ rating }} out of 5 stars",
+    "view_product": "View {{ title }}"
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "nav_label": "Breadcrumb"
+  },
+  "cart": {
+    "title": "Your cart",
+    "checkout": "Check out",
+    "remove": "Remove",
+    "update": "Update cart",
+    "empty": "Your cart is empty",
+    "continue_shopping": "Continue shopping",
+    "subtotal": "Subtotal",
+    "order_note": "Order note",
+    "order_note_placeholder": "Add a note to your order"
+  },
+  "collections": {
+    "title": "Collections"
+  },
+  "pagination": {
+    "all_shown": "All items shown",
+    "load_more": "Load more",
+    "showing_html": "Showing {{ items }} of {{ total }}"
+  },
+  "products": {
+    "card": {
+      "add_to_cart": "Add to cart",
+      "choose_options": "Choose options",
+      "quick_view": "Quick view",
+      "sale": "Sale",
+      "sold_out": "Sold out"
+    },
+    "price": {
+      "from_html": "From <span>{{ price }}</span>",
+      "regular_price": "Regular price",
+      "sale_price": "Sale price",
+      "sold_out": "Sold out",
+      "unit_price_html": "{{ price }} per {{ unit }}"
+    },
+    "product": {
+      "add_to_cart": "Add to cart",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "quantity": "Quantity",
+      "vendor": "Vendor",
+      "sku": "SKU",
+      "description": "Description",
+      "view_full_details": "View full details",
+      "low_stock_html": "Only {{ count }} left",
+      "in_stock": "In stock",
+      "out_of_stock": "Out of stock"
+    }
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search",
+    "submit": "Search",
+    "no_results_html": "No results for <em>\"{{ terms }}\"</em>",
+    "results_for_html": "Showing {{ count }} results for <em>\"{{ terms }}\"</em>"
+  },
+  "social_share": {
+    "label": "Share",
+    "facebook": "Share on Facebook",
+    "x": "Share on X",
+    "pinterest": "Share on Pinterest",
+    "copy_link": "Copy link",
+    "link_copied": "Link copied!"
+  },
+  "404": {
+    "title": "Page not found",
+    "not_found": "We can't find the page you're looking for.",
+    "back_to_shopping": "Continue shopping"
+  },
+  "blog": {
+    "article_comments": "{{ count }} comment(s)",
+    "article_metadata_html": "By {{ author }} on {{ date }}",
+    "comment_form_body": "Comment",
+    "comment_form_email": "Email",
+    "comment_form_name": "Name",
+    "comment_form_submit": "Post comment",
+    "comment_form_title": "Leave a comment"
+  },
+  "footer": {
+    "newsletter": {
+      "email_placeholder": "Enter your email",
+      "submit": "Subscribe",
+      "success": "Thanks for subscribing!"
+    },
+    "payment_methods": "Payment methods"
+  },
+  "password": {
+    "title": "Opening soon",
+    "password": "Password",
+    "enter": "Enter"
+  },
+  "sections": {
+    "slideshow": {
+      "scroll_label": "Scroll"
+    },
+    "featured_collection": {
+      "view_all": "View all"
+    },
+    "featured_product": {
+      "pick_variant": "Choose options"
+    },
+    "countdown_timer": {
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "seconds": "Seconds",
+      "expired": "Offer has ended"
+    },
+    "video": {
+      "play": "Play video"
+    },
+    "faq": {
+      "question_aria": "Toggle answer for: {{ question }}"
+    },
+    "email_signup": {
+      "placeholder": "Enter your email address",
+      "submit": "Subscribe",
+      "success": "Thanks for subscribing!",
+      "error": "Please enter a valid email address"
+    },
+    "before_after": {
+      "before": "Before",
+      "after": "After"
+    },
+    "ugc_grid": {
+      "photo_placeholder": "Photo placeholder — add an image in the editor"
+    }
+  },
+  "general": {
+    "theme_name": "Fashique"
+  }
+}

@@ -1,0 +1,236 @@
+{%- comment -%}
+  Logo List  (Phase 5.1)
+  ───────────────────────
+  • Press / brand trust bar with configurable logo blocks.
+  • Optional grayscale filter with hover colour reveal.
+  • Optional heading above the logo row.
+{%- endcomment -%}
+
+{%- assign logo_blocks = section.blocks | where: 'type', 'logo' -%}
+
+{%- render 'section-spacing', section: section -%}
+<section
+  class="logo-list section-padding color-scheme color-{{ section.settings.color_scheme }}"
+  data-section-id="{{ section.id }}"
+>
+  <div class="page-width">
+
+    {%- if section.settings.title != blank -%}
+      <p class="logo-list__title">{{ section.settings.title | escape }}</p>
+    {%- endif -%}
+
+    {%- if logo_blocks.size > 0 -%}
+      <ul
+        class="logo-list__grid logo-list__grid--{{ section.settings.columns_desktop }}{% if section.settings.grayscale %} logo-list__grid--grayscale{% endif %} list-unstyled"
+        role="list"
+      >
+        {%- for block in logo_blocks -%}
+          <li class="logo-list__item" {{ block.shopify_attributes }}>
+            {%- if block.settings.url != blank -%}
+              <a href="{{ block.settings.url }}" class="logo-list__link" aria-label="{{ block.settings.name | escape }}">
+            {%- else -%}
+              <div class="logo-list__link">
+            {%- endif -%}
+
+            {%- if block.settings.image != blank -%}
+              {%- render 'image',
+                image: block.settings.image,
+                widths: '120,200,280',
+                sizes: '10rem',
+                alt: block.settings.name | default: block.settings.image.alt,
+                class: 'logo-list__img',
+                loading: 'lazy',
+                placeholder_type: 'image'
+              -%}
+            {%- elsif block.settings.name != blank -%}
+              <span class="logo-list__name">{{ block.settings.name | escape }}</span>
+            {%- else -%}
+              {{- 'image' | placeholder_svg_tag: 'placeholder-svg logo-list__placeholder-svg' -}}
+            {%- endif -%}
+
+            {%- if block.settings.url != blank -%}
+              </a>
+            {%- else -%}
+              </div>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+
+    {%- elsif request.design_mode -%}
+      <p class="logo-list__empty-hint">Add logo blocks to build your trust bar.</p>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% stylesheet %}
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     LOGO LIST
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .logo-list {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    padding-block: var(--section-padding-block);
+  }
+
+  .logo-list__title {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-align: center;
+    opacity: 0.5;
+    margin: 0 0 var(--spacing-lg);
+  }
+
+  .logo-list__grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xl) var(--spacing-2xl);
+    padding: 0;
+    margin: 0;
+  }
+
+  .logo-list__item {
+    flex: 0 0 auto;
+  }
+
+  .logo-list__link {
+    display: block;
+    opacity: 0.65;
+    transition: opacity var(--transition-base);
+    text-decoration: none;
+    color: var(--color-foreground);
+  }
+
+  a.logo-list__link:hover { opacity: 1; }
+
+  .logo-list__img {
+    display: block;
+    height: var(--logo-height, 2.5rem);
+    width: auto;
+    max-width: 10rem;
+    object-fit: contain;
+  }
+
+  .logo-list__grid--grayscale .logo-list__img {
+    filter: grayscale(1);
+    transition: filter var(--transition-base);
+  }
+
+  .logo-list__grid--grayscale .logo-list__link:hover .logo-list__img {
+    filter: grayscale(0);
+  }
+
+  .logo-list__placeholder-svg {
+    display: block;
+    width: 8rem;
+    height: var(--logo-height, 2.5rem);
+    opacity: 0.3;
+  }
+
+  .logo-list__name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .logo-list__empty-hint {
+    text-align: center;
+    opacity: 0.5;
+    font-size: 0.875rem;
+    padding-block: var(--spacing-xl);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.logo_list.name",
+  "tag": "section",
+  "class": "section-logo-list",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.logo_list.settings.title.label",
+      "default": "As seen in"
+    },
+    {
+      "type": "checkbox",
+      "id": "grayscale",
+      "label": "t:sections.logo_list.settings.grayscale.label",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "t:sections.logo_list.settings.logo_height.label",
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "default": 40
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-3"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "t:labels.section_spacing",
+      "info": "t:info.section_spacing",
+      "options": [
+        { "value": "default", "label": "t:options.section_spacing.default" },
+        { "value": "none",    "label": "t:options.section_spacing.none"    },
+        { "value": "xs",      "label": "t:options.section_spacing.xs"      },
+        { "value": "sm",      "label": "t:options.section_spacing.sm"      },
+        { "value": "md",      "label": "t:options.section_spacing.md"      },
+        { "value": "lg",      "label": "t:options.section_spacing.lg"      },
+        { "value": "xl",      "label": "t:options.section_spacing.xl"      }
+      ],
+      "default": "default"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "t:blocks.logo.name",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:blocks.logo.settings.image.label"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "t:blocks.logo.settings.name.label"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "t:blocks.logo.settings.url.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.logo_list.name",
+      "blocks": [
+        { "type": "logo", "settings": { "name": "Brand 1" } },
+        { "type": "logo", "settings": { "name": "Brand 2" } },
+        { "type": "logo", "settings": { "name": "Brand 3" } },
+        { "type": "logo", "settings": { "name": "Brand 4" } },
+        { "type": "logo", "settings": { "name": "Brand 5" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

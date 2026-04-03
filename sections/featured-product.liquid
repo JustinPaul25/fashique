@@ -1,0 +1,486 @@
+{%- comment -%}
+  Featured Product  (Phase 5.1)
+  ───────────────────────────────
+  • Single product spotlight with media + info side-by-side on desktop.
+  • Variant selector (dropdown), quantity input, ATC button.
+  • Uses snippets/price.liquid and snippets/image.liquid.
+  • Full product page section (Phase 5.2) will be richer; this is the homepage block.
+{%- endcomment -%}
+
+{%- assign feature_product = all_products[section.settings.product] -%}
+{%- render 'section-spacing', section: section -%}
+
+{%- if feature_product == blank -%}
+  {%- if request.design_mode -%}
+    <div class="featured-product section-padding color-scheme color-{{ section.settings.color_scheme }}">
+      <div class="page-width featured-product__placeholder">
+        <p>Select a product in the editor to preview this section.</p>
+      </div>
+    </div>
+  {%- endif -%}
+
+{%- else -%}
+  {%- assign first_variant = feature_product.first_available_variant | default: feature_product.variants[0] -%}
+
+  <section
+    class="featured-product section-padding color-scheme color-{{ section.settings.color_scheme }}"
+    data-section-id="{{ section.id }}"
+  >
+    <div class="page-width">
+      <div class="featured-product__layout">
+
+        {%- comment -%} Media column {%- endcomment -%}
+        <div class="featured-product__media">
+          {%- render 'image',
+            image: feature_product.featured_image,
+            widths: '400,600,800,1000',
+            sizes: '(min-width: 1024px) 50vw, 100vw',
+            alt: feature_product.featured_image.alt | default: feature_product.title,
+            class: 'featured-product__img',
+            loading: 'lazy',
+            placeholder_type: 'product-1'
+          -%}
+        </div>
+
+        {%- comment -%} Info column {%- endcomment -%}
+        <div class="featured-product__info">
+
+          {%- if section.settings.show_vendor and feature_product.vendor != blank -%}
+            <p class="featured-product__vendor">{{ feature_product.vendor }}</p>
+          {%- endif -%}
+
+          <h2 class="featured-product__title">{{ feature_product.title | escape }}</h2>
+
+          <div class="featured-product__price">
+            {%- render 'price', product: feature_product -%}
+          </div>
+
+          {%- if section.settings.show_description and feature_product.description != blank -%}
+            <div class="featured-product__desc rte">
+              {{ feature_product.description | truncatewords: 40 }}
+            </div>
+          {%- endif -%}
+
+          <product-form class="featured-product__form">
+            {%- form 'product', feature_product,
+              id: 'featured-product-form',
+              novalidate: 'novalidate',
+              data-type: 'add-to-cart-form'
+            -%}
+              <input type="hidden" name="id" value="{{ first_variant.id }}">
+
+              {%- if feature_product.has_only_default_variant == false -%}
+                <div class="featured-product__variants">
+                  {%- for option in feature_product.options_with_values -%}
+                    <div class="featured-product__option">
+                      <label
+                        class="featured-product__option-label"
+                        for="variant-select-{{ section.id }}-{{ forloop.index }}"
+                      >
+                        {{ option.name }}
+                      </label>
+                      <select
+                        class="featured-product__option-select"
+                        id="variant-select-{{ section.id }}-{{ forloop.index }}"
+                        name="option{{ forloop.index }}"
+                        data-option-index="{{ forloop.index0 }}"
+                      >
+                        {%- for value in option.values -%}
+                          <option
+                            value="{{ value | escape }}"
+                            {%- if first_variant.options[forloop.parentloop.index0] == value -%}
+                              selected
+                            {%- endif -%}
+                          >
+                            {{ value | escape }}
+                          </option>
+                        {%- endfor -%}
+                      </select>
+                    </div>
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+
+              {%- if section.settings.show_quantity -%}
+                <div class="featured-product__qty">
+                  <label class="featured-product__option-label" for="featured-product-qty-{{ section.id }}">
+                    {{- 'products.product.quantity' | t -}}
+                  </label>
+                  <div class="qty-stepper">
+                    <button type="button" class="qty-stepper__btn" aria-label="-" data-qty-minus>−</button>
+                    <input
+                      type="number"
+                      id="featured-product-qty-{{ section.id }}"
+                      class="qty-stepper__input"
+                      name="quantity"
+                      value="1"
+                      min="1"
+                      aria-label="{{ 'products.product.quantity' | t }}"
+                    >
+                    <button type="button" class="qty-stepper__btn" aria-label="+" data-qty-plus>+</button>
+                  </div>
+                </div>
+              {%- endif -%}
+
+              <button
+                type="submit"
+                class="featured-product__atc btn btn--solid btn--lg"
+                {%- unless first_variant.available -%} disabled aria-disabled="true"{%- endunless -%}
+              >
+                {%- if first_variant.available -%}
+                  {%- if section.settings.button_label != blank -%}
+                    {{- section.settings.button_label | escape -}}
+                  {%- else -%}
+                    {{- 'products.product.add_to_cart' | t -}}
+                  {%- endif -%}
+                {%- else -%}
+                  {{- 'products.product.sold_out' | t -}}
+                {%- endif -%}
+              </button>
+
+              <a href="{{ feature_product.url }}" class="featured-product__full-details-link">
+                {{- 'products.product.view_full_details' | t -}}
+              </a>
+
+            {%- endform -%}
+          </product-form>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- assign atc_label = section.settings.button_label -%}
+  {%- if atc_label == blank -%}{%- assign atc_label = 'products.product.add_to_cart' | t -%}{%- endif -%}
+
+  <script>
+    (function () {
+      'use strict';
+
+      const section = document.querySelector('[data-section-id="{{ section.id }}"]');
+      if (!section) return;
+
+      const form       = section.querySelector('[data-type="add-to-cart-form"]');
+      const hiddenId   = form.querySelector('input[name="id"]');
+      const selects    = form.querySelectorAll('select[data-option-index]');
+      const atcBtn     = form.querySelector('[type="submit"]');
+      const variants   = {{ feature_product.variants | json }};
+
+      function getSelectedOptions() {
+        return Array.from(selects).map(s => s.value);
+      }
+
+      function findVariant(options) {
+        return variants.find(v =>
+          v.options.length === options.length &&
+          v.options.every((o, i) => o === options[i])
+        ) || null;
+      }
+
+      function updateForm(variant) {
+        if (!variant) return;
+        hiddenId.value = variant.id;
+        atcBtn.disabled   = !variant.available;
+        atcBtn.setAttribute('aria-disabled', String(!variant.available));
+        atcBtn.textContent = variant.available
+          ? '{{ atc_label | escape }}'
+          : '{{ "products.product.sold_out" | t | escape }}';
+      }
+
+      selects.forEach(s => s.addEventListener('change', () => {
+        updateForm(findVariant(getSelectedOptions()));
+      }));
+
+      /* Quantity stepper */
+      const minusBtn = form.querySelector('[data-qty-minus]');
+      const plusBtn  = form.querySelector('[data-qty-plus]');
+      const qtyInput = form.querySelector('.qty-stepper__input');
+
+      if (minusBtn && plusBtn && qtyInput) {
+        minusBtn.addEventListener('click', () => {
+          const v = parseInt(qtyInput.value, 10) || 1;
+          if (v > 1) qtyInput.value = v - 1;
+        });
+        plusBtn.addEventListener('click', () => {
+          const v = parseInt(qtyInput.value, 10) || 1;
+          qtyInput.value = v + 1;
+        });
+      }
+    })();
+  </script>
+
+{%- endif -%}
+
+{% stylesheet %}
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     FEATURED PRODUCT
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .featured-product {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    padding-block: var(--section-padding-block);
+  }
+
+  .featured-product__layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-2xl);
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .featured-product__layout {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-lg);
+    }
+  }
+
+  /* ── Media ───────────────────────────────────────────────────────── */
+  .featured-product__media {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    background-color: #F4F6F8;
+  }
+
+  .featured-product__media .image-placeholder {
+    width: 100%;
+    height: 100%;
+  }
+
+  .featured-product__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ── Info ────────────────────────────────────────────────────────── */
+  .featured-product__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .featured-product__vendor {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin: 0;
+  }
+
+  .featured-product__title {
+    font-size: var(--font-size-h2);
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    letter-spacing: var(--font-heading-letter-spacing, -0.02em);
+    line-height: var(--font-heading-line-height, 1.1);
+    margin: 0;
+  }
+
+  .featured-product__desc {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: color-mix(in srgb, var(--color-foreground) 75%, transparent);
+  }
+
+  /* ── Variant selects ─────────────────────────────────────────────── */
+  .featured-product__variants {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .featured-product__option {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .featured-product__option-label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .featured-product__option-select {
+    appearance: none;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-inputs, 4px);
+    padding: 0.625rem 2.5rem 0.625rem 0.875rem;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a1a1a' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+    transition: border-color var(--transition-base);
+    width: 100%;
+    max-width: 20rem;
+  }
+
+  .featured-product__option-select:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-color: var(--color-primary);
+  }
+
+  /* ── Quantity stepper ────────────────────────────────────────────── */
+  .featured-product__qty {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .qty-stepper {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-inputs, 4px);
+    overflow: hidden;
+    width: fit-content;
+  }
+
+  .qty-stepper__btn {
+    width: 2.75rem;
+    height: 2.75rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.25rem;
+    line-height: 1;
+    color: var(--color-foreground);
+    transition: background-color var(--transition-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .qty-stepper__btn:hover {
+    background-color: color-mix(in srgb, var(--color-foreground) 6%, transparent);
+  }
+
+  .qty-stepper__btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+  }
+
+  .qty-stepper__input {
+    width: 3rem;
+    height: 2.75rem;
+    border: none;
+    border-inline: 1px solid var(--color-border);
+    text-align: center;
+    font-size: 0.9375rem;
+    background: none;
+    color: var(--color-foreground);
+    -moz-appearance: textfield;
+  }
+
+  .qty-stepper__input::-webkit-inner-spin-button,
+  .qty-stepper__input::-webkit-outer-spin-button {
+    display: none;
+  }
+
+  /* ── ATC button ──────────────────────────────────────────────────── */
+  .featured-product__atc {
+    width: 100%;
+    max-width: 28rem;
+  }
+
+  /* ── View full details link ──────────────────────────────────────── */
+  .featured-product__full-details-link {
+    font-size: 0.875rem;
+    color: var(--color-primary);
+    text-underline-offset: 0.15em;
+  }
+
+  .featured-product__full-details-link:hover {
+    text-decoration: underline;
+  }
+
+  /* ── Form layout ─────────────────────────────────────────────────── */
+  .featured-product__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  /* ── Placeholder ─────────────────────────────────────────────────── */
+  .featured-product__placeholder {
+    padding-block: var(--section-padding-block);
+    opacity: 0.5;
+    font-size: 0.875rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.featured_product.name",
+  "tag": "section",
+  "class": "section-featured-product",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "t:sections.featured_product.settings.product.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "t:sections.featured_product.settings.show_vendor.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quantity",
+      "label": "t:sections.featured_product.settings.show_quantity.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "t:sections.featured_product.settings.show_description.label",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "t:sections.featured_product.settings.button_label.label",
+      "default": "Add to cart"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-3"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "t:labels.section_spacing",
+      "info": "t:info.section_spacing",
+      "options": [
+        { "value": "default", "label": "t:options.section_spacing.default" },
+        { "value": "none",    "label": "t:options.section_spacing.none"    },
+        { "value": "xs",      "label": "t:options.section_spacing.xs"      },
+        { "value": "sm",      "label": "t:options.section_spacing.sm"      },
+        { "value": "md",      "label": "t:options.section_spacing.md"      },
+        { "value": "lg",      "label": "t:options.section_spacing.lg"      },
+        { "value": "xl",      "label": "t:options.section_spacing.xl"      }
+      ],
+      "default": "default"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.featured_product.name"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,245 @@
+{%- comment -%}
+  FAQ — Collapsible Accordion  (Phase 5.1)
+  ─────────────────────────────────────────
+  • Schema-driven blocks: each block = one Q & A pair.
+  • Accordion behaviour via <details>/<summary> — no JS required, keyboard accessible.
+  • Open-at-once or exclusive (one-open) mode via a small progressive-enhancement script.
+{%- endcomment -%}
+
+{%- assign faq_blocks = section.blocks | where: 'type', 'faq_item' -%}
+
+{%- render 'section-spacing', section: section -%}
+<section
+  class="faq section-padding color-scheme color-{{ section.settings.color_scheme }}"
+  data-section-id="{{ section.id }}"
+>
+  <div class="page-width faq__container">
+
+    {%- if section.settings.title != blank -%}
+      <h2 class="faq__title section-heading">{{ section.settings.title | escape }}</h2>
+    {%- endif -%}
+
+    {%- if faq_blocks.size > 0 -%}
+      <div class="faq__list" role="list">
+        {%- for block in faq_blocks -%}
+          <details
+            class="faq__item"
+            role="listitem"
+            {{ block.shopify_attributes }}
+          >
+            <summary
+              class="faq__question"
+              aria-label="{{ 'sections.faq.question_aria' | t: question: block.settings.question | escape }}"
+            >
+              <span class="faq__question-text">{{ block.settings.question | escape }}</span>
+              <span class="faq__icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </span>
+            </summary>
+            <div class="faq__answer rte">
+              {{ block.settings.answer }}
+            </div>
+          </details>
+        {%- endfor -%}
+      </div>
+
+    {%- elsif request.design_mode -%}
+      <p class="faq__empty-hint">Add FAQ question blocks to populate this section.</p>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% stylesheet %}
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     FAQ ACCORDION
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+  .faq {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    padding-block: var(--section-padding-block);
+  }
+
+  .faq__container {
+    max-width: 48rem;
+    margin-inline: auto;
+  }
+
+  .faq__title {
+    font-size: var(--font-size-h2);
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    letter-spacing: var(--font-heading-letter-spacing, -0.02em);
+    line-height: var(--font-heading-line-height, 1.1);
+    margin: 0 0 var(--spacing-xl);
+    text-align: center;
+  }
+
+  .faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .faq__item {
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .faq__item:first-child {
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  /* Summary */
+  .faq__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    padding-block: var(--spacing-md);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .faq__question::-webkit-details-marker { display: none; }
+
+  .faq__question:hover {
+    color: var(--color-primary);
+  }
+
+  .faq__question:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  .faq__question-text {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .faq__icon {
+    flex-shrink: 0;
+    color: var(--color-primary);
+    transition: rotate var(--transition-base);
+  }
+
+  .faq__item[open] .faq__icon { rotate: 180deg; }
+
+  /* Answer */
+  .faq__answer {
+    padding-block-end: var(--spacing-md);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: color-mix(in srgb, var(--color-foreground) 78%, transparent);
+    animation: faq-open 0.2s ease;
+  }
+
+  @keyframes faq-open {
+    from { opacity: 0; translate: 0 -0.25rem; }
+    to   { opacity: 1; translate: 0 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq__answer { animation: none; }
+    .faq__icon   { transition: none; }
+  }
+
+  /* Placeholder */
+  .faq__empty-hint {
+    opacity: 0.5;
+    font-size: 0.875rem;
+    text-align: center;
+    padding-block: var(--spacing-xl);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.faq.name",
+  "tag": "section",
+  "class": "section-faq",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "t:sections.faq.settings.title.label",
+      "default": "Frequently asked questions"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "t:labels.section_spacing",
+      "info": "t:info.section_spacing",
+      "options": [
+        { "value": "default", "label": "t:options.section_spacing.default" },
+        { "value": "none",    "label": "t:options.section_spacing.none"    },
+        { "value": "xs",      "label": "t:options.section_spacing.xs"      },
+        { "value": "sm",      "label": "t:options.section_spacing.sm"      },
+        { "value": "md",      "label": "t:options.section_spacing.md"      },
+        { "value": "lg",      "label": "t:options.section_spacing.lg"      },
+        { "value": "xl",      "label": "t:options.section_spacing.xl"      }
+      ],
+      "default": "default"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "t:blocks.faq_item.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "t:blocks.faq_item.settings.question.label",
+          "default": "What is your return policy?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "t:blocks.faq_item.settings.answer.label",
+          "default": "<p>We accept returns within 30 days of purchase, provided items are unworn and in original condition with tags attached.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.faq.name",
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>We accept returns within 30 days of purchase. Items must be unworn, unwashed, and in original condition with all tags attached.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How long does shipping take?",
+            "answer": "<p>Standard shipping takes 3–7 business days. Express options are available at checkout. Free shipping on orders over $100.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you ship internationally?",
+            "answer": "<p>Yes — we ship to over 40 countries. International delivery typically takes 7–14 business days.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

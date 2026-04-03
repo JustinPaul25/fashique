@@ -1,0 +1,89 @@
+{% doc %}
+  Renders a "Load more" pagination control.
+
+  Primary role — no-JS fallback for infinite scroll (Phase 7.1).
+  When JavaScript is enabled, the infinite scroll module watches
+  `[data-pagination]` for its `data-next-page` attribute and automatically
+  fetches and appends the next page, so the user never has to click.
+  When JavaScript is disabled, clicking the button navigates to the next
+  page URL as a normal link.
+
+  Must be called inside a {% paginate %} block in the parent section.
+
+  @param {object} paginate - Shopify paginate object (required)
+  @param {string} [class]  - Extra CSS classes on the root element
+
+  @example
+  {% paginate collection.products by 24 %}
+    <div id="product-grid">
+      {% for product in collection.products %}
+        {% render 'product-card', product: product %}
+      {% endfor %}
+    </div>
+    {% render 'pagination', paginate: paginate %}
+  {% endpaginate %}
+{% enddoc %}
+
+{%- liquid
+  assign shown_count = paginate.current_page | times: paginate.page_size
+  if shown_count > paginate.items
+    assign shown_count = paginate.items
+  endif
+-%}
+
+{%- if paginate.next -%}
+
+  <div
+    class="pagination{% if class != blank %} {{ class }}{% endif %}"
+    data-pagination
+    data-next-page="{{ paginate.next.url }}"
+  >
+    <p class="pagination__info">
+      {{- 'pagination.showing_html' | t: shown: shown_count, total: paginate.items -}}
+    </p>
+
+    <a
+      href="{{ paginate.next.url }}"
+      class="btn btn--outline pagination__btn"
+    >
+      {{- 'pagination.load_more' | t -}}
+    </a>
+  </div>
+
+{%- elsif paginate.pages > 1 -%}
+
+  <p class="pagination__all-shown">
+    {{- 'pagination.all_shown' | t: total: paginate.items -}}
+  </p>
+
+{%- endif -%}
+
+{% stylesheet %}
+  /* ── Pagination / Load-more block ─────────────────────────────── */
+  .pagination {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding-block: var(--spacing-lg);
+    text-align: center;
+  }
+
+  .pagination__info {
+    font-size: 0.875rem;
+    opacity: 0.65;
+    margin: 0;
+  }
+
+  .pagination__btn {
+    min-width: 12rem;
+  }
+
+  /* "All items shown" — only visible after the last page has loaded */
+  .pagination__all-shown {
+    text-align: center;
+    padding-block: var(--spacing-lg);
+    font-size: 0.875rem;
+    opacity: 0.65;
+  }
+{% endstylesheet %}

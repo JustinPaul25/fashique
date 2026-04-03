@@ -1,0 +1,78 @@
+{% comment %}
+  This section is used in the product template to render product page with
+  media, content, and add-to-cart form.
+
+  https://shopify.dev/docs/storefronts/themes/architecture/templates/product
+{% endcomment %}
+
+{%- render 'section-spacing', section: section -%}
+<div class="color-scheme color-{{ section.settings.color_scheme }}">
+<div class="product-images">
+  {% for image in product.images %}
+    {% render 'image', class: 'product-image', image: image %}
+  {% endfor %}
+</div>
+
+<div class="product-info">
+  <h1>{{ product.title }}</h1>
+  <p>{{ product.price | money }}</p>
+  <p>{{ product.description }}</p>
+</div>
+
+<div class="product-form">
+  {% form 'product', product %}
+    {% assign current_variant = product.selected_or_first_available_variant %}
+
+    <select name="id">
+      {% for variant in product.variants %}
+        <option
+          value="{{ variant.id }}"
+          {% if variant == current_variant %}
+            selected="selected"
+          {% endif %}
+        >
+          {{ variant.title }} - {{ variant.price | money }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <input type="text" name="quantity" min="1" value="1">
+
+    <input type="submit" value="Add to cart">
+    {{ form | payment_button }}
+  {% endform %}
+</div>
+</div>
+
+{% schema %}
+{
+  "name": "t:general.product",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "t:labels.section_spacing",
+      "info": "t:info.section_spacing",
+      "options": [
+        { "value": "default", "label": "t:options.section_spacing.default" },
+        { "value": "none",    "label": "t:options.section_spacing.none"    },
+        { "value": "xs",      "label": "t:options.section_spacing.xs"      },
+        { "value": "sm",      "label": "t:options.section_spacing.sm"      },
+        { "value": "md",      "label": "t:options.section_spacing.md"      },
+        { "value": "lg",      "label": "t:options.section_spacing.lg"      },
+        { "value": "xl",      "label": "t:options.section_spacing.xl"      }
+      ],
+      "default": "default"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

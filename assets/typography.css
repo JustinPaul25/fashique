@@ -1,0 +1,161 @@
+/**
+ * Typography system
+ *
+ * All heading sizes use CSS custom properties set by css-variables.liquid.
+ * clamp() values in those tokens give fluid scaling between mobile and desktop
+ * without any media queries — the type responds linearly to viewport width.
+ *
+ * Token reference (all set on :root via snippets/css-variables.liquid):
+ *   --font-heading-family      heading font stack
+ *   --font-heading-weight      heading font weight from font_picker
+ *   --font-heading-letter-spacing  driven by font_pair setting
+ *   --font-heading-line-height     driven by font_pair setting
+ *   --font-body-family         body font stack
+ *   --font-body-size           base body size (px), from font_body_size setting
+ *   --line-height-body         driven by font_pair setting
+ *   --font-size-h1 … h6        fluid clamp() values, driven by heading_size_scale
+ */
+
+/* ── Heading base rules ───────────────────────────────────────────────────── */
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family:      var(--font-heading-family);
+  font-weight:      var(--font-heading-weight);
+  line-height:      var(--font-heading-line-height);
+  letter-spacing:   var(--font-heading-letter-spacing);
+  color:            var(--color-foreground);
+  text-wrap:        balance;
+}
+
+h1, .h1 { font-size: var(--font-size-h1); }
+h2, .h2 { font-size: var(--font-size-h2); }
+h3, .h3 { font-size: var(--font-size-h3); }
+h4, .h4 { font-size: var(--font-size-h4); }
+h5, .h5 { font-size: var(--font-size-h5); }
+h6, .h6 { font-size: var(--font-size-h6); }
+
+/* ── Body text ────────────────────────────────────────────────────────────── */
+
+body {
+  font-size:   var(--font-body-size);
+  line-height: var(--line-height-body);
+}
+
+p {
+  line-height: var(--line-height-body);
+}
+
+/* ── Links ────────────────────────────────────────────────────────────────── */
+
+a {
+  color:                var(--color-primary);
+  text-decoration:      underline;
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: 1px;
+  transition:           color var(--transition-base);
+}
+
+a:hover,
+a:focus-visible {
+  color: var(--color-primary-hover);
+}
+
+/* ── Small text utilities ─────────────────────────────────────────────────── */
+
+.text-xs  { font-size: 0.75rem;   line-height: 1.4; }
+.text-sm  { font-size: 0.875rem;  line-height: 1.5; }
+.text-base{ font-size: var(--font-body-size); line-height: var(--line-height-body); }
+.text-lg  { font-size: 1.125rem;  line-height: 1.5; }
+.text-xl  { font-size: 1.25rem;   line-height: 1.4; }
+
+/* ── Font-family utilities ────────────────────────────────────────────────── */
+
+.font-heading {
+  font-family:    var(--font-heading-family);
+  font-weight:    var(--font-heading-weight);
+  letter-spacing: var(--font-heading-letter-spacing);
+  line-height:    var(--font-heading-line-height);
+}
+
+.font-body {
+  font-family: var(--font-body-family);
+  font-weight: normal;
+}
+
+/* ── Display / editorial type ─────────────────────────────────────────────── */
+
+.eyebrow {
+  font-family:    var(--font-body-family);
+  font-size:      0.6875rem;
+  font-weight:    600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height:    1.4;
+}
+
+.caption {
+  font-size:   0.75rem;
+  line-height: 1.4;
+  color:       color-mix(in srgb, var(--color-foreground) 60%, transparent);
+}
+
+/* ── Weight utilities ─────────────────────────────────────────────────────── */
+
+.font-normal  { font-weight: 400; }
+.font-medium  { font-weight: 500; }
+.font-semibold{ font-weight: 600; }
+.font-bold    { font-weight: 700; }
+
+/* ── Rich text content areas ──────────────────────────────────────────────── */
+
+.rte h1 { font-size: var(--font-size-h1); margin-block: 0.75em 0.5em; }
+.rte h2 { font-size: var(--font-size-h2); margin-block: 0.75em 0.5em; }
+.rte h3 { font-size: var(--font-size-h3); margin-block: 0.75em 0.5em; }
+.rte h4 { font-size: var(--font-size-h4); margin-block: 0.75em 0.5em; }
+.rte h5 { font-size: var(--font-size-h5); margin-block: 0.75em 0.5em; }
+.rte h6 { font-size: var(--font-size-h6); margin-block: 0.75em 0.5em; }
+
+.rte p,
+.rte li {
+  line-height: var(--line-height-body);
+}
+
+.rte ul,
+.rte ol {
+  padding-inline-start: 1.5em;
+}
+
+.rte ul { list-style: disc; }
+.rte ol { list-style: decimal; }
+
+.rte li + li {
+  margin-block-start: 0.4em;
+}
+
+.rte blockquote {
+  border-inline-start: 3px solid var(--color-border);
+  padding-inline-start: 1.25em;
+  font-style: italic;
+  color: color-mix(in srgb, var(--color-foreground) 75%, transparent);
+}
+
+.rte strong { font-weight: 700; }
+.rte em     { font-style: italic; }
+
+.rte a {
+  color:               var(--color-primary);
+  text-underline-offset: 0.15em;
+}
+
+.rte img {
+  border-radius: var(--radius-md);
+}
+
+/* ── Accessibility — visible focus outline ────────────────────────────────── */
+
+:focus-visible {
+  outline:        2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius:  2px;
+}

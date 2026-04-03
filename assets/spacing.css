@@ -1,0 +1,155 @@
+/**
+ * Spacing utilities
+ *
+ * All values are derived from --spacing-* and --section-padding-block tokens
+ * set in snippets/css-variables.liquid. Changing the `spacing_scale` theme
+ * setting (Compact / Balanced / Spacious) updates every rule here automatically.
+ *
+ * Token reference (all driven by spacing_scale):
+ *   --spacing-xs               extra-small step
+ *   --spacing-sm               small step
+ *   --spacing-md               medium step
+ *   --spacing-lg               large step
+ *   --spacing-xl               extra-large step
+ *   --spacing-2xl              double-extra-large step
+ *   --section-padding-block    canonical vertical padding for page sections
+ *   --section-gap              canonical gap between sibling sections
+ */
+
+/* ── Default section vertical padding ────────────────────────────────────── */
+/*
+ * Applied globally to .shopify-section so every section respects the scale.
+ * Sections that manage their own spacing (headers, footers, full-bleed heroes)
+ * override this with padding-block: 0 in their own stylesheet block.
+ *
+ * Per-section override:
+ *   Each content section exposes a "Section spacing" select in its schema.
+ *   When set to anything other than "Default", the snippets/section-spacing.liquid
+ *   snippet emits a scoped <style> that overrides --section-padding-block for
+ *   only that section's wrapper ID, e.g.:
+ *
+ *     #shopify-section-abc123 { --section-padding-block: var(--spacing-xl); }
+ *
+ *   Because CSS custom properties inherit, every consumer of --section-padding-block
+ *   inside that section (this rule, .section-padding, and per-component CSS) will
+ *   automatically use the per-section value — no extra CSS is needed.
+ */
+.shopify-section {
+  padding-block: var(--section-padding-block);
+}
+
+/*
+ * Header, footer and announcement bar are always flush — they manage their
+ * own internal spacing with fixed values and must never inherit the global
+ * --section-padding-block token.
+ *
+ * Two layers of protection:
+ *
+ *  1. Section-group wrapper class  — covers all sections inside the
+ *     header-group / footer-group when rendered via `{% sections '…-group' %}`.
+ *     Specificity (0,2,0) beats the generic .shopify-section rule (0,1,0).
+ *
+ *  2. Wrapper IDs                  — fallback for any scenario where a section
+ *     is rendered outside of a group (e.g. during theme preview / partial
+ *     renders).  IDs come from the JSON section keys "header" and "footer"
+ *     confirmed in sections/header-group.json and sections/footer-group.json.
+ */
+.shopify-section-group--header-group .shopify-section,
+.shopify-section-group--footer-group .shopify-section,
+#shopify-section-header,
+#shopify-section-footer {
+  padding-block: 0;
+}
+
+/*
+ * Pin all spacing-scale tokens on header/footer so that changing the
+ * spacing_scale theme setting never alters their internal layout.
+ * Values match the "balanced" scale — a stable, readable baseline.
+ * --section-padding-block and --section-gap stay at 0 (flush).
+ */
+.shopify-section-group--header-group,
+.shopify-section-group--footer-group,
+#shopify-section-header,
+#shopify-section-footer {
+  --spacing-xs:            0.375rem;
+  --spacing-sm:            0.75rem;
+  --spacing-md:            1.5rem;
+  --spacing-lg:            2.5rem;
+  --spacing-xl:            3.5rem;
+  --spacing-2xl:           5rem;
+  --section-padding-block: 0;
+  --section-gap:           0;
+}
+
+/* ── Explicit section-padding utility (opt-in for non-.shopify-section wrappers) */
+.section-padding    { padding-block: var(--section-padding-block); }
+.section-padding-sm { padding-block: calc(var(--section-padding-block) * 0.5); }
+.section-padding-lg { padding-block: calc(var(--section-padding-block) * 1.5); }
+
+/* ── Section gap (space between adjacent sections) ───────────────────────── */
+.section-gap + .section-gap {
+  margin-block-start: var(--section-gap);
+}
+
+/* ── Stack — vertical flex container ─────────────────────────────────────── */
+.stack    { display: flex; flex-direction: column; }
+
+.stack-xs { gap: var(--spacing-xs); }
+.stack-sm { gap: var(--spacing-sm); }
+.stack-md { gap: var(--spacing-md); }
+.stack-lg { gap: var(--spacing-lg); }
+.stack-xl { gap: var(--spacing-xl); }
+
+/* Convenience: stack that defaults to md gap */
+.stack { gap: var(--spacing-md); }
+
+/* ── Inline — horizontal flex container ──────────────────────────────────── */
+.inline    { display: flex; flex-wrap: wrap; align-items: center; }
+
+.inline-xs { gap: var(--spacing-xs); }
+.inline-sm { gap: var(--spacing-sm); }
+.inline-md { gap: var(--spacing-md); }
+.inline-lg { gap: var(--spacing-lg); }
+.inline-xl { gap: var(--spacing-xl); }
+
+/* ── Grid gap utilities ───────────────────────────────────────────────────── */
+.grid-gap-xs { gap: var(--spacing-xs); }
+.grid-gap-sm { gap: var(--spacing-sm); }
+.grid-gap-md { gap: var(--spacing-md); }
+.grid-gap-lg { gap: var(--spacing-lg); }
+.grid-gap-xl { gap: var(--spacing-xl); }
+
+/* ── Block margin utilities (top) ─────────────────────────────────────────── */
+.mt-xs  { margin-block-start: var(--spacing-xs); }
+.mt-sm  { margin-block-start: var(--spacing-sm); }
+.mt-md  { margin-block-start: var(--spacing-md); }
+.mt-lg  { margin-block-start: var(--spacing-lg); }
+.mt-xl  { margin-block-start: var(--spacing-xl); }
+.mt-2xl { margin-block-start: var(--spacing-2xl); }
+
+/* ── Block margin utilities (bottom) ──────────────────────────────────────── */
+.mb-xs  { margin-block-end: var(--spacing-xs); }
+.mb-sm  { margin-block-end: var(--spacing-sm); }
+.mb-md  { margin-block-end: var(--spacing-md); }
+.mb-lg  { margin-block-end: var(--spacing-lg); }
+.mb-xl  { margin-block-end: var(--spacing-xl); }
+.mb-2xl { margin-block-end: var(--spacing-2xl); }
+
+/* ── Padding utilities ────────────────────────────────────────────────────── */
+.p-xs  { padding: var(--spacing-xs); }
+.p-sm  { padding: var(--spacing-sm); }
+.p-md  { padding: var(--spacing-md); }
+.p-lg  { padding: var(--spacing-lg); }
+.p-xl  { padding: var(--spacing-xl); }
+
+.px-xs  { padding-inline: var(--spacing-xs); }
+.px-sm  { padding-inline: var(--spacing-sm); }
+.px-md  { padding-inline: var(--spacing-md); }
+.px-lg  { padding-inline: var(--spacing-lg); }
+.px-xl  { padding-inline: var(--spacing-xl); }
+
+.py-xs  { padding-block: var(--spacing-xs); }
+.py-sm  { padding-block: var(--spacing-sm); }
+.py-md  { padding-block: var(--spacing-md); }
+.py-lg  { padding-block: var(--spacing-lg); }
+.py-xl  { padding-block: var(--spacing-xl); }

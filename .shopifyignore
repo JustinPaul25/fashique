@@ -1,0 +1,15 @@
+# This file contains a list of files that will be excluded from Shopify CLI
+# operations such as push, pull, dev, etc.
+
+# Project documentation and guides — not part of the theme
+Guide/
+AGENTS.md
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+LICENSE.md
+README.md
+
+# Git metadata
+.git/
+.gitignore
+.gitattributes

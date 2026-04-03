@@ -1,0 +1,49 @@
+{% comment %}
+  This section is used in the 404 template to render page shown when customers
+  enter an invalid store URL.
+
+  https://shopify.dev/docs/storefronts/themes/architecture/templates/404
+{% endcomment %}
+
+{%- render 'section-spacing', section: section -%}
+<div class="color-scheme color-{{ section.settings.color_scheme }}">
+<h1>{{ '404.title' | t }}</h1>
+
+<p>
+  {{ '404.not_found' | t }}
+</p>
+
+<a href="{{ routes.all_products_collection_url }}">
+  {{ '404.back_to_shopping' | t }}
+</a>
+</div>
+
+{% schema %}
+{
+  "name": "t:general.404",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "t:labels.section_spacing",
+      "info": "t:info.section_spacing",
+      "options": [
+        { "value": "default", "label": "t:options.section_spacing.default" },
+        { "value": "none",    "label": "t:options.section_spacing.none"    },
+        { "value": "xs",      "label": "t:options.section_spacing.xs"      },
+        { "value": "sm",      "label": "t:options.section_spacing.sm"      },
+        { "value": "md",      "label": "t:options.section_spacing.md"      },
+        { "value": "lg",      "label": "t:options.section_spacing.lg"      },
+        { "value": "xl",      "label": "t:options.section_spacing.xl"      }
+      ],
+      "default": "default"
+    }
+  ]
+}
+{% endschema %}

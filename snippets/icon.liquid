@@ -1,0 +1,23 @@
+{% doc %}
+  Renders an inline SVG icon wrapped in an aria-hidden <span>.
+
+  Available icons: cart, account, search, close, hamburger,
+                   chevron-down, star, check, arrow
+
+  @param {string} icon  - Icon name (required), e.g. "cart"
+  @param {string} [class] - Extra CSS class(es) added to the wrapper <span>
+  @param {string} [size]  - Override both width and height (e.g. "24px")
+
+  @example
+  {% render 'icon', icon: 'cart' %}
+  {% render 'icon', icon: 'search', class: 'header__icon', size: '24px' %}
+{% enddoc %}
+
+{%- assign icon_file = 'icon-' | append: icon | append: '.svg' -%}
+<span
+  class="icon icon--{{ icon }}{% if class != blank %} {{ class }}{% endif %}"
+  aria-hidden="true"
+  {%- if size != blank %} style="width:{{ size }};height:{{ size }}"{% endif %}
+>
+  {{- icon_file | inline_asset_content -}}
+</span>

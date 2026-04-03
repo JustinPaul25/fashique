@@ -1,0 +1,149 @@
+---
+description: Locale schema key rules for Fashique — prevents missing translation errors in the theme editor
+globs: locales/*.schema.json,config/settings_schema.json
+alwaysApply: false
+---
+
+# Shopify Schema Locale Keys — Fashique
+
+## Critical Rule: No Duplicate Top-Level Keys
+
+`en.default.schema.json` MUST have exactly ONE occurrence of each top-level namespace.
+Duplicate top-level keys cause **silent overrides** — the LAST one wins and erases all keys in earlier ones.
+
+**Always verify with Node.js (not PowerShell), which matches Shopify's V8 parser:**
+```bash
+node -e "JSON.parse(require('fs').readFileSync('locales/en.default.schema.json','utf8')); console.log('OK')"
+```
+
+---
+
+## Top-Level Namespaces in en.default.schema.json
+
+The file has exactly **6** top-level keys. Never add a 7th or duplicate an existing one:
+
+| Key | Purpose |
+|-----|---------|
+| `general` | Template/page type names + Theme Settings group names |
+| `labels` | ALL setting field labels (theme settings AND section settings shared labels) |
+| `info` | ALL helper/description text below settings |
+| `options` | ALL select/radio option labels |
+| `sections` | Per-section schema translations (`sections.section_name.settings.id.label`) |
+| `blocks` | Per-block schema translations |
+
+---
+
+## Theme Settings Keys (settings_schema.json uses these)
+
+When editing `settings_schema.json`, every `t:` key must exist in the corresponding namespace:
+
+### `general.*` — panel group names
+`typography`, `layout`, `color_schemes`, `colors`, `advanced`
+
+### `labels.*` — setting labels
+`font_pair_preset`, `font_pair`, `custom_fonts`, `heading_font`, `body_font`, `body_font_size`,
+`heading_scale`, `heading_size_scale`, `page_width`, `page_margin`, `spacing`, `spacing_scale`,
+`scheme_1_label` … `scheme_4_label`, `foreground`, `color_primary`, `color_primary_hover`,
+`color_border`, `base_colors`, `accent_colors`, `overlay`, `color_overlay`, `color_overlay_opacity`,
+`radius`, `border_radius_sm`, `border_radius_md`, `border_radius_lg`, `input_corner_radius`,
+`transitions`, `transition_speed`, `back_to_top`, `show_back_to_top`, `age_verifier`,
+`enable_age_verifier`, `age_verifier_minimum`,
+`logo`, `logo_header`, `logo_width`, `menu`, `navigation`, `sticky_header`, `show_announcement_bar`,
+`show_close_button`, `color_scheme`, `copyright_text`, `show_payment_icons`,
+`show_country_selector`, `show_language_selector`, `localization_header`,
+`customer_account_menu`, `footer_bottom_header`, `grid_gap`, `grid_item_width`,
+`account_and_localization`, `appearance`, `background`, `behavior`
+
+### `info.*` — helper text
+`font_pair_preset`, `font_pair`, `custom_fonts`, `heading_font`, `body_font`,
+`heading_size_scale`, `spacing_scale`, `scheme_light`, `scheme_dark`, `scheme_muted`, `scheme_accent`,
+`color_primary`, `color_primary_hover`, `color_overlay_opacity`, `transition_speed`,
+`show_back_to_top`, `enable_age_verifier`, `age_verifier_minimum`,
+`logo_width`, `copyright_text`, `sticky_header`, `show_country_selector`, `show_language_selector`
+
+### `options.*` — select/radio values
+`font_pair` (fashion_brand, beauty_store, minimal),
+`heading_size_scale` (small, normal, large),
+`page_width` (narrow, wide),
+`spacing_scale` (compact, balanced, spacious, none),
+`transition_speed` (fast, normal, slow),
+`color_scheme` (light, dark, muted, accent),
+`sticky_header` (always, on_scroll_up, none),
+`layout` (grid, carousel),
+`text_position` (left, center, right, bottom_left, bottom_center, bottom_right),
+`alignment` (left, center, right),
+`orientation` (horizontal, vertical),
+`size` (small, medium, large, full),
+`columns` (two, three, four)
+
+---
+
+## Safe String Values
+
+- Use plain ASCII hyphens `-` instead of em dashes `—` in locale strings to avoid encoding edge cases
+- No smart/curly quotes inside string values
+- `{{ year }}` (Liquid variable) is allowed in locale strings — e.g. `"Use {{ year }} for the current year."`
+
+---
+
+## Shopify Placeholder SVG Types
+
+Valid types for `placeholder_svg_tag` and `placeholder_type` in `snippets/image.liquid`:
+
+| Type | Valid range |
+|------|------------|
+| `product-1` … `product-6` | 6 variants |
+| `collection-1` … `collection-6` | 6 variants |
+| `lifestyle-1` … `lifestyle-2` | **Only 2** — NEVER use lifestyle-3+ |
+| `image` | Generic fallback |
+
+When cycling lifestyle placeholders use `modulo: 2 | plus: 1` (gives 1 or 2, never 3+).
+
+---
+
+## Setting Value + t Filter Anti-Pattern
+
+NEVER apply `| t` directly to a setting value — it treats the value as a translation key.
+
+```liquid
+{# BAD — if label is "Before", Liquid looks up key "before" which doesn't exist #}
+{{ section.settings.before_label | default: 'sections.before_after.before' | t }}
+
+{# GOOD — only apply | t to a known translation key string #}
+{%- if section.settings.before_label != blank -%}
+  {{ section.settings.before_label | escape }}
+{%- else -%}
+  {{ 'sections.before_after.before' | t }}
+{%- endif -%}
+```
+
+Same applies to any `button_label`, `heading`, or other free-text settings that also have `| t` after `| default:`.
+
+---
+
+## Form Tag — No Filter Chains in Parameters
+
+Shopify Liquid form tags do NOT support filter chains in named parameters.
+
+```liquid
+{# BAD — | append: inside a form tag parameter causes invalid form type error #}
+{%- form 'customer', id: 'email-signup-' | append: section.id -%}
+
+{# GOOD — pre-assign the variable, then reference it #}
+{%- assign signup_form_id = 'email-signup-' | append: section.id -%}
+{%- form 'customer', id: signup_form_id -%}
+```
+
+---
+
+## Adding New Settings
+
+When adding a new setting to `settings_schema.json` with a `t:` reference:
+1. Add its `labels.*` key to the **existing** `labels` block in `en.default.schema.json`
+2. Add its `info.*` key to the **existing** `info` block (if it has helper text)
+3. Add its `options.*` keys to the **existing** `options` block (if it has select options)
+4. **Never create a new top-level `labels`/`info`/`options` block** — merge into the existing ones
+
+When adding a new section with a `{% schema %}` block:
+1. Add translations under `sections.section_id.name`, `sections.section_id.settings.setting_id.label`, etc.
+2. These go inside the **existing** `sections` block

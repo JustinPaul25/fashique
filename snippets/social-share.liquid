@@ -1,0 +1,215 @@
+{% doc %}
+  Renders social share buttons: Facebook, X (Twitter), Pinterest, and copy link.
+  Used on product pages and article pages.
+
+  The `url` parameter accepts either a relative Shopify URL (e.g. product.url)
+  or a fully-qualified URL. Relative URLs are automatically prefixed with
+  shop.url so all share links are absolute.
+
+  @param {string} url           - URL to share (relative or absolute) — required
+  @param {string} [title]       - Text used in tweet body and Pinterest description
+  @param {string} [image_url]   - Fully-qualified image URL for Pinterest pin media
+  @param {string} [class]       - Extra CSS classes on the root element
+
+  @example
+  {% render 'social-share',
+    url: product.url,
+    title: product.title,
+    image_url: product.featured_image | image_url: width: 1200
+  %}
+  {% render 'social-share', url: article.url, title: article.title %}
+{% enddoc %}
+
+{%- liquid
+  assign share_url = url
+  unless url contains '://'
+    assign share_url = shop.url | append: url
+  endunless
+
+  assign encoded_url   = share_url | url_encode
+  assign encoded_title = title | default: shop.name | url_encode
+  assign encoded_image = image_url | default: '' | url_encode
+
+  assign fb_url        = 'https://www.facebook.com/sharer/sharer.php?u=' | append: encoded_url
+  assign x_url         = 'https://twitter.com/intent/tweet?url=' | append: encoded_url | append: '&text=' | append: encoded_title
+  assign pinterest_url = 'https://pinterest.com/pin/create/button/?url=' | append: encoded_url | append: '&description=' | append: encoded_title
+  if encoded_image != blank
+    assign pinterest_url = pinterest_url | append: '&media=' | append: encoded_image
+  endif
+
+  assign copy_label   = 'social_share.copy_link' | t
+  assign copied_label = 'social_share.link_copied' | t
+-%}
+
+<div class="social-share{% if class != blank %} {{ class }}{% endif %}">
+  <span class="social-share__label" aria-hidden="true">
+    {{- 'social_share.label' | t -}}
+  </span>
+
+  <ul class="social-share__list" role="list">
+
+    <li class="social-share__item">
+      <a
+        href="{{ fb_url }}"
+        class="social-share__btn"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="{{ 'social_share.facebook' | t }}"
+      >
+        <span class="icon icon--social-facebook" aria-hidden="true">
+          {{- 'icon-social-facebook.svg' | inline_asset_content -}}
+        </span>
+      </a>
+    </li>
+
+    <li class="social-share__item">
+      <a
+        href="{{ x_url }}"
+        class="social-share__btn"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="{{ 'social_share.x' | t }}"
+      >
+        <span class="icon icon--social-x" aria-hidden="true">
+          {{- 'icon-social-x.svg' | inline_asset_content -}}
+        </span>
+      </a>
+    </li>
+
+    <li class="social-share__item">
+      <a
+        href="{{ pinterest_url }}"
+        class="social-share__btn"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="{{ 'social_share.pinterest' | t }}"
+      >
+        <span class="icon icon--social-pinterest" aria-hidden="true">
+          {{- 'icon-social-pinterest.svg' | inline_asset_content -}}
+        </span>
+      </a>
+    </li>
+
+    <li class="social-share__item">
+      <button
+        type="button"
+        class="social-share__btn social-share__btn--copy"
+        data-copy-url="{{ share_url }}"
+        data-copy-label="{{ copy_label | escape }}"
+        data-copied-label="{{ copied_label | escape }}"
+        aria-label="{{ copy_label }}"
+      >
+        <span class="social-share__copy-default">
+          <span class="icon icon--social-link" aria-hidden="true">
+            {{- 'icon-social-link.svg' | inline_asset_content -}}
+          </span>
+        </span>
+        <span class="social-share__copy-success" aria-hidden="true">
+          <span class="icon icon--check">
+            {{- 'icon-check.svg' | inline_asset_content -}}
+          </span>
+        </span>
+      </button>
+    </li>
+
+  </ul>
+</div>
+
+{% stylesheet %}
+  /* ── Social Share ────────────────────────────────────────────────── */
+  .social-share {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+
+  .social-share__label {
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.65;
+  }
+
+  .social-share__list {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* ── Individual share button ─────────────────────────────────────── */
+  .social-share__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-border);
+    background: transparent;
+    color: var(--color-foreground);
+    text-decoration: none;
+    cursor: pointer;
+    padding: 0;
+    transition:
+      background-color var(--transition-base),
+      border-color var(--transition-base),
+      color var(--transition-base);
+  }
+
+  .social-share__btn:hover {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-background);
+  }
+
+  .social-share__btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+  }
+
+  .social-share__btn .icon svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  /* ── Copy link states ────────────────────────────────────────────── */
+  .social-share__copy-success {
+    display: none;
+  }
+
+  .social-share__btn--copy.is-copied .social-share__copy-default {
+    display: none;
+  }
+
+  .social-share__btn--copy.is-copied .social-share__copy-success {
+    display: flex;
+  }
+
+  /* Confirmed state — brief green tint */
+  .social-share__btn--copy.is-copied {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-background);
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  document.addEventListener('click', function (e) {
+    const btn = e.target.closest('[data-copy-url]');
+    if (!btn) return;
+
+    navigator.clipboard?.writeText(btn.dataset.copyUrl).then(function () {
+      btn.classList.add('is-copied');
+      btn.setAttribute('aria-label', btn.dataset.copiedLabel);
+
+      setTimeout(function () {
+        btn.classList.remove('is-copied');
+        btn.setAttribute('aria-label', btn.dataset.copyLabel);
+      }, 2000);
+    });
+  });
+{% endjavascript %}

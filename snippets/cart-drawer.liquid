@@ -1,0 +1,76 @@
+{% doc %}
+  Slide-out cart drawer: line items, subtotal, links to full cart, checkout.
+  Controlled by snippets/cart-assets.liquid when `data-cart-drawer-trigger` is present.
+
+  @param {none}
+{% enddoc %}
+
+<div
+  id="CartDrawer"
+  class="cart-drawer color-scheme color-scheme-1"
+  hidden
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="cart-drawer-heading"
+>
+  <div class="cart-drawer__backdrop" data-cart-drawer-close tabindex="-1"></div>
+  <div
+    class="cart-drawer__panel"
+    role="document"
+    tabindex="-1"
+  >
+    <div class="cart-drawer__head">
+      <h2 id="cart-drawer-heading" class="cart-drawer__title">{{ 'cart.drawer_title' | t }}</h2>
+      <button
+        type="button"
+        class="cart-drawer__close"
+        data-cart-drawer-close
+        aria-label="{{ 'accessibility.close' | t }}"
+      >
+        {{- 'icon-close.svg' | inline_asset_content -}}
+      </button>
+    </div>
+
+    {%- if cart.item_count == 0 -%}
+      <div class="cart-drawer__body">
+        <div class="cart-empty">
+          <p class="cart-empty__title">{{ 'cart.empty' | t }}</p>
+          <p class="cart-empty__text">{{ 'cart.drawer_empty_subtext' | t }}</p>
+          <a href="{{ routes.collections_url }}" class="btn btn--solid btn--md">{{ 'cart.continue_shopping' | t }}</a>
+        </div>
+      </div>
+    {%- else -%}
+      {%- form 'cart', cart, id: 'CartDrawerForm' -%}
+        <div class="cart-drawer__body">
+          <div class="cart-lines">
+            {%- for item in cart.items -%}
+              {% render 'cart-line-item', item: item, line_index: forloop.index, compact: true %}
+            {%- endfor -%}
+          </div>
+          <div class="cart-drawer__upsell" data-cart-drawer-upsell-root hidden>
+            <p class="cart-drawer__upsell-heading">{{ 'cart.drawer_upsell_heading' | t }}</p>
+            <div class="cart-drawer__upsell-grid" data-cart-drawer-upsell-grid></div>
+          </div>
+        </div>
+
+        <div class="cart-drawer__footer">
+          <div class="cart-summary__subtotal-row">
+            <span>{{ 'cart.subtotal' | t }}</span>
+            <span>{{ cart.total_price | money_with_currency }}</span>
+          </div>
+          <p class="cart-summary__note">{{ 'cart.taxes_shipping_note' | t }}</p>
+          <div class="cart-actions">
+            <button type="submit" class="btn btn--outline btn--md" name="update">
+              {{ 'cart.update' | t }}
+            </button>
+            <a href="{{ routes.cart_url }}" class="btn btn--outline btn--md">{{ 'cart.view_cart' | t }}</a>
+            <button type="submit" class="btn btn--solid btn--md" name="checkout">
+              {{ 'cart.checkout' | t }}
+            </button>
+          </div>
+          {{ form | payment_button }}
+        </div>
+      {%- endform -%}
+    {%- endif -%}
+  </div>
+</div>

@@ -1,0 +1,94 @@
+{% doc %}
+  Global shell for the Quick view modal (native dialog). Content loaded via Section Rendering API.
+{% enddoc %}
+
+<dialog
+  id="QuickViewDialog"
+  class="quick-view-dialog"
+  aria-modal="true"
+  role="dialog"
+  aria-labelledby="quick-view-title"
+  hidden
+>
+  <div class="quick-view-dialog__panel color-scheme color-scheme-1">
+    <button
+      type="button"
+      class="quick-view-dialog__close"
+      data-quick-view-close
+      aria-label="{{ 'accessibility.close' | t | escape }}"
+    >
+      {{- 'icon-close.svg' | inline_asset_content -}}
+    </button>
+    <div class="quick-view-dialog__body" data-quick-view-content></div>
+  </div>
+</dialog>
+
+{%- comment -%}
+  Quick view CSS/JS load on first `[data-quick-view]` click so unused bytes stay off the critical path.
+{%- endcomment -%}
+<script>
+  (function () {
+    if (document.body.getAttribute('data-enable-quick-view') === 'false') return;
+    var cssHref = {{ 'component-quick-view.css' | asset_url | json }};
+    var jsSrc = {{ 'component-quick-view.js' | asset_url | json }};
+    var loading = false;
+    var pendingBtn = null;
+
+    function onScriptLoaded() {
+      window.__fashiqueQVAssetsLoaded = true;
+      loading = false;
+      if (typeof window.FashiqueInitQuickView === 'function') {
+        window.FashiqueInitQuickView();
+      }
+      var btn = pendingBtn;
+      pendingBtn = null;
+      if (btn) btn.click();
+    }
+
+    document.addEventListener(
+      'click',
+      function (e) {
+        var btn = e.target.closest('[data-quick-view]');
+        if (!btn) return;
+        if (window.__fashiqueQVInitialized) return;
+
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        pendingBtn = btn;
+
+        if (window.__fashiqueQVAssetsLoaded) {
+          if (typeof window.FashiqueInitQuickView === 'function' && !window.__fashiqueQVInitialized) {
+            window.FashiqueInitQuickView();
+          }
+          var b = pendingBtn;
+          pendingBtn = null;
+          if (b) b.click();
+          return;
+        }
+
+        if (loading) return;
+        loading = true;
+
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = cssHref;
+        link.media = 'print';
+        link.onload = function () {
+          link.media = 'all';
+        };
+        document.head.appendChild(link);
+
+        var s = document.createElement('script');
+        s.src = jsSrc;
+        s.defer = true;
+        s.onload = onScriptLoaded;
+        s.onerror = function () {
+          loading = false;
+          pendingBtn = null;
+        };
+        document.head.appendChild(s);
+      },
+      true
+    );
+  })();
+</script>

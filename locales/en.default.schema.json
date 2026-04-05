@@ -17,7 +17,17 @@
     "color_schemes": "Color schemes",
     "colors": "Colors",
     "advanced": "Advanced",
-    "footer": "Footer"
+    "footer": "Footer",
+    "text": "Text",
+    "group": "Group",
+    "branding": "Branding",
+    "colors_style": "Colors and style",
+    "spacing": "Spacing",
+    "homepage": "Homepage",
+    "product_page": "Product page",
+    "collection_page": "Collection page",
+    "cart_checkout": "Cart and checkout",
+    "navigation": "Navigation"
   },
   "labels": {
     "account_and_localization": "Account and localization",
@@ -49,9 +59,14 @@
     "color_schemes": "Color schemes",
     "colors": "Colors",
     "copyright_text": "Copyright text",
+    "cart_type": "Cart type",
     "custom_fonts": "Custom fonts",
     "customer_account_menu": "Customer accounts",
+    "cart_drawer_show_upsell": "Cart drawer recommendations",
     "enable_age_verifier": "Enable age verifier",
+    "enable_quick_view": "Quick view on product cards",
+    "enable_sticky_atc": "Sticky add to cart on product pages",
+    "show_post_add_modal": "After add to cart modal",
     "font_pair": "Font pairing",
     "font_pair_preset": "Font pairing presets",
     "footer_bottom_header": "Bottom bar",
@@ -75,17 +90,30 @@
     "radius": "Corner radius",
     "show_announcement_bar": "Show announcement bar",
     "show_back_to_top": "Show back to top button",
+    "back_to_top_threshold": "Scroll distance before button appears",
     "show_close_button": "Show close button",
     "show_country_selector": "Show country and currency selector",
     "show_language_selector": "Show language selector",
     "show_payment_icons": "Show payment icons",
     "section_spacing": "Section spacing",
-    "spacing": "Spacing",
-    "spacing_scale": "Spacing scale",
     "sticky_header": "Sticky header",
     "transition_speed": "Transition speed",
     "transitions": "Transitions",
-    "typography": "Typography"
+    "typography": "Typography",
+    "branding_store": "Store identity",
+    "favicon": "Browser tab icon",
+    "spacing_scale": "Spacing scale",
+    "homepage_show_announcement_bar": "Show announcement bar by default",
+    "homepage_default_hero_height": "Default hero height for new image banners",
+    "product_show_color_swatches": "Color swatches on the product page",
+    "product_stock_threshold": "Low stock warning threshold",
+    "collection_filter_position": "Filter layout on collection pages",
+    "collection_pagination_mode": "How more products load on collections",
+    "collection_products_per_page": "Products per page before loading more",
+    "cart_show_order_note": "Order note field on the cart page",
+    "navigation_enable_mega_menu": "Enable mega menu panels from header blocks",
+    "footer_show_payment_icons": "Payment icons in the footer",
+    "footer_show_social_icons": "Social icons block in the footer"
   },
   "info": {
     "age_verifier_minimum": "Visitors under this age will be blocked.",
@@ -106,12 +134,33 @@
     "heading_size_scale": "Scales all heading sizes up or down proportionally.",
     "logo_width": "Max width in pixels for the logo image.",
     "show_back_to_top": "Displays a floating button to scroll back to the top of the page.",
+    "back_to_top_threshold": "Higher values wait until the visitor scrolls further down the page.",
     "show_country_selector": "Requires Markets to be configured in Shopify admin.",
     "show_language_selector": "Requires multiple languages in Shopify admin.",
-    "section_spacing": "Overrides the global spacing scale for this section only.",
-    "spacing_scale": "Adjusts padding and gap sizes throughout the theme.",
+    "section_spacing": "Overrides default vertical section padding for this section only.",
+    "cart_type": "Page sends shoppers to /cart. Drawer opens a side panel from the header on non-cart templates only (the /cart route always uses the full cart page so there is never a duplicate cart form). Without JavaScript or with reduced motion, the header cart link goes to /cart.",
+    "cart_drawer_show_upsell": "Shows a row of recommended products when the cart drawer opens (uses the first line item).",
+    "show_post_add_modal": "After adding from the product page (drawer cart only), shows a short modal with recommendations. Uses the Ajax cart API.",
     "sticky_header": "Choose when the header should remain visible.",
-    "transition_speed": "Controls the duration of hover and focus animations."
+    "transition_speed": "Controls the duration of hover and focus animations.",
+    "theme_logo": "Used when the header section has no logo set.",
+    "theme_logo_width": "Default logo width when using the theme logo.",
+    "favicon": "Square PNG or ICO works best. Shown in browser tabs.",
+    "spacing_scale": "Tight, medium, or roomy spacing across sections and components.",
+    "homepage_show_announcement_bar": "Sections can still turn the bar off individually.",
+    "homepage_default_hero_height": "Used when a banner section leaves height blank.",
+    "enable_quick_view": "Adds quick view on product cards in grids.",
+    "enable_sticky_atc": "Sticky add to cart bar on long product pages.",
+    "product_show_color_swatches": "Falls back to the product section setting when set there.",
+    "product_stock_threshold": "Shows a low stock message when inventory is at or below this number.",
+    "collection_filter_position": "Sidebar keeps filters visible on desktop. Drawer hides them behind a button.",
+    "collection_pagination_mode": "Infinite loads as you scroll. Pagination uses numbered links.",
+    "collection_products_per_page": "Applies when the collection section uses the theme default.",
+    "cart_show_order_note": "Shown in the cart summary column when enabled.",
+    "navigation_enable_mega_menu": "Turn off to use simple dropdowns only.",
+    "mobile_navigation_drawer": "Small screens always use the slide-out navigation drawer.",
+    "footer_show_payment_icons": "Shown when your footer section does not override this.",
+    "footer_show_social_icons": "Hides social blocks in the footer when turned off."
   },
   "options": {
     "alignment": {
@@ -128,6 +177,42 @@
       "two": "2",
       "three": "3",
       "four": "4"
+    },
+    "collection_pagination": {
+      "infinite": "Infinite scroll (load more)",
+      "pagination": "Page links"
+    },
+    "collection_pagination_mode": {
+      "infinite": "Infinite scroll",
+      "pagination": "Page links"
+    },
+    "collection_filter_position": {
+      "sidebar": "Sidebar on desktop",
+      "drawer": "Drawer on all screen sizes"
+    },
+    "spacing_scale": {
+      "compact": "Compact",
+      "balanced": "Balanced",
+      "spacious": "Spacious"
+    },
+    "cart_type": {
+      "page": "Page",
+      "drawer": "Drawer"
+    },
+    "article_image_ratio": {
+      "wide_21_9": "Ultra wide (21:9)",
+      "classic_16_9": "Wide (16:9)",
+      "standard_4_3": "Standard (4:3)"
+    },
+    "collection_image_ratio": {
+      "21_9": "Ultra wide (21:9)",
+      "16_9": "Wide (16:9)",
+      "3_1": "Banner (3:1)"
+    },
+    "products_per_page": {
+      "12": "12",
+      "24": "24",
+      "36": "36"
     },
     "font_pair": {
       "fashion_brand": "Fashion brand - Playfair + Jost",
@@ -158,19 +243,13 @@
       "full": "Full screen"
     },
     "section_spacing": {
-      "default": "Default (follows global scale)",
+      "default": "Default (theme spacing)",
       "none": "None",
       "xs": "Extra small",
       "sm": "Small",
       "md": "Medium",
       "lg": "Large",
       "xl": "Extra large"
-    },
-    "spacing_scale": {
-      "compact": "Compact",
-      "balanced": "Balanced",
-      "spacious": "Spacious",
-      "none": "None"
     },
     "sticky_header": {
       "always": "Always visible",
@@ -250,6 +329,9 @@
     },
     "multicolumn": {
       "name": "Multicolumn",
+      "presets": {
+        "highlights": "Product highlights"
+      },
       "settings": {
         "title": { "label": "Heading" },
         "columns_desktop": { "label": "Number of columns on desktop" },
@@ -291,7 +373,10 @@
       "name": "Video",
       "settings": {
         "video": { "label": "Video (Shopify-hosted)" },
-        "video_url": { "label": "YouTube / Vimeo URL", "info": "Used when no Shopify-hosted video is set" },
+        "video_url": {
+          "label": "YouTube / Vimeo URL",
+          "info": "Used when no Shopify-hosted video is set. Supports YouTube watch, embed, Shorts, live, and youtu.be links."
+        },
         "poster_image": { "label": "Cover image" },
         "heading": { "label": "Heading" },
         "description": { "label": "Description" },
@@ -324,14 +409,273 @@
     "before_after": {
       "name": "Before / After",
       "settings": {
-        "before_image": { "label": "Before image" },
-        "after_image": { "label": "After image" },
+        "legacy_info": "Use comparison blocks for one or more pairs. Two or more blocks enable a carousel. Legacy images below are used only when no block has both images set.",
+        "before_image": { "label": "Before image (legacy)" },
+        "after_image": { "label": "After image (legacy)" },
         "before_label": { "label": "Before label" },
         "after_label": { "label": "After label" },
         "orientation": { "label": "Divider orientation" },
         "heading": { "label": "Heading" },
         "subtext": { "label": "Subtext" },
         "color_scheme": { "label": "Color scheme" }
+      },
+      "blocks": {
+        "pair": {
+          "name": "Comparison"
+        }
+      }
+    },
+    "age_verifier": {
+      "name": "Age verifier",
+      "settings": {
+        "intro": "Shown when Advanced: Enable age verifier is on. Text uses the minimum age from theme settings.",
+        "heading": { "label": "Heading" },
+        "subheading": { "label": "Description" },
+        "confirm_label": { "label": "Confirm button" },
+        "decline_label": { "label": "Decline button" },
+        "decline_url": {
+          "label": "Decline redirect URL",
+          "info": "Where visitors go if they choose not to enter."
+        }
+      }
+    },
+    "customer_login": {
+      "name": "Customer login"
+    },
+    "cart": {
+      "name": "Cart page",
+      "settings": {
+        "show_breadcrumbs": { "label": "Show breadcrumbs" },
+        "show_order_note": { "label": "Show order note" },
+        "show_discount": { "label": "Show discount code field" }
+      }
+    },
+    "blog": {
+      "name": "Blog",
+      "settings": {
+        "articles_per_page": { "label": "Articles per page" },
+        "show_tag_filter": { "label": "Show tag filter bar" }
+      }
+    },
+    "page": {
+      "name": "Page",
+      "settings": {
+        "show_breadcrumbs": { "label": "Show breadcrumbs" },
+        "layout": {
+          "label": "Layout",
+          "options": {
+            "default": "Single column",
+            "narrow": "Narrow content",
+            "sidebar": "Content with sidebar"
+          }
+        },
+        "sidebar_content": { "label": "Sidebar content" }
+      }
+    },
+    "contact": {
+      "name": "Contact page",
+      "settings": {
+        "heading": {
+          "label": "Heading",
+          "info": "Replaces the page title when set. Leave blank to use the page title."
+        },
+        "intro": { "label": "Introduction" },
+        "header_info": "Contact details",
+        "address": { "label": "Address" },
+        "phone": { "label": "Phone" },
+        "email": { "label": "Email" },
+        "map_embed_url": {
+          "label": "Map embed URL",
+          "info": "Paste the iframe src URL only. In Google Maps: Share - Embed a map - copy the src value from the iframe code."
+        }
+      }
+    },
+    "404": {
+      "name": "404 page"
+    },
+    "password": {
+      "name": "Password page",
+      "settings": {
+        "logo": {
+          "label": "Logo image",
+          "info": "Optional. Falls back to the theme header logo, then the shop name."
+        },
+        "heading": { "label": "Heading" },
+        "subheading": { "label": "Subheading" },
+        "show_newsletter": { "label": "Show email signup" }
+      }
+    },
+    "collections": {
+      "settings": {
+        "intro": { "label": "Introduction", "info": "Optional text below the title." }
+      }
+    },
+    "predictive_search": {
+      "name": "Predictive search"
+    },
+    "search": {
+      "name": "Search",
+      "settings": {
+        "enable_predictive": {
+          "label": "Enable predictive search",
+          "info": "Shows suggestions while typing using Shopify Search & Discovery. Requires a supported storefront language."
+        },
+        "results_per_page": { "label": "Results per page" },
+        "show_vendor": { "label": "Show vendor on product cards" },
+        "show_quick_view": { "label": "Show quick view on product cards" }
+      }
+    },
+    "article": {
+      "name": "Article",
+      "settings": {
+        "show_breadcrumbs": { "label": "Show breadcrumbs" },
+        "show_featured_image": { "label": "Show featured image" },
+        "image_ratio": { "label": "Featured image ratio" },
+        "show_related": { "label": "Show related articles" },
+        "related_count": { "label": "Maximum related articles" },
+        "comments_per_page": { "label": "Comments per page" }
+      }
+    },
+    "quick_view": {
+      "name": "Quick view (modal)"
+    },
+    "sticky_atc": {
+      "name": "Sticky add to cart"
+    },
+    "quick_order_list": {
+      "name": "Quick order list",
+      "settings": {
+        "title": { "label": "Heading" },
+        "collection": { "label": "Collection" },
+        "products_limit": { "label": "Maximum products to show" },
+        "color_scheme": { "label": "Color scheme" }
+      }
+    },
+    "collection": {
+      "name": "Collection",
+      "settings": {
+        "show_breadcrumbs": { "label": "Show breadcrumbs" },
+        "show_collection_image": { "label": "Show collection image banner" },
+        "image_ratio": { "label": "Banner image ratio" },
+        "columns_desktop": { "label": "Product columns on desktop" },
+        "products_per_page": { "label": "Products per page" },
+        "pagination_mode": {
+          "label": "Product pagination",
+          "info": "Infinite scroll loads the next page as you scroll (with a Load more fallback without JavaScript). Page links use standard numbered pagination."
+        },
+        "enable_filtering": { "label": "Show filters", "info": "Requires filters configured in Search & Discovery. Collections over 5,000 products cannot show filters." },
+        "show_vendor": { "label": "Show vendor on product cards" },
+        "color_scheme": { "label": "Color scheme" }
+      }
+    },
+    "product": {
+      "name": "Product information",
+      "settings": {
+        "enable_variant_url": { "label": "Update URL when variant changes" },
+        "stock_threshold": {
+          "label": "Low stock threshold",
+          "info": "Show low stock when quantity is at or below this number."
+        },
+        "show_color_swatches": { "label": "Color swatches on variant picker" },
+        "color_swatch_metaobject_namespace": {
+          "label": "Color swatch metafield namespace",
+          "info": "Namespace for the product metafield that lists color metaobjects (taxonomy uses shopify). Used when the built-in option swatch is empty."
+        },
+        "color_swatch_metaobject_key": {
+          "label": "Color swatch metafield key",
+          "info": "Key for that metafield (taxonomy color list is usually color-pattern). Match your product Color / color-pattern field."
+        }
+      },
+      "blocks": {
+        "breadcrumbs": {
+          "name": "Breadcrumbs",
+          "settings": {
+            "show_breadcrumbs": { "label": "Show breadcrumbs" }
+          }
+        },
+        "title": {
+          "name": "Title",
+          "settings": {
+            "show_vendor": { "label": "Show vendor" }
+          }
+        },
+        "price": { "name": "Price" },
+        "variant_picker": {
+          "name": "Variant picker",
+          "settings": {
+            "picker_type": {
+              "label": "Picker style",
+              "options": {
+                "buttons": "Buttons",
+                "dropdown": "Dropdown"
+              }
+            }
+          }
+        },
+        "inventory": {
+          "name": "Inventory and SKU",
+          "settings": {
+            "show_in_stock_message": { "label": "Show in stock message when not low stock" },
+            "show_sku": { "label": "Show SKU" }
+          }
+        },
+        "selling_plans": {
+          "name": "Subscription and selling plans",
+          "settings": {
+            "heading": { "label": "Heading" },
+            "one_time_label": { "label": "One-time purchase label" },
+            "show_plan_descriptions": { "label": "Show plan descriptions" }
+          }
+        },
+        "line_item_properties": {
+          "name": "Line item properties",
+          "settings": {
+            "heading": {
+              "label": "Heading",
+              "info": "Shown above the fields. Leave blank to hide."
+            },
+            "header_property_1": "First property",
+            "header_property_2": "Second property (optional)",
+            "property_label": {
+              "label": "Property name",
+              "info": "Shown as the label and saved on the line item (cart, orders). Leave blank to hide this field."
+            },
+            "property_placeholder": { "label": "Placeholder" },
+            "property_required": { "label": "Required" },
+            "enable_property_2": { "label": "Show second text field" },
+            "property_2_label": { "label": "Second property name" }
+          }
+        },
+        "buy_buttons": { "name": "Buy buttons" },
+        "description": {
+          "name": "Description",
+          "settings": {
+            "collapsible": {
+              "label": "Limit description height",
+              "info": "When enabled, long descriptions are clipped to a fixed height with no expand control. Turn off to show the full description."
+            }
+          }
+        },
+        "share": { "name": "Social share" },
+        "tiered_pricing": { "name": "Volume pricing table" },
+        "combined_listing": { "name": "Combined listing links" },
+        "complementary": {
+          "name": "Product recommendations",
+          "settings": {
+            "heading": { "label": "Heading" },
+            "product_count": { "label": "Maximum products" },
+            "intent": {
+              "label": "Recommendation type",
+              "options": {
+                "complementary": "Complementary",
+                "related": "Related"
+              }
+            }
+          }
+        }
+      },
+      "presets": {
+        "name": "Product"
       }
     },
     "testimonials": {

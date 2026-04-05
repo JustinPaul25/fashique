@@ -1,7 +1,10 @@
 (() => {
-  const SCROLL_THRESHOLD = 400;
   const btn = document.querySelector('[data-back-to-top]');
   if (!btn) return;
+
+  const raw = btn.getAttribute('data-threshold');
+  const parsed = raw != null ? parseInt(raw, 10) : NaN;
+  const SCROLL_THRESHOLD = !isNaN(parsed) && parsed > 0 ? parsed : 400;
 
   btn.removeAttribute('hidden');
 

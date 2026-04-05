@@ -1,0 +1,104 @@
+{%- comment -%}
+  Rendered only via Predictive Search + Section Rendering API (`/search/suggest?section_id=predictive-search`).
+  Do not add this section to JSON templates.
+{%- endcomment -%}
+
+{%- if predictive_search.performed -%}
+  {%- liquid
+    assign p_count = predictive_search.resources.products.size
+    assign a_count = predictive_search.resources.articles.size
+    assign c_count = predictive_search.resources.collections.size
+    assign pg_count = predictive_search.resources.pages.size
+    assign total_suggestions = p_count | plus: a_count | plus: c_count | plus: pg_count
+  -%}
+  <div class="predictive-search__panel" data-predictive-panel>
+    {%- if total_suggestions == 0 -%}
+      <p class="predictive-search__empty">{{ 'search.predictive_empty' | t }}</p>
+    {%- else -%}
+      {%- if p_count > 0 -%}
+        <p class="predictive-search__heading" id="predictive-heading-products">{{ 'search.predictive_products' | t }}</p>
+        <ul class="predictive-search__list list-unstyled" role="list" aria-labelledby="predictive-heading-products">
+          {%- for product in predictive_search.resources.products -%}
+            <li>
+              <a href="{{ product.url }}" class="predictive-search__row">
+                {%- liquid
+                  assign pred_img = product.featured_media
+                  if pred_img == blank
+                    assign pred_img = product.featured_image
+                  endif
+                -%}
+                <span class="predictive-search__thumb{% if pred_img == blank %} predictive-search__thumb--empty{% endif %}">
+                  {%- if pred_img != blank -%}
+                    {{
+                      pred_img
+                      | image_url: width: 128
+                      | image_tag:
+                        loading: 'lazy',
+                        class: 'predictive-search__img',
+                        sizes: '64px',
+                        alt: pred_img.alt | default: product.title | escape
+                    }}
+                  {%- else -%}
+                    {{ 'product-1' | placeholder_svg_tag }}
+                  {%- endif -%}
+                </span>
+                <span class="predictive-search__row-text">
+                  <span class="predictive-search__title">{{ product.title | escape }}</span>
+                  <span class="predictive-search__meta">
+                    {%- render 'price', product: product -%}
+                  </span>
+                </span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if a_count > 0 -%}
+        <p class="predictive-search__heading" id="predictive-heading-articles">{{ 'search.predictive_articles' | t }}</p>
+        <ul class="predictive-search__list list-unstyled" role="list" aria-labelledby="predictive-heading-articles">
+          {%- for article in predictive_search.resources.articles -%}
+            <li>
+              <a href="{{ article.url }}" class="predictive-search__row predictive-search__row--text" tabindex="-1">
+                <span class="predictive-search__title">{{ article.title | escape }}</span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if c_count > 0 -%}
+        <p class="predictive-search__heading" id="predictive-heading-collections">{{ 'search.predictive_collections' | t }}</p>
+        <ul class="predictive-search__list list-unstyled" role="list" aria-labelledby="predictive-heading-collections">
+          {%- for col in predictive_search.resources.collections -%}
+            <li>
+              <a href="{{ col.url }}" class="predictive-search__row predictive-search__row--text" tabindex="-1">
+                <span class="predictive-search__title">{{ col.title | escape }}</span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if pg_count > 0 -%}
+        <p class="predictive-search__heading" id="predictive-heading-pages">{{ 'search.predictive_pages' | t }}</p>
+        <ul class="predictive-search__list list-unstyled" role="list" aria-labelledby="predictive-heading-pages">
+          {%- for page in predictive_search.resources.pages -%}
+            <li>
+              <a href="{{ page.url }}" class="predictive-search__row predictive-search__row--text" tabindex="-1">
+                <span class="predictive-search__title">{{ page.title | escape }}</span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.predictive_search.name",
+  "settings": []
+}
+{% endschema %}

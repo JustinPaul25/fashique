@@ -1,0 +1,296 @@
+{
+  "accessibility": {
+    "skip_to_content": "Ir al contenido",
+    "back_to_top": "Volver arriba",
+    "quick_view_product": "Vista rápida {{ title }}",
+    "account": "Cuenta",
+    "announcement_bar": "Anuncio",
+    "cart_count": "Carrito ({{ count }} artículos)",
+    "close": "Cerrar",
+    "close_announcement_bar": "Cerrar anuncio",
+    "close_menu": "Cerrar menú",
+    "currency_select": "Seleccionar moneda",
+    "language_select": "Seleccionar idioma",
+    "navigation": "Navegación principal",
+    "open_menu": "Abrir menú",
+    "open_search": "Abrir búsqueda",
+    "submit": "Enviar",
+    "play_slideshow": "Reproducir presentación",
+    "pause_slideshow": "Pausar presentación",
+    "previous_slide": "Diapositiva anterior",
+    "next_slide": "Diapositiva siguiente",
+    "slide_of": "Diapositiva {{ current }} de {{ total }}",
+    "open_video": "Abrir vídeo",
+    "drag_handle": "Arrastra para comparar",
+    "before_label": "Antes",
+    "after_label": "Después",
+    "star_rating": "{{ rating }} de 5 estrellas",
+    "view_product": "Ver {{ title }}"
+  },
+  "breadcrumbs": {
+    "home": "Inicio",
+    "nav_label": "Migas de pan"
+  },
+  "cart": {
+    "title": "Tu carrito",
+    "checkout": "Pagar",
+    "remove": "Quitar",
+    "update": "Actualizar carrito",
+    "empty": "Tu carrito está vacío",
+    "empty_subtext": "Explora nuestras colecciones y encuentra algo que te encante.",
+    "continue_shopping": "Seguir comprando",
+    "subtotal": "Subtotal",
+    "order_note": "Nota del pedido",
+    "order_note_placeholder": "¿Cómo podemos ayudarte con este pedido?",
+    "discount_code": "Código de descuento",
+    "discount_placeholder": "Introduce el código",
+    "quantity": "Cantidad",
+    "decrease_quantity": "Reducir cantidad",
+    "increase_quantity": "Aumentar cantidad",
+    "line_total": "Total de línea",
+    "column_product": "Producto",
+    "column_total": "Total",
+    "summary_heading": "Resumen del pedido",
+    "taxes_shipping_note": "Impuestos y envío calculados al pagar.",
+    "drawer_title": "Carrito",
+    "drawer_empty_subtext": "Añade artículos desde las colecciones y abre tu carrito aquí cuando quieras.",
+    "view_cart": "Ver carrito",
+    "post_add_title": "También te puede interesar",
+    "post_add_continue": "Seguir comprando",
+    "post_add_empty": "Sin sugerencias por ahora.",
+    "drawer_upsell_heading": "También te puede interesar"
+  },
+  "collections": {
+    "title": "Colecciones",
+    "none": "Aún no hay colecciones que mostrar.",
+    "product_count_html": "{{ count }} productos",
+    "product_count_filtered_html": "{{ count }} de {{ total }} productos",
+    "filters_heading": "Filtrar",
+    "filters_close": "Cerrar filtros",
+    "filters_apply": "Aplicar",
+    "filters_clear_all": "Borrar todo",
+    "sort_label": "Ordenar por",
+    "view_grid": "Vista de cuadrícula",
+    "view_list": "Vista de lista",
+    "empty": "Ningún producto coincide con tus filtros.",
+    "empty_reset": "Ver todos los productos de esta colección",
+    "filter_reset_group": "Borrar",
+    "price_from": "Mín",
+    "price_to": "Máx",
+    "pagination": "Paginación"
+  },
+  "pagination": {
+    "all_shown": "Se muestran todos los artículos",
+    "load_more": "Cargar más",
+    "loading": "Cargando más productos",
+    "showing_html": "Mostrando {{ shown }} de {{ total }}"
+  },
+  "products": {
+    "card": {
+      "add_to_cart": "Añadir al carrito",
+      "choose_options": "Elegir opciones",
+      "quick_view": "Vista rápida",
+      "sale": "Oferta",
+      "sold_out": "Agotado",
+      "color_swatch_for": "Color: {{ value }}"
+    },
+    "price": {
+      "from_html": "Desde <span>{{ price }}</span>",
+      "regular_price": "Precio habitual",
+      "sale_price": "Precio de oferta",
+      "sold_out": "Agotado",
+      "unit_price_html": "{{ price }} por {{ unit }}"
+    },
+    "product": {
+      "add_to_cart": "Añadir al carrito",
+      "sold_out": "Agotado",
+      "unavailable": "No disponible",
+      "quantity": "Cantidad",
+      "vendor": "Marca",
+      "sku": "SKU",
+      "description": "Descripción",
+      "view_full_details": "Ver todos los detalles",
+      "low_stock_html": "Solo quedan {{ count }}",
+      "low_stock_js": "Solo quedan {count}",
+      "in_stock": "En stock",
+      "out_of_stock": "Sin stock",
+      "media_gallery": "Imágenes del producto",
+      "tiered_pricing_heading": "Precios por volumen",
+      "tier_quantity": "Cantidad",
+      "tier_unit_price": "Precio por unidad",
+      "combined_listing_heading": "Más opciones",
+      "recommendations_loading": "Cargando recomendaciones…",
+      "view_media": "Ver medio {{ index }} de {{ total }}",
+      "media_play_label": "Vídeo",
+      "media_3d_label": "Modelo 3D",
+      "tier_unit_note": "por unidad en esta cantidad",
+      "line_item_properties_legend": "Opciones de línea",
+      "add_subscription_to_cart": "Añadir suscripción al carrito",
+      "one_time_purchase": "Compra única",
+      "cart_add_error": "No se pudo añadir al carrito. Inténtalo de nuevo."
+    }
+  },
+  "search": {
+    "title": "Buscar",
+    "placeholder": "Buscar",
+    "submit": "Buscar",
+    "no_results_html": "Sin resultados para <em>«{{ terms }}»</em>",
+    "results_for_html": "{{ count }} resultados para <em>«{{ terms }}»</em>",
+    "try_these": "Prueba con una de estas opciones:",
+    "bttn_all_products": "Ver todos los productos",
+    "bttn_collections": "Ver colecciones",
+    "bttn_home": "Volver al inicio",
+    "result_page": "Página",
+    "pagination_label": "Páginas de resultados",
+    "predictive_products": "Productos",
+    "predictive_articles": "Entradas del blog",
+    "predictive_collections": "Colecciones",
+    "predictive_pages": "Páginas",
+    "predictive_empty": "Aún no hay coincidencias. Sigue escribiendo o pulsa Buscar.",
+    "predictive_live": "Sugerencias actualizadas."
+  },
+  "social_share": {
+    "label": "Compartir",
+    "facebook": "Compartir en Facebook",
+    "x": "Compartir en X",
+    "pinterest": "Compartir en Pinterest",
+    "copy_link": "Copiar enlace",
+    "link_copied": "¡Enlace copiado!"
+  },
+  "404": {
+    "eyebrow": "Error 404",
+    "title": "Página no encontrada",
+    "not_found": "No encontramos la página que buscas.",
+    "search_label": "Buscar en la tienda",
+    "back_home": "Volver al inicio",
+    "back_to_shopping": "Seguir comprando"
+  },
+  "blog": {
+    "all_posts": "Todas las entradas",
+    "tag_filter_aria": "Filtrar artículos por etiqueta",
+    "pagination_aria": "Paginación del blog",
+    "no_articles_in_view": "No hay artículos en esta vista.",
+    "article_comments": "{{ count }} comentario(s)",
+    "article_metadata_html": "Por {{ author }} el {{ date }}",
+    "article_author_date_html": "Por {{ author }} el {{ date }}",
+    "article_date_only_html": "{{ date }}",
+    "article_tags": "Etiquetas",
+    "article_adjacent_nav": "Artículos adyacentes",
+    "article_older": "Entrada anterior",
+    "article_newer": "Entrada siguiente",
+    "related_articles": "Artículos relacionados",
+    "comments_heading": "Comentarios",
+    "comments_heading_count": "Comentarios ({{ count }})",
+    "comment_form_body": "Comentario",
+    "comment_form_email": "Correo electrónico",
+    "comment_form_name": "Nombre",
+    "comment_form_submit": "Publicar comentario",
+    "comment_form_title": "Deja un comentario"
+  },
+  "footer": {
+    "newsletter": {
+      "email_placeholder": "Introduce tu correo",
+      "submit": "Suscribirse",
+      "success": "¡Gracias por suscribirte!"
+    },
+    "payment_methods": "Métodos de pago"
+  },
+  "password": {
+    "title": "Próxima apertura",
+    "password": "Contraseña",
+    "enter": "Entrar",
+    "newsletter_heading": "Avísame cuando abráis",
+    "newsletter_text": "Deja tu correo y te avisaremos cuando abra la tienda.",
+    "admin_link": "Iniciar sesión como titular de la tienda"
+  },
+  "gift_card": {
+    "expired": "Esta tarjeta regalo ha caducado o ya no es válida.",
+    "expires_on": "Caduca el {{ expires_on }}",
+    "card": "Tarjeta regalo",
+    "use_at_checkout": "Introduce este código al pagar para usar el saldo de tu tarjeta regalo.",
+    "add_to_apple_wallet": "Añadir a Apple Wallet"
+  },
+  "customer": {
+    "log_in": "Iniciar sesión",
+    "register": "Crear cuenta",
+    "account": "Cuenta",
+    "log_out": "Cerrar sesión",
+    "greeting_html": "Hola, {{ name }}",
+    "login_title": "Iniciar sesión",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "forgot_password": "¿Olvidaste la contraseña?"
+  },
+  "sections": {
+    "slideshow": {
+      "scroll_label": "Desplazar"
+    },
+    "featured_collection": {
+      "view_all": "Ver todo"
+    },
+    "featured_product": {
+      "pick_variant": "Elegir opciones"
+    },
+    "countdown_timer": {
+      "days": "Días",
+      "hours": "Horas",
+      "minutes": "Minutos",
+      "seconds": "Segundos",
+      "expired": "La oferta ha terminado"
+    },
+    "video": {
+      "play": "Reproducir vídeo"
+    },
+    "faq": {
+      "question_aria": "Mostrar respuesta para: {{ question }}"
+    },
+    "email_signup": {
+      "placeholder": "Introduce tu correo electrónico",
+      "submit": "Suscribirse",
+      "success": "¡Gracias por suscribirte!",
+      "error": "Introduce un correo electrónico válido"
+    },
+    "contact": {
+      "form_heading": "Enviar un mensaje",
+      "success": "Gracias por contactarnos. Te responderemos lo antes posible.",
+      "name": "Nombre",
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "message": "Mensaje",
+      "submit": "Enviar",
+      "info_heading": "Datos de contacto",
+      "address_label": "Dirección",
+      "phone_label": "Teléfono",
+      "email_label": "Correo electrónico",
+      "map_heading": "Mapa"
+    },
+    "before_after": {
+      "before": "Antes",
+      "after": "Después",
+      "editor_hint": "Añade imágenes antes/después en un bloque de comparación, o usa las imágenes heredadas en los ajustes de la sección."
+    },
+    "age_verifier": {
+      "heading": "Verificación de edad",
+      "subheading": "Debes tener al menos {{ age }} años para entrar en este sitio.",
+      "minimum_age_label": "Edad mínima: {{ age }}",
+      "confirm": "Tengo {{ age }} años o más",
+      "decline": "Salir"
+    },
+    "ugc_grid": {
+      "photo_placeholder": "Marcador de foto — añade una imagen en el editor"
+    },
+    "quick_order_list": {
+      "add_all": "Añadir todo al carrito",
+      "select_quantity": "Introduce una cantidad de al menos uno en uno o más productos.",
+      "product": "Producto",
+      "variant": "Variante",
+      "price": "Precio",
+      "add_error": "No se pudieron añadir los artículos. Inténtalo de nuevo.",
+      "empty_collection": "Elige una colección en el editor del tema.",
+      "no_products": "Aún no hay productos en esta colección."
+    }
+  },
+  "general": {
+    "theme_name": "Fashique"
+  }
+}

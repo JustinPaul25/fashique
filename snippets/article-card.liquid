@@ -1,0 +1,41 @@
+{% doc %}
+  Compact article teaser for related posts, search results, and blog grids.
+
+  @param {article} article - Blog article (required)
+  @param {string} [class] - Extra classes on the root link
+
+  @example
+  {% render 'article-card', article: article %}
+{% enddoc %}
+
+{%- liquid
+  assign card_class = class | default: ''
+  assign img = article.image
+-%}
+
+<a href="{{ article.url }}" class="article-card{% if card_class != blank %} {{ card_class }}{% endif %}">
+  <div class="article-card__media">
+    {%- if img != blank -%}
+      {% render 'image',
+        image: img,
+        widths: '180,360,540,720,800',
+        sizes: '(min-width: 990px) 25vw, 50vw',
+        class: 'article-card__img',
+        loading: 'lazy',
+        alt: img.alt | default: article.title,
+        placeholder_type: 'lifestyle-1'
+      %}
+    {%- else -%}
+      <span class="article-card__placeholder">{{ 'lifestyle-1' | placeholder_svg_tag }}</span>
+    {%- endif -%}
+  </div>
+  <div class="article-card__body">
+    <h3 class="article-card__title">{{ article.title | escape }}</h3>
+    {%- if article.excerpt != blank -%}
+      <p class="article-card__excerpt">{{ article.excerpt | strip_html | truncate: 120 }}</p>
+    {%- endif -%}
+    <time class="article-card__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+      {{- article.published_at | time_tag: format: 'date' -}}
+    </time>
+  </div>
+</a>

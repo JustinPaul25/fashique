@@ -1,0 +1,135 @@
+{% doc %}
+  Renders sibling product links for combined listings (related products as separate URLs).
+
+  Expects a product reference list metafield at `custom.combined_listing`. Merchants define
+  the metafield in Admin; when empty, nothing is output.
+
+  @param {product} product - The current product (required)
+
+  @example
+  {% render 'combined-listing', product: product %}
+{% enddoc %}
+
+{%- assign sibling_products = product.metafields.custom.combined_listing.value -%}
+{%- if sibling_products == blank -%}
+{%- else -%}
+
+{%- assign heading_key = 'products.product.combined_listing_heading' | t -%}
+<nav class="combined-listing" aria-label="{{ heading_key | escape }}">
+  <span class="combined-listing__label">{{ heading_key | escape }}</span>
+  <ul class="combined-listing__list" role="list">
+    {%- for sibling in sibling_products -%}
+      {%- if sibling == blank -%}{%- continue -%}{%- endif -%}
+      <li class="combined-listing__item">
+        {%- if sibling.id == product.id -%}
+          <span class="combined-listing__current combined-listing__link--thumb" aria-current="page">
+            {%- if sibling.featured_image != blank -%}
+              <span class="combined-listing__thumb" aria-hidden="true">
+                {{
+                  sibling.featured_image
+                  | image_url: width: 144
+                  | image_tag: loading: 'lazy', class: 'combined-listing__thumb-img', alt: ''
+                }}
+              </span>
+            {%- endif -%}
+            <span class="combined-listing__link-text">{{ sibling.title | escape }}</span>
+          </span>
+        {%- else -%}
+          <a href="{{ sibling.url }}" class="combined-listing__link combined-listing__link--thumb">
+            {%- if sibling.featured_image != blank -%}
+              <span class="combined-listing__thumb" aria-hidden="true">
+                {{
+                  sibling.featured_image
+                  | image_url: width: 144
+                  | image_tag: loading: 'lazy', class: 'combined-listing__thumb-img', alt: ''
+                }}
+              </span>
+            {%- endif -%}
+            <span class="combined-listing__link-text">{{ sibling.title | escape }}</span>
+          </a>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+</nav>
+
+{%- endif -%}
+
+{% stylesheet %}
+  .combined-listing {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    margin-block: var(--spacing-sm);
+  }
+
+  .combined-listing__label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.75;
+  }
+
+  .combined-listing__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .combined-listing__link,
+  .combined-listing__current {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.25rem 0.65rem 0.25rem 0.25rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    font-size: 0.875rem;
+    text-decoration: none;
+    color: inherit;
+    transition:
+      border-color var(--transition-base),
+      background-color var(--transition-base);
+  }
+
+  .combined-listing__thumb {
+    flex-shrink: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+  }
+
+  .combined-listing__thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .combined-listing__link-text {
+    padding-inline-end: 0.35rem;
+  }
+
+  .combined-listing__link:hover {
+    border-color: var(--color-primary);
+    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+
+  .combined-listing__link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .combined-listing__current {
+    border-color: var(--color-primary);
+    background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    font-weight: 600;
+  }
+{% endstylesheet %}

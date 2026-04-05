@@ -1,72 +1,487 @@
-{% comment %}
-  This section is used in the article template to render the article page, which
-  displays the full content of the blog post and can optionally include a
-  comments section for customers (not shown in this example).
+{%- comment -%}
+  Article template (Phase 5.6): hero image, meta, content, tags, breadcrumbs, share, prev/next, comments, related.
+{%- endcomment -%}
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/article
-{% endcomment %}
+{%- render 'article-card-styles' -%}
+
+{%- liquid
+  assign related_limit = section.settings.related_count | default: 4 | plus: 0
+  assign img_ratio = section.settings.image_ratio | default: '21_9'
+-%}
 
 {%- render 'section-spacing', section: section -%}
-<div class="color-scheme color-{{ section.settings.color_scheme }}">
-{% if article.image %}
-  {{ article.image | image_url: width: 1000 | image_tag }}
-{% endif %}
 
-<h1>{{ article.title }}</h1>
+<article class="article-page section-padding color-scheme color-{{ section.settings.color_scheme }}">
+  <div class="article-page__inner page-width">
+    {%- if section.settings.show_breadcrumbs -%}
+      {% render 'breadcrumbs', show: true %}
+    {%- endif -%}
 
-{% assign date = article.published_at | time_tag: format: 'date' %}
-<p>{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
+    <header class="article-page__header">
+      <h1 class="article-page__title">{{ article.title | escape }}</h1>
+      {%- capture date_markup -%}
+        {{- article.published_at | time_tag: format: 'date' -}}
+      {%- endcapture -%}
+      {%- assign author_name = article.author | default: '' | strip -%}
+      <p class="article-page__meta">
+        {%- if author_name != blank -%}
+          {{ 'blog.article_author_date_html' | t: author: author_name, date: date_markup }}
+        {%- else -%}
+          {{ 'blog.article_date_only_html' | t: date: date_markup }}
+        {%- endif -%}
+      </p>
+    </header>
 
-{{ article.content }}
+    {%- if section.settings.show_featured_image and article.image != blank -%}
+      <div class="article-page__hero article-page__hero--{{ img_ratio }}">
+        {% render 'image',
+          image: article.image,
+          widths: '750,1100,1500,1780,2000,2400',
+          sizes: '100vw',
+          class: 'article-page__hero-img',
+          loading: 'eager',
+          alt: article.image.alt | default: article.title,
+          placeholder_type: 'lifestyle-1'
+        %}
+      </div>
+    {%- endif -%}
 
-{% if blog.comments_enabled? %}
-  <h2>{{ 'blog.article_comments' | t }}</h2>
+    <div class="article-page__share-top">
+      {%- liquid
+        assign share_image = ''
+        if article.image != blank
+          assign share_image = article.image | image_url: width: 1200
+        endif
+      -%}
+      {%
+        render 'social-share',
+        class: 'social-share--article',
+        url: article.url,
+        title: article.title,
+        image_url: share_image
+      %}
+    </div>
 
-  <div id="comments">
-    {% paginate article.comments by 10 %}
-      {% for comment in article.comments %}
-        <div>
-          <p>{{ comment.author }}</p>
-          <p>
-            {{- comment.created_at | time_tag: format: 'date' -}}
-          </p>
-          <p>{{ comment.content }}</p>
-        </div>
-      {% endfor %}
+    <div class="article-page__content rte">
+      {{- article.content -}}
+    </div>
 
-      {{ paginate | default_pagination: anchor: 'comments' }}
-    {% endpaginate %}
+    {%- if article.tags.size > 0 -%}
+      <div class="article-page__tags">
+        <span class="article-page__tags-label">{{ 'blog.article_tags' | t }}</span>
+        <ul class="article-page__tags-list list-unstyled" role="list">
+          {%- for tag in article.tags -%}
+            <li>
+              <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="article-page__tag">{{ tag | escape }}</a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
+    {%- if blog.previous_article != blank or blog.next_article != blank -%}
+      <nav class="article-page__adjacent" aria-label="{{ 'blog.article_adjacent_nav' | t }}">
+        {%- if blog.next_article != blank -%}
+          <a href="{{ blog.next_article.url }}" class="article-page__adj-link article-page__adj-link--older">
+            <span class="article-page__adj-label">{{ 'blog.article_older' | t }}</span>
+            <span class="article-page__adj-title">{{ blog.next_article.title | escape }}</span>
+          </a>
+        {%- endif -%}
+        {%- if blog.previous_article != blank -%}
+          <a href="{{ blog.previous_article.url }}" class="article-page__adj-link article-page__adj-link--newer">
+            <span class="article-page__adj-label">{{ 'blog.article_newer' | t }}</span>
+            <span class="article-page__adj-title">{{ blog.previous_article.title | escape }}</span>
+          </a>
+        {%- endif -%}
+      </nav>
+    {%- endif -%}
+
+    {%- if section.settings.show_related and related_limit > 0 -%}
+      {%- liquid
+        assign related_shown = 0
+      -%}
+      {%- capture related_grid -%}
+        {%- for a in blog.articles limit: 48 -%}
+          {%- if related_shown >= related_limit -%}
+            {%- break -%}
+          {%- endif -%}
+          {%- if a.id == article.id -%}
+            {%- continue -%}
+          {%- endif -%}
+          <div class="article-page__related-cell">
+            {% render 'article-card', article: a %}
+          </div>
+          {%- assign related_shown = related_shown | plus: 1 -%}
+        {%- endfor -%}
+      {%- endcapture -%}
+      {%- if related_shown > 0 -%}
+        <section class="article-page__related" aria-labelledby="article-related-heading">
+          <h2 id="article-related-heading" class="article-page__related-title">{{ 'blog.related_articles' | t }}</h2>
+          <div class="article-page__related-grid">
+            {{ related_grid }}
+          </div>
+        </section>
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if article.comments_enabled? -%}
+      <section class="article-page__comments" id="comments" aria-labelledby="comments-heading">
+        <h2 id="comments-heading" class="article-page__comments-title">
+          {%- if article.comments_count > 0 -%}
+            {{ 'blog.comments_heading_count' | t: count: article.comments_count }}
+          {%- else -%}
+            {{ 'blog.comments_heading' | t }}
+          {%- endif -%}
+        </h2>
+
+        {%- if article.comments_count > 0 -%}
+          {% paginate article.comments by section.settings.comments_per_page %}
+            <ol class="article-page__comment-list list-unstyled" role="list">
+              {%- for comment in article.comments -%}
+                <li class="article-page__comment">
+                  <p class="article-page__comment-author">{{ comment.author | escape }}</p>
+                  <p class="article-page__comment-date">
+                    {{- comment.created_at | time_tag: format: 'date' -}}
+                  </p>
+                  <div class="article-page__comment-body rte">{{ comment.content }}</div>
+                </li>
+              {%- endfor -%}
+            </ol>
+            <div class="article-page__comment-pagination">
+              {{ paginate | default_pagination: anchor: 'comments' }}
+            </div>
+          {% endpaginate %}
+        {%- endif -%}
+
+        {%- form 'new_comment', article, class: 'article-page__comment-form' -%}
+          <h3 class="article-page__comment-form-title">{{ 'blog.comment_form_title' | t }}</h3>
+
+          {{ form.errors | default_errors }}
+
+          <div class="article-page__field">
+            <label class="article-page__label" for="CommentAuthor-{{ section.id }}">{{ 'blog.comment_form_name' | t }}</label>
+            <input
+              type="text"
+              name="comment[author]"
+              id="CommentAuthor-{{ section.id }}"
+              class="article-page__input"
+              value="{{ form.author }}"
+              required
+              autocomplete="name"
+            >
+          </div>
+
+          <div class="article-page__field">
+            <label class="article-page__label" for="CommentEmail-{{ section.id }}">{{ 'blog.comment_form_email' | t }}</label>
+            <input
+              type="email"
+              name="comment[email]"
+              id="CommentEmail-{{ section.id }}"
+              class="article-page__input"
+              value="{{ form.email }}"
+              required
+              autocomplete="email"
+            >
+          </div>
+
+          <div class="article-page__field">
+            <label class="article-page__label" for="CommentBody-{{ section.id }}">{{ 'blog.comment_form_body' | t }}</label>
+            <textarea
+              name="comment[body]"
+              id="CommentBody-{{ section.id }}"
+              class="article-page__textarea"
+              rows="5"
+              required
+            >{{ form.body }}</textarea>
+          </div>
+
+          <button type="submit" class="btn btn--solid btn--md">{{ 'blog.comment_form_submit' | t }}</button>
+        {%- endform -%}
+      </section>
+    {%- endif -%}
   </div>
+</article>
 
-  {% form 'new_comment', article %}
-    <h2>{{ 'blog.comment_form_title' | t }}</h2>
+{% stylesheet %}
+  .article-page__inner {
+    max-width: var(--page-width);
+    margin-inline: auto;
+  }
 
-    {{ form.errors | default_errors }}
+  .article-page__header {
+    margin-block-end: var(--spacing-md);
+    max-width: 48rem;
+  }
 
-    <div>
-      <label for="author">{{ 'blog.comment_form_name' | t }}</label>
-      <input type="text" name="comment[author]" id="author" value="{{ form.author }}" required>
-    </div>
+  .article-page__title {
+    font-size: var(--font-size-h2);
+    font-family: var(--font-heading-family);
+    margin: 0 0 var(--spacing-sm);
+    line-height: var(--font-heading-line-height, 1.15);
+  }
 
-    <div>
-      <label for="email">{{ 'blog.comment_form_email' | t }}</label>
-      <input type="email" name="comment[email]" id="email" value="{{ form.email }}" required>
-    </div>
+  .article-page__meta {
+    margin: 0;
+    font-size: 0.9375rem;
+    opacity: 0.85;
+  }
 
-    <div>
-      <label for="body">{{ 'blog.comment_form_body' | t }}</label>
-      <textarea name="comment[body]" id="body" required>{{ form.body }}</textarea>
-    </div>
+  .article-page__hero {
+    margin-block: var(--spacing-lg) var(--spacing-xl);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--color-border);
+  }
 
-    <input type="submit" value="{{ 'blog.comment_form_submit' | t }}">
-  {% endform %}
-{% endif %}
-</div>
+  .article-page__hero--21_9 {
+    aspect-ratio: 21 / 9;
+  }
+
+  .article-page__hero--16_9 {
+    aspect-ratio: 16 / 9;
+  }
+
+  .article-page__hero--4_3 {
+    aspect-ratio: 4 / 3;
+  }
+
+  .article-page__hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .article-page__share-top {
+    margin-block-end: var(--spacing-md);
+  }
+
+  .article-page__content {
+    max-width: 42rem;
+    margin-block-end: var(--spacing-xl);
+  }
+
+  .article-page__tags {
+    margin-block-end: var(--spacing-xl);
+    max-width: 42rem;
+  }
+
+  .article-page__tags-label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-block-end: 0.5rem;
+    opacity: 0.75;
+  }
+
+  .article-page__tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .article-page__tag {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .article-page__tag:hover {
+    border-color: color-mix(in srgb, var(--color-foreground) 25%, var(--color-border));
+  }
+
+  .article-page__adjacent {
+    display: grid;
+    gap: var(--spacing-md);
+    margin-block: var(--spacing-xl);
+    padding-block: var(--spacing-lg);
+    border-block: 1px solid var(--color-border);
+  }
+
+  @media screen and (min-width: 750px) {
+    .article-page__adjacent {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .article-page__adj-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    text-decoration: none;
+    color: inherit;
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+  }
+
+  .article-page__adj-link:hover {
+    background: color-mix(in srgb, var(--color-foreground) 5%, var(--color-background));
+  }
+
+  .article-page__adj-link--newer {
+    text-align: end;
+  }
+
+  .article-page__adj-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.65;
+  }
+
+  .article-page__adj-title {
+    font-size: var(--font-size-h5);
+    font-family: var(--font-heading-family);
+  }
+
+  .article-page__related {
+    margin-block: var(--spacing-xl);
+  }
+
+  .article-page__related-title {
+    font-size: var(--font-size-h3);
+    margin: 0 0 var(--spacing-md);
+    font-family: var(--font-heading-family);
+  }
+
+  .article-page__related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: var(--spacing-md);
+  }
+
+  .article-page__comments {
+    margin-block-start: var(--spacing-xl);
+    padding-block-start: var(--spacing-xl);
+    border-block-start: 1px solid var(--color-border);
+    max-width: 42rem;
+  }
+
+  .article-page__comments-title {
+    margin: 0 0 var(--spacing-md);
+    font-size: var(--font-size-h4);
+  }
+
+  .article-page__comment-list {
+    margin: 0 0 var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+
+  .article-page__comment {
+    padding-block-end: var(--spacing-md);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .article-page__comment-author {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .article-page__comment-date {
+    margin: 0.15rem 0 var(--spacing-sm);
+    font-size: 0.875rem;
+    opacity: 0.75;
+  }
+
+  .article-page__comment-body {
+    font-size: 0.9375rem;
+  }
+
+  .article-page__comment-form-title {
+    margin: 0 0 var(--spacing-md);
+    font-size: var(--font-size-h5);
+  }
+
+  .article-page__field {
+    margin-block-end: var(--spacing-md);
+  }
+
+  .article-page__label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-block-end: 0.35rem;
+  }
+
+  .article-page__input,
+  .article-page__textarea {
+    width: 100%;
+    max-width: 32rem;
+    font: inherit;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-background);
+    color: inherit;
+  }
+
+  .article-page__textarea {
+    max-width: 42rem;
+    resize: vertical;
+    min-height: 8rem;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.article",
+  "name": "t:sections.article.name",
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "t:sections.article.settings.show_breadcrumbs.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_featured_image",
+      "label": "t:sections.article.settings.show_featured_image.label",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "t:sections.article.settings.image_ratio.label",
+      "options": [
+        { "value": "21_9", "label": "t:options.article_image_ratio.wide_21_9" },
+        { "value": "16_9", "label": "t:options.article_image_ratio.classic_16_9" },
+        { "value": "4_3", "label": "t:options.article_image_ratio.standard_4_3" }
+      ],
+      "default": "21_9"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_related",
+      "label": "t:sections.article.settings.show_related.label",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "related_count",
+      "min": 0,
+      "max": 6,
+      "step": 1,
+      "label": "t:sections.article.settings.related_count.label",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "comments_per_page",
+      "min": 5,
+      "max": 50,
+      "step": 5,
+      "label": "t:sections.article.settings.comments_per_page.label",
+      "default": 10
+    },
     {
       "type": "color_scheme",
       "id": "color_scheme",
@@ -87,7 +502,7 @@
         { "value": "lg",      "label": "t:options.section_spacing.lg"      },
         { "value": "xl",      "label": "t:options.section_spacing.xl"      }
       ],
-      "default": "default"
+      "default": "md"
     }
   ]
 }

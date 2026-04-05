@@ -11,6 +11,7 @@
   if show_footer_lang or show_footer_country
     assign show_footer_localization = true
   endif
+  assign show_footer_payment = section.settings.show_payment_icons | default: settings.footer_show_payment_icons, allow_false: true
 -%}
 
 <footer
@@ -94,6 +95,7 @@
               </div>
 
             {%- when 'social' -%}
+              {%- unless settings.footer_show_social_icons == false -%}
               <div class="footer-block footer-block--social" {{ block.shopify_attributes }}>
                 {%- if block.settings.heading != blank -%}
                   <p class="footer-block__heading">{{ block.settings.heading }}</p>
@@ -179,6 +181,7 @@
                   {%- endif -%}
                 </ul>
               </div>
+              {%- endunless -%}
 
             {%- when 'text' -%}
               <div class="footer-block footer-block--text" {{ block.shopify_attributes }}>
@@ -280,7 +283,7 @@
       {%- endif -%}
 
       {%- comment -%} Payment icons {%- endcomment -%}
-      {%- if section.settings.show_payment_icons and shop.enabled_payment_types != empty -%}
+      {%- if show_footer_payment and shop.enabled_payment_types != empty -%}
         <ul
           class="footer__payment-list"
           role="list"

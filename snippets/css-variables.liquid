@@ -1,6 +1,6 @@
 {% comment %}
   Outputs all design-token CSS custom properties onto :root.
-  Every value is driven by a theme setting — no hardcoded design values live here.
+  Most values come from theme settings; spacing tokens use a fixed scale defined here.
   Rendered once inside <head> via {% render 'css-variables' %} in layout/theme.liquid.
 {% endcomment %}
 
@@ -23,6 +23,37 @@
     {% assign btn_radius = '0' %}
   {% else %}
     {% assign btn_radius = 'var(--radius-md)' %}
+{% endcase %}
+
+{% assign spacing_scale = settings.spacing_scale | default: 'balanced' %}
+{% case spacing_scale %}
+  {% when 'compact' %}
+    {% assign spacing_xs = '0.25rem' %}
+    {% assign spacing_sm = '0.5rem' %}
+    {% assign spacing_md = '1rem' %}
+    {% assign spacing_lg = '1.5rem' %}
+    {% assign spacing_xl = '2.25rem' %}
+    {% assign spacing_2xl = '3rem' %}
+    {% assign section_padding_block = '3rem' %}
+    {% assign section_gap = '1.25rem' %}
+  {% when 'spacious' %}
+    {% assign spacing_xs = '0.5rem' %}
+    {% assign spacing_sm = '1rem' %}
+    {% assign spacing_md = '2rem' %}
+    {% assign spacing_lg = '3rem' %}
+    {% assign spacing_xl = '4.5rem' %}
+    {% assign spacing_2xl = '6rem' %}
+    {% assign section_padding_block = '6.5rem' %}
+    {% assign section_gap = '2.75rem' %}
+  {% else %}
+    {% assign spacing_xs = '0.375rem' %}
+    {% assign spacing_sm = '0.75rem' %}
+    {% assign spacing_md = '1.5rem' %}
+    {% assign spacing_lg = '2.5rem' %}
+    {% assign spacing_xl = '3.5rem' %}
+    {% assign spacing_2xl = '5rem' %}
+    {% assign section_padding_block = '5rem' %}
+    {% assign section_gap = '2rem' %}
 {% endcase %}
 
 {% style %}
@@ -90,45 +121,15 @@
         --font-size-h6: clamp(1rem,     1.5vw,  1.125rem);
     {% endcase %}
 
-    /* ── Spacing tokens (driven by spacing_scale setting) ─────────── */
-    {% case settings.spacing_scale %}
-      {% when 'none' %}
-        --spacing-xs:             0;
-        --spacing-sm:             0;
-        --spacing-md:             0;
-        --spacing-lg:             0;
-        --spacing-xl:             0;
-        --spacing-2xl:            0;
-        --section-padding-block:  0;
-        --section-gap:            0;
-      {% when 'compact' %}
-        --spacing-xs:             0.25rem;
-        --spacing-sm:             0.5rem;
-        --spacing-md:             1rem;
-        --spacing-lg:             1.5rem;
-        --spacing-xl:             2rem;
-        --spacing-2xl:            3rem;
-        --section-padding-block:  3rem;
-        --section-gap:            1rem;
-      {% when 'spacious' %}
-        --spacing-xs:             0.5rem;
-        --spacing-sm:             1rem;
-        --spacing-md:             2rem;
-        --spacing-lg:             3rem;
-        --spacing-xl:             4rem;
-        --spacing-2xl:            8rem;
-        --section-padding-block:  8rem;
-        --section-gap:            3rem;
-      {% else %}
-        --spacing-xs:             0.375rem;
-        --spacing-sm:             0.75rem;
-        --spacing-md:             1.5rem;
-        --spacing-lg:             2.5rem;
-        --spacing-xl:             3.5rem;
-        --spacing-2xl:            5rem;
-        --section-padding-block:  5rem;
-        --section-gap:            2rem;
-    {% endcase %}
+    /* ── Spacing tokens (theme spacing scale) ─────────────────────── */
+    --spacing-xs:             {{ spacing_xs }};
+    --spacing-sm:             {{ spacing_sm }};
+    --spacing-md:             {{ spacing_md }};
+    --spacing-lg:             {{ spacing_lg }};
+    --spacing-xl:             {{ spacing_xl }};
+    --spacing-2xl:            {{ spacing_2xl }};
+    --section-padding-block:  {{ section_padding_block }};
+    --section-gap:            {{ section_gap }};
 
     /* ── Radius tokens ────────────────────────────────────────────── */
     --radius-sm:      {{ settings.border_radius_sm }}px;
@@ -156,7 +157,7 @@
     /* ── Icon tokens ───────────────────────────────────────────────── */
     --icon-stroke-width:  1.5;
 
-    /* ── Header height (fixed — not tied to spacing scale) ───────────── */
+    /* ── Header height (fixed) ─────────────────────────────────────── */
     /* JS writes --header-height at runtime for external consumers only.  */
     --header-height-base:    5rem;
     --header-height-compact: 3.75rem;

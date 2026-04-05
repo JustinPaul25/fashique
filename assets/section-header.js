@@ -152,6 +152,7 @@
   const MEGA_HOVER_DELAY = 100; // ms before opening/closing on hover
   let megaOpenTimer  = null;
   let megaCloseTimer = null;
+  let removeMegaTrap = null;
 
   const openMegaPanel = (trigger) => {
     const key   = trigger.dataset.megaTrigger;
@@ -161,13 +162,18 @@
     header.querySelectorAll('.mega-menu:not([hidden])').forEach((p) => {
       if (p !== panel) closeMegaPanel(p);
     });
+    removeMegaTrap?.();
+    removeMegaTrap = null;
     panel.removeAttribute('hidden');
     trigger.setAttribute('aria-expanded', 'true');
+    removeMegaTrap = trapFocus(panel);
   };
 
   const closeMegaPanel = (panel) => {
     const key     = panel.dataset.megaPanel;
     const trigger = header.querySelector(`[data-mega-trigger="${key}"]`);
+    removeMegaTrap?.();
+    removeMegaTrap = null;
     panel.setAttribute('hidden', '');
     trigger?.setAttribute('aria-expanded', 'false');
   };

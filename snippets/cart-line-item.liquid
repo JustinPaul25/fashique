@@ -1,0 +1,145 @@
+{% doc %}
+  Renders a single cart line: media, title, variant, unit/line price, quantity controls, remove.
+
+  @param {line_item} item - Cart line item
+  @param {number} line_index - 1-based index for stable field ids (matches line order for updates[])
+  @param {boolean} [compact] - Compact layout (cart drawer)
+
+  @example
+  {% for item in cart.items %}
+    {% render 'cart-line-item', item: item, line_index: forloop.index, compact: false %}
+  {% endfor %}
+{% enddoc %}
+
+{%- liquid
+  assign compact = compact | default: false
+  assign img_width = 200
+  assign img_sizes = '(min-width: 750px) 120px, 88px'
+  if compact
+    assign img_width = 160
+    assign img_sizes = '72px'
+  endif
+
+  assign q_min = item.quantity_rule.min | default: 1
+  assign q_step = item.quantity_rule.increment | default: 1
+  assign q_max = item.quantity_rule.max
+  assign line_img_alt = item.title | escape
+  if item.image != blank
+    assign line_img_alt = item.image.alt | default: item.title | escape
+  endif
+-%}
+
+<article
+  class="cart-line{% if compact %} cart-line--compact{% endif %}"
+  data-cart-line
+  data-product-id="{{ item.product_id }}"
+  id="CartItem-{{ line_index }}"
+>
+  <a
+    href="{{ item.url }}"
+    class="cart-line__media{% if item.image == blank %} cart-line__media--placeholder{% endif %}"
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    {%- if item.image != blank -%}
+      {{
+        item.image
+        | image_url: width: img_width
+        | image_tag: loading: 'lazy', sizes: img_sizes, class: 'cart-line__img', alt: line_img_alt
+      }}
+    {%- else -%}
+      <span class="cart-line__img-fallback">{{ 'product-1' | placeholder_svg_tag }}</span>
+    {%- endif -%}
+  </a>
+
+  <div class="cart-line__details">
+    <a href="{{ item.url }}" class="cart-line__title">{{ item.product.title | escape }}</a>
+
+    {%- unless item.product.has_only_default_variant -%}
+      <p class="cart-line__variant">{{ item.variant.title | escape }}</p>
+    {%- endunless -%}
+
+    {%- if item.selling_plan_allocation -%}
+      <p class="cart-line__selling-plan">{{ item.selling_plan_allocation.selling_plan.name | escape }}</p>
+    {%- endif -%}
+
+    {%- unless item.properties == empty -%}
+      <dl class="cart-line__properties">
+        {%- for property in item.properties -%}
+          {%- assign prop_first = property.first -%}
+          {%- assign prop_last = property.last -%}
+          {%- if prop_last != blank -%}
+            <div class="cart-line__property">
+              <dt>{{ prop_first | escape }}:</dt>
+              <dd>{{ prop_last | escape }}</dd>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </dl>
+    {%- endunless -%}
+
+    <div class="cart-line__unit-price">
+      {%- if item.original_line_price != item.final_line_price -%}
+        <span class="visually-hidden">{{ 'products.price.regular_price' | t }}</span>
+        <s class="cart-line__compare">{{ item.original_price | money }}</s>
+      {%- endif -%}
+      <span class="cart-line__price">{{ item.final_price | money }}</span>
+      {%- if item.unit_price_measurement -%}
+        <span class="cart-line__unit">
+          {{ item.unit_price | money }}/
+          {%- if item.unit_price_measurement.reference_value != 1 -%}
+            {{ item.unit_price_measurement.reference_value }}
+          {%- endif -%}
+          {{ item.unit_price_measurement.reference_unit }}
+        </span>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="cart-line__qty-wrap">
+    <label class="visually-hidden" for="Quantity-{{ line_index }}">{{ 'cart.quantity' | t }}</label>
+    <div class="cart-stepper" data-cart-stepper>
+      <button
+        type="button"
+        class="cart-stepper__btn"
+        data-cart-stepper-dec
+        aria-label="{{ 'cart.decrease_quantity' | t }}"
+      >
+        &minus;
+      </button>
+      <input
+        type="number"
+        name="updates[]"
+        id="Quantity-{{ line_index }}"
+        class="cart-stepper__input"
+        value="{{ item.quantity }}"
+        min="{{ q_min }}"
+        step="{{ q_step }}"
+        {% if q_max != blank %}
+          max="{{ q_max }}"
+        {% endif %}
+        data-cart-quantity-input
+        autocomplete="off"
+      >
+      <button
+        type="button"
+        class="cart-stepper__btn"
+        data-cart-stepper-inc
+        aria-label="{{ 'cart.increase_quantity' | t }}"
+      >
+        +
+      </button>
+    </div>
+  </div>
+
+  <div class="cart-line__line-total">
+    <span class="visually-hidden">{{ 'cart.line_total' | t }}</span>
+    <span class="cart-line__total-amount">{{ item.final_line_price | money }}</span>
+  </div>
+
+  <div class="cart-line__remove">
+    <a href="{{ item.url_to_remove }}" class="cart-line__remove-link underline">
+      {{- 'cart.remove' | t -}}
+    </a>
+  </div>
+</article>

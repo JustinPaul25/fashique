@@ -27,9 +27,9 @@
       >
         {%- for block in section.blocks -%}
           {%- assign col_placeholder_num = forloop.index | modulo: 6 | plus: 1 -%}
-          {%- assign col_placeholder = 'collection-' | append: col_placeholder_num -%}
           <li
             class="multicolumn__item multicolumn__item--{{ section.settings.alignment }}"
+            data-placeholder-index="{{ col_placeholder_num }}"
             {{ block.shopify_attributes }}
           >
             <div class="multicolumn__media">
@@ -39,7 +39,7 @@
                 sizes: '(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw',
                 alt: block.settings.image.alt | default: block.settings.heading,
                 class: 'multicolumn__img',
-                placeholder_type: col_placeholder
+                placeholder_type: 'collection-' | append: col_placeholder_num
               -%}
             </div>
 
@@ -246,7 +246,7 @@
         { "value": "lg",      "label": "t:options.section_spacing.lg"      },
         { "value": "xl",      "label": "t:options.section_spacing.xl"      }
       ],
-      "default": "default"
+      "default": "none"
     }
   ],
   "blocks": [
@@ -308,6 +308,37 @@
           "settings": {
             "heading": "Secure checkout",
             "text": "<p>Your payment is protected with industry-leading encryption.</p>"
+          }
+        }
+      ]
+    },
+    {
+      "name": "t:sections.multicolumn.presets.highlights",
+      "settings": {
+        "title": "Why shoppers love it",
+        "columns_desktop": "3",
+        "alignment": "start"
+      },
+      "blocks": [
+        {
+          "type": "column",
+          "settings": {
+            "heading": "Premium materials",
+            "text": "<ul><li>Natural, breathable fibers</li><li>Responsible dye process</li><li>Built to last seasons</li></ul>"
+          }
+        },
+        {
+          "type": "column",
+          "settings": {
+            "heading": "Designed for real life",
+            "text": "<ul><li>Easy care instructions</li><li>Flattering, versatile fits</li><li>Thoughtful pocket placement</li></ul>"
+          }
+        },
+        {
+          "type": "column",
+          "settings": {
+            "heading": "Service you can trust",
+            "text": "<ul><li>Fast, trackable shipping</li><li>Hassle-free returns</li><li>Real humans on support</li></ul>"
           }
         }
       ]

@@ -71,6 +71,7 @@
                 {%- render 'product-card',
                   product: product,
                   show_vendor: section.settings.show_vendor,
+                  show_quick_view: settings.enable_quick_view,
                   sizes: '(min-width: 1200px) 25vw, (min-width: 768px) 33vw, 75vw'
                 -%}
               </li>
@@ -100,6 +101,7 @@
             {%- render 'product-card',
               product: product,
               show_vendor: section.settings.show_vendor,
+              show_quick_view: settings.enable_quick_view,
               sizes: '(min-width: 1200px) 25vw, (min-width: 768px) 33vw, 50vw'
             -%}
           </li>
@@ -110,6 +112,8 @@
 
   </div>
 </section>
+
+<script src="{{ 'component-product-card-swatches.js' | asset_url }}" defer></script>
 
 {% stylesheet %}
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -330,7 +334,7 @@
         { "value": "lg",      "label": "t:options.section_spacing.lg"      },
         { "value": "xl",      "label": "t:options.section_spacing.xl"      }
       ],
-      "default": "default"
+      "default": "none"
     }
   ],
   "presets": [

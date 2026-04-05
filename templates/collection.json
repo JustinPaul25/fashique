@@ -11,7 +11,18 @@
   "sections": {
     "main": {
       "type": "collection",
-      "settings": {}
+      "settings": {
+        "color_scheme": "scheme-1",
+        "section_spacing": "md",
+        "show_breadcrumbs": true,
+        "show_collection_image": true,
+        "image_ratio": "16_9",
+        "columns_desktop": "3",
+        "products_per_page": "24",
+        "pagination_mode": "infinite",
+        "enable_filtering": true,
+        "show_vendor": false
+      }
     }
   },
   "order": [

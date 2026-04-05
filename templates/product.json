@@ -11,10 +11,120 @@
   "sections": {
     "main": {
       "type": "product",
-      "settings": {}
+      "settings": {
+        "color_scheme": "scheme-1",
+        "section_spacing": "default",
+        "enable_variant_url": true,
+        "stock_threshold": 5,
+        "show_color_swatches": true
+      },
+      "blocks": {
+        "breadcrumbs": {
+          "type": "breadcrumbs",
+          "settings": {
+            "show_breadcrumbs": true
+          }
+        },
+        "title": {
+          "type": "title",
+          "settings": {
+            "show_vendor": true
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "buttons"
+          }
+        },
+        "inventory": {
+          "type": "inventory",
+          "settings": {
+            "show_in_stock_message": false,
+            "show_sku": true
+          }
+        },
+        "line_item_properties": {
+          "type": "line_item_properties",
+          "settings": {
+            "heading": "Add-ons",
+            "property_1_label": "Custom message",
+            "property_1_placeholder": "e.g. Gift note",
+            "property_1_required": false,
+            "enable_property_2": true,
+            "property_2_label": "Second line",
+            "property_2_placeholder": "",
+            "property_2_required": false
+          }
+        },
+        "selling_plans": {
+          "type": "selling_plans",
+          "settings": {
+            "heading": "Purchase options",
+            "one_time_label": "One-time purchase",
+            "show_plan_descriptions": false
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {}
+        },
+        "description": {
+          "type": "description",
+          "settings": {
+            "collapsible": false
+          }
+        },
+        "share": {
+          "type": "share",
+          "settings": {}
+        },
+        "tiered_pricing": {
+          "type": "tiered_pricing",
+          "settings": {}
+        },
+        "combined_listing": {
+          "type": "combined_listing",
+          "settings": {}
+        },
+        "complementary": {
+          "type": "complementary",
+          "settings": {
+            "heading": "Pairs well with",
+            "product_count": 4,
+            "intent": "complementary"
+          }
+        }
+      },
+      "block_order": [
+        "breadcrumbs",
+        "title",
+        "price",
+        "variant_picker",
+        "inventory",
+        "line_item_properties",
+        "selling_plans",
+        "buy_buttons",
+        "description",
+        "share",
+        "tiered_pricing",
+        "combined_listing",
+        "complementary"
+      ]
+    },
+    "sticky_atc": {
+      "type": "sticky-atc",
+      "settings": {
+        "color_scheme": "scheme-1"
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "sticky_atc"
   ]
 }

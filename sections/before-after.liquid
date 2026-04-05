@@ -1,11 +1,35 @@
 {%- comment -%}
-  Before / After Slider  (Phase 5.1 / Feature #4)
-  ──────────────────────────────────────────────────
-  • Draggable vertical or horizontal divider using Pointer Events API.
-  • Keyboard accessible: Arrow keys move the divider by 5% increments.
-  • Optional heading and subtext above the slider.
-  • Respects prefers-reduced-motion — animations disabled but interaction works.
+  Before / After (Phase 8 / Feature #4): one or more pairs. Multiple pairs use Splide.
+  Legacy: section-level before/after images when no valid pair blocks. JS: section-before-after.js
 {%- endcomment -%}
+{%- liquid
+  assign orientation = section.settings.orientation | default: 'horizontal'
+  assign pair_count = 0
+  for block in section.blocks
+    if block.type == 'pair'
+      if block.settings.before_image != blank and block.settings.after_image != blank
+        assign pair_count = pair_count | plus: 1
+      endif
+    endif
+  endfor
+
+  assign legacy_ok = false
+  if section.settings.before_image != blank and section.settings.after_image != blank
+    assign legacy_ok = true
+  endif
+
+  assign show_splide = false
+  if pair_count > 1
+    assign show_splide = true
+  endif
+
+  assign show_sliders = false
+  if pair_count > 0
+    assign show_sliders = true
+  elsif legacy_ok
+    assign show_sliders = true
+  endif
+-%}
 
 {%- render 'section-spacing', section: section -%}
 <section
@@ -13,7 +37,6 @@
   data-section-id="{{ section.id }}"
 >
   <div class="page-width">
-
     {%- if section.settings.heading != blank or section.settings.subtext != blank -%}
       <div class="before-after__header">
         {%- if section.settings.heading != blank -%}
@@ -25,154 +48,81 @@
       </div>
     {%- endif -%}
 
-    {%- assign before_image = section.settings.before_image -%}
-    {%- assign after_image  = section.settings.after_image -%}
-
-    <div
-      class="before-after__slider before-after__slider--{{ section.settings.orientation }}"
-      id="before-after-{{ section.id }}"
-      role="group"
-      aria-label="{{ section.settings.before_label | escape }} / {{ section.settings.after_label | escape }}"
-    >
-      {%- comment -%} After image (bottom layer) {%- endcomment -%}
-      <div class="before-after__after-wrap">
-        {%- render 'image',
-          image: after_image,
-          widths: '400,700,1000,1400',
-          sizes: '(min-width: 1024px) 80vw, 100vw',
-          alt: after_image.alt | default: section.settings.after_label,
-          class: 'before-after__img before-after__img--after',
-          loading: 'lazy',
-          placeholder_type: 'lifestyle-2'
-        -%}
-        <span class="before-after__badge before-after__badge--after" aria-hidden="true">
-          {%- if section.settings.after_label != blank -%}
-            {{- section.settings.after_label | escape -}}
-          {%- else -%}
-            {{- 'sections.before_after.after' | t -}}
-          {%- endif -%}
-        </span>
-      </div>
-
-      {%- comment -%} Before image (top layer — clipped) {%- endcomment -%}
-      <div class="before-after__before-wrap" id="before-wrap-{{ section.id }}">
-        {%- render 'image',
-          image: before_image,
-          widths: '400,700,1000,1400',
-          sizes: '(min-width: 1024px) 80vw, 100vw',
-          alt: before_image.alt | default: section.settings.before_label,
-          class: 'before-after__img before-after__img--before',
-          loading: 'lazy',
-          placeholder_type: 'lifestyle-1'
-        -%}
-        <span class="before-after__badge before-after__badge--before" aria-hidden="true">
-          {%- if section.settings.before_label != blank -%}
-            {{- section.settings.before_label | escape -}}
-          {%- else -%}
-            {{- 'sections.before_after.before' | t -}}
-          {%- endif -%}
-        </span>
-      </div>
-
-      {%- comment -%} Draggable divider {%- endcomment -%}
-      <div
-        class="before-after__divider"
-        id="divider-{{ section.id }}"
-        role="slider"
-        aria-valuemin="0"
-        aria-valuemax="100"
-        aria-valuenow="50"
-        aria-label="{{ 'accessibility.drag_handle' | t }}"
-        tabindex="0"
-      >
-        <div class="before-after__handle" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
-            <path d="m9 18 6-6-6-6"/>
-          </svg>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
-            <path d="m15 18-6-6 6-6"/>
-          </svg>
+    {%- if show_sliders -%}
+      {%- if show_splide -%}
+        <div
+          class="splide before-after__splide"
+          data-splide-config='{"type":"slide","perPage":1,"perMove":1,"gap":"var(--spacing-lg)","arrows":true,"pagination":true,"rewind":true}'
+        >
+          <div class="splide__track">
+            <ul class="splide__list" role="list">
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'pair'
+                  and block.settings.before_image != blank
+                  and block.settings.after_image != blank
+                -%}
+                  <li class="splide__slide" {{ block.shopify_attributes }}>
+                    {%- render 'before-after-slide',
+                      id_base: block.id,
+                      orientation: orientation,
+                      before_image: block.settings.before_image,
+                      after_image: block.settings.after_image,
+                      before_label: block.settings.before_label,
+                      after_label: block.settings.after_label
+                    -%}
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          </div>
         </div>
-      </div>
+        <link
+          rel="stylesheet"
+          href="{{ 'splide.min.css' | asset_url }}"
+          media="print"
+          onload="this.media='all'"
+        >
+        <noscript><link rel="stylesheet" href="{{ 'splide.min.css' | asset_url }}"></noscript>
+        <script src="{{ 'splide.min.js' | asset_url }}" defer></script>
+        <script src="{{ 'splide-init.js' | asset_url }}" defer></script>
+      {%- elsif pair_count == 1 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'pair'
+            and block.settings.before_image != blank
+            and block.settings.after_image != blank
+          -%}
+            <div {{ block.shopify_attributes }}>
+              {%- render 'before-after-slide',
+                id_base: block.id,
+                orientation: orientation,
+                before_image: block.settings.before_image,
+                after_image: block.settings.after_image,
+                before_label: block.settings.before_label,
+                after_label: block.settings.after_label
+              -%}
+            </div>
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- elsif legacy_ok -%}
+        {%- render 'before-after-slide',
+          id_base: section.id,
+          orientation: orientation,
+          before_image: section.settings.before_image,
+          after_image: section.settings.after_image,
+          before_label: section.settings.before_label,
+          after_label: section.settings.after_label
+        -%}
+      {%- endif -%}
 
-    </div>
-
-      <script>
-        (function () {
-          'use strict';
-
-          const slider      = document.getElementById('before-after-{{ section.id }}');
-          if (!slider) return;
-
-          const beforeWrap  = document.getElementById('before-wrap-{{ section.id }}');
-          const divider     = document.getElementById('divider-{{ section.id }}');
-          const isVertical  = slider.classList.contains('before-after__slider--vertical');
-
-          let isDragging = false;
-          let position   = 50; /* percentage */
-
-          function applyPosition(pct) {
-            position = Math.max(0, Math.min(100, pct));
-            divider.setAttribute('aria-valuenow', Math.round(position));
-            const prop = isVertical ? 'height' : 'width';
-            beforeWrap.style[prop] = position + '%';
-            divider.style[isVertical ? 'top' : 'left'] = position + '%';
-          }
-
-          function getPointerPosition(e) {
-            const rect = slider.getBoundingClientRect();
-            if (isVertical) {
-              return ((e.clientY - rect.top) / rect.height) * 100;
-            }
-            return ((e.clientX - rect.left) / rect.width) * 100;
-          }
-
-          /* Pointer events */
-          divider.addEventListener('pointerdown', function (e) {
-            isDragging = true;
-            divider.setPointerCapture(e.pointerId);
-            e.preventDefault();
-          });
-
-          slider.addEventListener('pointermove', function (e) {
-            if (!isDragging) return;
-            applyPosition(getPointerPosition(e));
-          });
-
-          slider.addEventListener('pointerup',     function () { isDragging = false; });
-          slider.addEventListener('pointercancel', function () { isDragging = false; });
-
-          /* Keyboard navigation */
-          divider.addEventListener('keydown', function (e) {
-            const step = 5;
-            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-              applyPosition(position - step);
-              e.preventDefault();
-            } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-              applyPosition(position + step);
-              e.preventDefault();
-            } else if (e.key === 'Home') {
-              applyPosition(0);
-              e.preventDefault();
-            } else if (e.key === 'End') {
-              applyPosition(100);
-              e.preventDefault();
-            }
-          });
-
-          /* Init */
-          applyPosition(50);
-        })();
-      </script>
-
+      <script src="{{ 'section-before-after.js' | asset_url }}" defer></script>
+    {%- elsif request.design_mode -%}
+      <p class="before-after__editor-hint">{{ 'sections.before_after.editor_hint' | t }}</p>
+    {%- endif -%}
   </div>
 </section>
 
 {% stylesheet %}
-  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     BEFORE / AFTER SLIDER
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-
   .before-after {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -205,7 +155,16 @@
     margin: 0;
   }
 
-  /* ── Slider container ────────────────────────────────────────────── */
+  .before-after__editor-hint {
+    text-align: center;
+    opacity: 0.7;
+    font-size: 0.9375rem;
+  }
+
+  .before-after__splide {
+    margin-inline: auto;
+  }
+
   .before-after__slider {
     position: relative;
     overflow: hidden;
@@ -221,26 +180,22 @@
     aspect-ratio: 4 / 3;
   }
 
-  /* ── After layer (full size, sits behind) ────────────────────────── */
   .before-after__after-wrap {
     position: absolute;
     inset: 0;
   }
 
-  /* ── Before layer (top, clipped by JS-set width/height) ──────────── */
   .before-after__before-wrap {
     position: absolute;
     inset: 0;
-    width: 50%;
     overflow: hidden;
+    clip-path: inset(0 50% 0 0);
   }
 
   .before-after__slider--vertical .before-after__before-wrap {
-    width: 100%;
-    height: 50%;
+    clip-path: inset(0 0 50% 0);
   }
 
-  /* Images */
   .before-after__img {
     position: absolute;
     inset: 0;
@@ -251,13 +206,6 @@
     pointer-events: none;
   }
 
-  .before-after__img--before {
-    /* Counteract the clipping container so the image fills the original frame */
-    width: 100%;
-    max-width: none;
-  }
-
-  /* ── Badges ──────────────────────────────────────────────────────── */
   .before-after__badge {
     position: absolute;
     bottom: var(--spacing-sm);
@@ -273,10 +221,13 @@
     backdrop-filter: blur(4px);
   }
 
-  .before-after__badge--before { inset-inline-start: var(--spacing-sm); }
-  .before-after__badge--after  { inset-inline-end: var(--spacing-sm); }
+  .before-after__badge--before {
+    inset-inline-start: var(--spacing-sm);
+  }
+  .before-after__badge--after {
+    inset-inline-end: var(--spacing-sm);
+  }
 
-  /* ── Divider line ────────────────────────────────────────────────── */
   .before-after__divider {
     position: absolute;
     top: 0;
@@ -309,7 +260,6 @@
     outline-offset: 2px;
   }
 
-  /* ── Handle circle ───────────────────────────────────────────────── */
   .before-after__handle {
     position: relative;
     z-index: 11;
@@ -329,7 +279,6 @@
     flex-direction: column;
   }
 
-  /* ── Placeholder SVG inside image panels ─────────────────────────── */
   .before-after__after-wrap .image-placeholder,
   .before-after__before-wrap .image-placeholder {
     position: absolute;
@@ -350,6 +299,10 @@
   "tag": "section",
   "class": "section-before-after",
   "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:sections.before_after.settings.legacy_info"
+    },
     {
       "type": "image_picker",
       "id": "before_image",
@@ -378,7 +331,7 @@
       "label": "t:sections.before_after.settings.orientation.label",
       "options": [
         { "value": "horizontal", "label": "t:options.orientation.horizontal" },
-        { "value": "vertical",   "label": "t:options.orientation.vertical" }
+        { "value": "vertical", "label": "t:options.orientation.vertical" }
       ],
       "default": "horizontal"
     },
@@ -405,14 +358,44 @@
       "info": "t:info.section_spacing",
       "options": [
         { "value": "default", "label": "t:options.section_spacing.default" },
-        { "value": "none",    "label": "t:options.section_spacing.none"    },
-        { "value": "xs",      "label": "t:options.section_spacing.xs"      },
-        { "value": "sm",      "label": "t:options.section_spacing.sm"      },
-        { "value": "md",      "label": "t:options.section_spacing.md"      },
-        { "value": "lg",      "label": "t:options.section_spacing.lg"      },
-        { "value": "xl",      "label": "t:options.section_spacing.xl"      }
+        { "value": "none", "label": "t:options.section_spacing.none" },
+        { "value": "xs", "label": "t:options.section_spacing.xs" },
+        { "value": "sm", "label": "t:options.section_spacing.sm" },
+        { "value": "md", "label": "t:options.section_spacing.md" },
+        { "value": "lg", "label": "t:options.section_spacing.lg" },
+        { "value": "xl", "label": "t:options.section_spacing.xl" }
       ],
-      "default": "default"
+      "default": "none"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "pair",
+      "name": "t:sections.before_after.blocks.pair.name",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "before_image",
+          "label": "t:sections.before_after.settings.before_image.label"
+        },
+        {
+          "type": "image_picker",
+          "id": "after_image",
+          "label": "t:sections.before_after.settings.after_image.label"
+        },
+        {
+          "type": "text",
+          "id": "before_label",
+          "label": "t:sections.before_after.settings.before_label.label",
+          "default": "Before"
+        },
+        {
+          "type": "text",
+          "id": "after_label",
+          "label": "t:sections.before_after.settings.after_label.label",
+          "default": "After"
+        }
+      ]
     }
   ],
   "presets": [
@@ -424,7 +407,16 @@
         "orientation": "horizontal",
         "heading": "See the transformation",
         "subtext": "Drag the slider to compare before and after."
-      }
+      },
+      "blocks": [
+        {
+          "type": "pair",
+          "settings": {
+            "before_label": "Before",
+            "after_label": "After"
+          }
+        }
+      ]
     }
   ]
 }

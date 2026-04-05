@@ -9,7 +9,7 @@
   inheritance.
 
   When the setting value is "default" (or blank) no style is emitted,
-  so the section fully inherits the global spacing_scale token.
+  so the section inherits the theme default --section-padding-block from :root.
 
   Usage (place near the top of any section template):
     {%- render 'section-spacing', section: section -%}
@@ -19,7 +19,7 @@
       "type":    "select",
       "id":      "section_spacing",
       "label":   "t:labels.section_spacing",
-      "default": "default",
+      "default": "none",
       "options": [
         { "value": "default", "label": "t:options.section_spacing.default" },
         { "value": "none",    "label": "t:options.section_spacing.none"    },
@@ -31,19 +31,18 @@
       ]
     }
 
-  Spacing values relative to the active global spacing_scale:
-    default → inherits global --section-padding-block  (no override)
+  Spacing values relative to theme tokens on :root:
+    default → inherits --section-padding-block  (no override)
     none    → 0
-    xs      → var(--spacing-md)          ≈  25 % of balanced default
-    sm      → var(--spacing-xl)          ≈  70 % of balanced default
-    md      → var(--spacing-2xl)         = 100 % of balanced default (same as global)
-    lg      → calc(var(--spacing-2xl) * 1.5)   ≈ 150 %
-    xl      → calc(var(--spacing-2xl) * 2)      = 200 %
+    xs      → var(--spacing-md)
+    sm      → var(--spacing-xl)
+    md      → var(--spacing-2xl)   (same numeric scale as default section padding)
+    lg      → calc(var(--spacing-2xl) * 1.5)
+    xl      → calc(var(--spacing-2xl) * 2)
 
-  Note: --spacing-2xl equals --section-padding-block across all spacing_scale
-  modes (compact / balanced / spacious), so "md" is always equivalent to
-  "default" — useful as an explicit reset when nested components might
-  otherwise multiply spacing.
+  Note: --spacing-2xl matches --section-padding-block on :root, so "md" matches
+  "default" — useful as an explicit reset when nested components might otherwise
+  multiply spacing.
 {%- endcomment -%}
 
 {%- assign sp = section.settings.section_spacing -%}

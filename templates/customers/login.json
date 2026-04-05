@@ -1,0 +1,12 @@
+{
+  "sections": {
+    "main": {
+      "type": "customer-login",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "section_spacing": "md"
+      }
+    }
+  },
+  "order": ["main"]
+}

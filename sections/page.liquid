@@ -1,19 +1,86 @@
-{% comment %}
-  This section is used in the page template to render store pages like About us
-  or Contact us.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/page
-{% endcomment %}
+{%- comment -%}
+  Standard page (Phase 5.8): title, content, optional breadcrumbs, layout modes.
+{%- endcomment -%}
 
 {%- render 'section-spacing', section: section -%}
-<div class="color-scheme color-{{ section.settings.color_scheme }}">
-  <h1>{{ page.title }}</h1>
-  {{ page.content }}
+
+<div class="page-section section-padding color-scheme color-{{ section.settings.color_scheme }}">
+  <div class="page-section__inner page-width page-section__inner--{{ section.settings.layout }}">
+    {%- if section.settings.show_breadcrumbs -%}
+      <div class="page-section__breadcrumbs">
+        {%- render 'breadcrumbs', show: true -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.layout == 'sidebar' -%}
+      <div class="page-section__split">
+        <div class="page-section__main">
+          <h1 class="page-section__title">{{ page.title | escape }}</h1>
+          <div class="page-section__content rte">{{ page.content }}</div>
+        </div>
+        {%- if section.settings.sidebar_content != blank -%}
+          <aside class="page-section__sidebar rte">
+            {{ section.settings.sidebar_content }}
+          </aside>
+        {%- endif -%}
+      </div>
+    {%- else -%}
+      <div class="page-section__main">
+        <h1 class="page-section__title">{{ page.title | escape }}</h1>
+        <div class="page-section__content rte">{{ page.content }}</div>
+      </div>
+    {%- endif -%}
+  </div>
 </div>
+
+{% stylesheet %}
+  .page-section__inner {
+    max-width: var(--page-width);
+    margin-inline: auto;
+  }
+
+  .page-section__inner--narrow .page-section__main {
+    max-width: 40rem;
+    margin-inline: auto;
+  }
+
+  .page-section__breadcrumbs {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .page-section__title {
+    margin: 0 0 var(--spacing-md);
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+  }
+
+  .page-section__content {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .page-section__split {
+    display: grid;
+    gap: var(--spacing-xl);
+    align-items: start;
+  }
+
+  @media screen and (min-width: 990px) {
+    .page-section__split {
+      grid-template-columns: minmax(0, 1fr) minmax(14rem, 20rem);
+    }
+  }
+
+  .page-section__sidebar {
+    padding: var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--color-foreground) 4%, var(--color-background));
+    font-size: 0.9375rem;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.page",
+  "name": "t:sections.page.name",
   "settings": [
     {
       "type": "color_scheme",
@@ -28,14 +95,37 @@
       "info": "t:info.section_spacing",
       "options": [
         { "value": "default", "label": "t:options.section_spacing.default" },
-        { "value": "none",    "label": "t:options.section_spacing.none"    },
-        { "value": "xs",      "label": "t:options.section_spacing.xs"      },
-        { "value": "sm",      "label": "t:options.section_spacing.sm"      },
-        { "value": "md",      "label": "t:options.section_spacing.md"      },
-        { "value": "lg",      "label": "t:options.section_spacing.lg"      },
-        { "value": "xl",      "label": "t:options.section_spacing.xl"      }
+        { "value": "none", "label": "t:options.section_spacing.none" },
+        { "value": "xs", "label": "t:options.section_spacing.xs" },
+        { "value": "sm", "label": "t:options.section_spacing.sm" },
+        { "value": "md", "label": "t:options.section_spacing.md" },
+        { "value": "lg", "label": "t:options.section_spacing.lg" },
+        { "value": "xl", "label": "t:options.section_spacing.xl" }
+      ],
+      "default": "md"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "t:sections.page.settings.show_breadcrumbs.label",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "t:sections.page.settings.layout.label",
+      "options": [
+        { "value": "default", "label": "t:sections.page.settings.layout.options.default" },
+        { "value": "narrow", "label": "t:sections.page.settings.layout.options.narrow" },
+        { "value": "sidebar", "label": "t:sections.page.settings.layout.options.sidebar" }
       ],
       "default": "default"
+    },
+    {
+      "type": "richtext",
+      "id": "sidebar_content",
+      "label": "t:sections.page.settings.sidebar_content.label",
+      "visible_if": "{{ section.settings.layout == 'sidebar' }}"
     }
   ]
 }

@@ -33,7 +33,7 @@
         "show_dots": true,
         "autoplay": true,
         "autoplay_speed": 5,
-        "color_scheme": "color-scheme-2"
+        "color_scheme": "scheme-2"
       }
     },
     "featured-collection": {
@@ -45,7 +45,7 @@
         "columns_desktop": "4",
         "show_vendor": false,
         "show_view_all": true,
-        "color_scheme": "color-scheme-1"
+        "color_scheme": "scheme-1"
       }
     },
     "image-banner": {
@@ -57,7 +57,7 @@
         "text_position": "left",
         "overlay_opacity": 30,
         "height": "medium",
-        "color_scheme": "color-scheme-2"
+        "color_scheme": "scheme-2"
       }
     },
     "multicolumn": {
@@ -90,7 +90,7 @@
         "title": "",
         "columns_desktop": "3",
         "alignment": "center",
-        "color_scheme": "color-scheme-3"
+        "color_scheme": "scheme-3"
       }
     },
     "featured-product": {
@@ -100,7 +100,7 @@
         "show_quantity": true,
         "show_description": true,
         "button_label": "Add to cart",
-        "color_scheme": "color-scheme-3"
+        "color_scheme": "scheme-3"
       }
     },
     "testimonials": {
@@ -138,7 +138,7 @@
       "settings": {
         "title": "What our customers say",
         "layout": "grid",
-        "color_scheme": "color-scheme-3"
+        "color_scheme": "scheme-3"
       }
     },
     "ugc-grid": {
@@ -149,15 +149,13 @@
         "photo-3": { "type": "photo", "settings": { "caption": "" } },
         "photo-4": { "type": "photo", "settings": { "caption": "" } },
         "photo-5": { "type": "photo", "settings": { "caption": "" } },
-        "photo-6": { "type": "photo", "settings": { "caption": "" } },
-        "photo-7": { "type": "photo", "settings": { "caption": "" } },
-        "photo-8": { "type": "photo", "settings": { "caption": "" } }
+        "photo-6": { "type": "photo", "settings": { "caption": "" } }
       },
-      "block_order": ["photo-1","photo-2","photo-3","photo-4","photo-5","photo-6","photo-7","photo-8"],
+      "block_order": ["photo-1", "photo-2", "photo-3", "photo-4", "photo-5", "photo-6"],
       "settings": {
         "title": "Styled by you",
         "columns_desktop": "4",
-        "color_scheme": "color-scheme-1"
+        "color_scheme": "scheme-1"
       }
     },
     "countdown-timer": {
@@ -170,18 +168,28 @@
         "expired_message": "The sale has ended — check back soon.",
         "button_label": "Shop the sale",
         "button_url": "/collections/sale",
-        "color_scheme": "color-scheme-4"
+        "color_scheme": "scheme-4"
       }
     },
     "before-after": {
       "type": "before-after",
+      "blocks": {
+        "pair-1": {
+          "type": "pair",
+          "settings": {
+            "before_label": "Before",
+            "after_label": "After"
+          }
+        }
+      },
+      "block_order": ["pair-1"],
       "settings": {
         "before_label": "Before",
         "after_label": "After",
         "orientation": "horizontal",
         "heading": "See the transformation",
         "subtext": "Drag the slider to compare before and after.",
-        "color_scheme": "color-scheme-1"
+        "color_scheme": "scheme-1"
       }
     },
     "rich-text": {
@@ -193,7 +201,7 @@
         "button_label": "About us",
         "button_url": "/pages/about",
         "alignment": "center",
-        "color_scheme": "color-scheme-1"
+        "color_scheme": "scheme-1"
       }
     },
     "faq": {
@@ -224,7 +232,7 @@
       "block_order": ["faq-1", "faq-2", "faq-3"],
       "settings": {
         "title": "Frequently asked questions",
-        "color_scheme": "color-scheme-1"
+        "color_scheme": "scheme-1"
       }
     },
     "logo-list": {
@@ -241,7 +249,7 @@
         "title": "As seen in",
         "grayscale": true,
         "logo_height": 40,
-        "color_scheme": "color-scheme-3"
+        "color_scheme": "scheme-3"
       }
     },
     "video": {
@@ -249,7 +257,7 @@
       "settings": {
         "heading": "Behind the craft",
         "description": "A closer look at how our pieces are made.",
-        "color_scheme": "color-scheme-2"
+        "color_scheme": "scheme-2"
       }
     },
     "email-signup": {
@@ -259,7 +267,7 @@
         "subtext": "New arrivals, exclusive offers, and style inspiration — straight to your inbox.",
         "button_label": "Subscribe",
         "overlay_opacity": 0,
-        "color_scheme": "color-scheme-3"
+        "color_scheme": "scheme-3"
       }
     }
   },

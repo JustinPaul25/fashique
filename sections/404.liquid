@@ -1,26 +1,125 @@
-{% comment %}
-  This section is used in the 404 template to render page shown when customers
-  enter an invalid store URL.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/404
-{% endcomment %}
+{%- comment -%}
+  404 template (Phase 5.10): message, search, links home and to catalog.
+{%- endcomment -%}
 
 {%- render 'section-spacing', section: section -%}
-<div class="color-scheme color-{{ section.settings.color_scheme }}">
-<h1>{{ '404.title' | t }}</h1>
 
-<p>
-  {{ '404.not_found' | t }}
-</p>
+<div class="not-found section-padding color-scheme color-{{ section.settings.color_scheme }}">
+  <div class="not-found__inner page-width">
+    <div class="not-found__content">
+      <p class="not-found__eyebrow">{{ '404.eyebrow' | t }}</p>
+      <h1 class="not-found__title">{{ '404.title' | t }}</h1>
+      <p class="not-found__text">{{ '404.not_found' | t }}</p>
 
-<a href="{{ routes.all_products_collection_url }}">
-  {{ '404.back_to_shopping' | t }}
-</a>
+      <form
+        action="{{ routes.search_url }}"
+        method="get"
+        role="search"
+        class="not-found__search"
+      >
+        <label class="visually-hidden" for="NotFoundSearch-{{ section.id }}">{{ '404.search_label' | t }}</label>
+        <div class="not-found__search-row">
+          <input
+            type="search"
+            name="q"
+            id="NotFoundSearch-{{ section.id }}"
+            class="not-found__search-input"
+            placeholder="{{ 'search.placeholder' | t }}"
+            autocomplete="off"
+          >
+          <button type="submit" class="btn btn--solid not-found__search-btn">
+            {{- 'search.submit' | t -}}
+          </button>
+        </div>
+      </form>
+
+      <div class="not-found__actions">
+        <a href="{{ routes.root_url }}" class="btn btn--outline not-found__btn">
+          {{- '404.back_home' | t -}}
+        </a>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--solid not-found__btn">
+          {{- '404.back_to_shopping' | t -}}
+        </a>
+      </div>
+    </div>
+  </div>
 </div>
+
+{% stylesheet %}
+  .not-found__inner {
+    max-width: var(--page-width);
+    margin-inline: auto;
+  }
+
+  .not-found__content {
+    max-width: 36rem;
+    margin-inline: auto;
+    text-align: center;
+    padding-block: var(--spacing-xl);
+  }
+
+  .not-found__eyebrow {
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.65;
+    margin: 0 0 var(--spacing-sm);
+  }
+
+  .not-found__title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    margin: 0 0 var(--spacing-sm);
+  }
+
+  .not-found__text {
+    margin: 0 0 var(--spacing-lg);
+    opacity: 0.85;
+    line-height: 1.5;
+  }
+
+  .not-found__search {
+    margin-bottom: var(--spacing-lg);
+    text-align: start;
+  }
+
+  .not-found__search-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    justify-content: center;
+  }
+
+  .not-found__search-input {
+    flex: 1 1 12rem;
+    min-width: 0;
+    min-height: 3rem;
+    padding: 0 0.75rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background: var(--color-background);
+    color: inherit;
+    font: inherit;
+  }
+
+  .not-found__search-btn {
+    min-height: 3rem;
+  }
+
+  .not-found__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    justify-content: center;
+  }
+
+  .not-found__btn {
+    min-height: 3rem;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.404",
+  "name": "t:sections.404.name",
   "settings": [
     {
       "type": "color_scheme",
@@ -35,14 +134,14 @@
       "info": "t:info.section_spacing",
       "options": [
         { "value": "default", "label": "t:options.section_spacing.default" },
-        { "value": "none",    "label": "t:options.section_spacing.none"    },
-        { "value": "xs",      "label": "t:options.section_spacing.xs"      },
-        { "value": "sm",      "label": "t:options.section_spacing.sm"      },
-        { "value": "md",      "label": "t:options.section_spacing.md"      },
-        { "value": "lg",      "label": "t:options.section_spacing.lg"      },
-        { "value": "xl",      "label": "t:options.section_spacing.xl"      }
+        { "value": "none", "label": "t:options.section_spacing.none" },
+        { "value": "xs", "label": "t:options.section_spacing.xs" },
+        { "value": "sm", "label": "t:options.section_spacing.sm" },
+        { "value": "md", "label": "t:options.section_spacing.md" },
+        { "value": "lg", "label": "t:options.section_spacing.lg" },
+        { "value": "xl", "label": "t:options.section_spacing.xl" }
       ],
-      "default": "default"
+      "default": "lg"
     }
   ]
 }

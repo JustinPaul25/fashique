@@ -17,19 +17,37 @@
 
 {%- comment -%} Parse external URL to generate the embed URL {%- endcomment -%}
 {%- assign embed_url = '' -%}
+{%- assign yt_id = '' -%}
 {%- if has_ext_url -%}
-  {%- assign raw_url = section.settings.video_url -%}
-  {%- if raw_url contains 'youtube.com/watch' -%}
-    {%- assign yt_id = raw_url | split: 'v=' | last | split: '&' | first -%}
-    {%- assign embed_url = 'https://www.youtube-nocookie.com/embed/' | append: yt_id | append: '?rel=0&enablejsapi=1' -%}
-  {%- elsif raw_url contains 'youtu.be/' -%}
-    {%- assign yt_id = raw_url | split: 'youtu.be/' | last | split: '?' | first -%}
-    {%- assign embed_url = 'https://www.youtube-nocookie.com/embed/' | append: yt_id | append: '?rel=0&enablejsapi=1' -%}
+  {%- assign raw_url = section.settings.video_url | strip -%}
+  {%- comment -%} YouTube: watch, youtu.be, /embed/, /shorts/, /live/ {%- endcomment -%}
+  {%- if raw_url contains 'youtube.com' or raw_url contains 'youtu.be' -%}
+    {%- if raw_url contains 'youtu.be/' -%}
+      {%- assign yt_id = raw_url | split: 'youtu.be/' | last | split: '?' | first | split: '/' | first -%}
+    {%- elsif raw_url contains 'youtube.com/watch' -%}
+      {%- if raw_url contains 'v=' -%}
+        {%- assign yt_id = raw_url | split: 'v=' | last | split: '&' | first | split: '#' | first -%}
+      {%- endif -%}
+    {%- elsif raw_url contains 'youtube.com/embed/' -%}
+      {%- assign yt_id = raw_url | split: 'embed/' | last | split: '?' | first | split: '/' | first -%}
+    {%- elsif raw_url contains 'youtube.com/shorts/' -%}
+      {%- assign yt_id = raw_url | split: 'shorts/' | last | split: '?' | first | split: '/' | first -%}
+    {%- elsif raw_url contains 'youtube.com/live/' -%}
+      {%- assign yt_id = raw_url | split: 'live/' | last | split: '?' | first | split: '/' | first -%}
+    {%- endif -%}
+    {%- if yt_id != blank -%}
+      {%- assign embed_url = 'https://www.youtube-nocookie.com/embed/'
+        | append: yt_id
+        | append: '?rel=0&enablejsapi=1&autoplay=1&playsinline=1'
+      -%}
+    {%- endif -%}
   {%- elsif raw_url contains 'vimeo.com/' -%}
-    {%- assign vimeo_id = raw_url | split: 'vimeo.com/' | last | split: '?' | first -%}
+    {%- assign vimeo_id = raw_url | split: 'vimeo.com/' | last | split: '?' | first | strip -%}
     {%- assign embed_url = 'https://player.vimeo.com/video/' | append: vimeo_id | append: '?autoplay=1' -%}
   {%- endif -%}
 {%- endif -%}
+
+{%- assign shopify_video_player_id = 'video-player-' | append: section.id -%}
 
 {%- render 'section-spacing', section: section -%}
 <section
@@ -86,7 +104,7 @@
           {{- section.settings.video
             | video_tag:
               class: 'video-section__native hidden',
-              id: 'video-player-' | append: section.id,
+              id: shopify_video_player_id,
               controls: true,
               playsinline: true,
               preload: 'none',
@@ -106,33 +124,50 @@
         (function () {
           'use strict';
 
-          const wrap     = document.querySelector('[data-section-id="{{ section.id }}"] .video-section__player-wrap');
+          const wrap = document.querySelector('[data-section-id="{{ section.id }}"] .video-section__player-wrap');
           if (!wrap) return;
 
-          const cover     = wrap.querySelector('.video-section__cover');
-          const playBtn   = wrap.querySelector('[data-play-video]');
+          const cover = wrap.querySelector('.video-section__cover');
           const videoType = wrap.dataset.videoType;
+          if (!cover) return;
 
-          playBtn.addEventListener('click', function () {
-            cover.hidden = true;
+          function startPlayback() {
+            if (cover.getAttribute('data-played') === 'true') return;
 
             if (videoType === 'shopify') {
               const vid = wrap.querySelector('.video-section__native');
+              if (!vid) return;
+              cover.setAttribute('data-played', 'true');
+              wrap.classList.add('video-section__player-wrap--playing');
+              const playBtn = cover.querySelector('.video-section__play-btn');
+              if (playBtn) playBtn.hidden = true;
+              cover.hidden = true;
               vid.classList.remove('hidden');
               vid.play();
-            } else {
-              const target   = wrap.querySelector('.video-section__embed-target');
-              const embedUrl = wrap.dataset.embedUrl;
-              const iframe   = document.createElement('iframe');
-              iframe.src            = embedUrl;
-              iframe.allow          = 'autoplay; fullscreen; picture-in-picture';
-              iframe.allowFullscreen = true;
-              iframe.className      = 'video-section__iframe';
-              iframe.title          = '{{ section.settings.heading | escape }}';
-              target.appendChild(iframe);
-              target.classList.remove('hidden');
+              return;
             }
-          });
+
+            const target = wrap.querySelector('.video-section__embed-target');
+            const embedUrl = wrap.dataset.embedUrl;
+            if (!target || !embedUrl) return;
+
+            cover.setAttribute('data-played', 'true');
+            wrap.classList.add('video-section__player-wrap--playing');
+            const playBtn = cover.querySelector('.video-section__play-btn');
+            if (playBtn) playBtn.hidden = true;
+            cover.hidden = true;
+
+            const iframe = document.createElement('iframe');
+            iframe.src = embedUrl;
+            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen';
+            iframe.allowFullscreen = true;
+            iframe.className = 'video-section__iframe';
+            iframe.title = {{ section.settings.heading | default: 'Video' | json }};
+            target.appendChild(iframe);
+            target.classList.remove('hidden');
+          }
+
+          cover.addEventListener('click', startPlayback);
         })();
       </script>
 
@@ -249,6 +284,10 @@
     outline-offset: 4px;
   }
 
+  .video-section__player-wrap--playing .video-section__play-btn {
+    display: none !important;
+  }
+
   /* ── Native video & embed ────────────────────────────────────────── */
   .video-section__native,
   .video-section__embed-target,
@@ -331,7 +370,7 @@
         { "value": "lg",      "label": "t:options.section_spacing.lg"      },
         { "value": "xl",      "label": "t:options.section_spacing.xl"      }
       ],
-      "default": "default"
+      "default": "none"
     }
   ],
   "presets": [

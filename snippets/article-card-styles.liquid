@@ -1,0 +1,79 @@
+{% doc %}
+  Styles for snippets/article-card.liquid. Render once from sections that use article cards.
+{% enddoc %}
+
+{% stylesheet %}
+  .article-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--color-background);
+    transition:
+      box-shadow var(--transition-base),
+      border-color var(--transition-base);
+  }
+
+  .article-card:hover {
+    border-color: color-mix(in srgb, var(--color-foreground) 25%, var(--color-border));
+    box-shadow: 0 6px 20px rgb(0 0 0 / 0.06);
+  }
+
+  .article-card__media {
+    aspect-ratio: 16 / 10;
+    background: var(--color-border);
+    overflow: hidden;
+  }
+
+  .article-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .article-card__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    opacity: 0.5;
+  }
+
+  .article-card__placeholder svg {
+    width: 40%;
+    height: auto;
+  }
+
+  .article-card__body {
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+  }
+
+  .article-card__title {
+    margin: 0;
+    font-size: var(--font-size-h5);
+    font-family: var(--font-heading-family);
+    line-height: var(--font-heading-line-height, 1.2);
+  }
+
+  .article-card__excerpt {
+    margin: 0;
+    font-size: 0.875rem;
+    opacity: 0.85;
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .article-card__date {
+    font-size: 0.8125rem;
+    opacity: 0.75;
+  }
+{% endstylesheet %}

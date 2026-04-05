@@ -1,0 +1,1189 @@
+{
+  "general": {
+    "404": "404",
+    "article": "Artikel",
+    "blog": "Bloggen",
+    "cart": "Winkelwagen",
+    "collection": "Verzameling",
+    "collections_grid": "Verzamelraster",
+    "custom_section": "Aangepaste sectie",
+    "header": "Koptekst",
+    "page": "Pagina",
+    "password": "Wachtwoord",
+    "product": "Product",
+    "search": "Zoekopdracht",
+    "typography": "Typografie",
+    "layout": "Indeling",
+    "color_schemes": "Kleurenschema's",
+    "colors": "Kleuren",
+    "advanced": "Geavanceerd",
+    "footer": "Voettekst",
+    "text": "Tekst",
+    "group": "Groep",
+    "branding": "Branding",
+    "colors_style": "Kleuren en stijl",
+    "spacing": "Afstand",
+    "homepage": "Startpagina",
+    "product_page": "Productpagina",
+    "collection_page": "Collectiepagina",
+    "cart_checkout": "Winkelwagen en afrekenen",
+    "navigation": "Navigatie"
+  },
+  "labels": {
+    "account_and_localization": "Account en lokalisatie",
+    "accent_colors": "Accentkleuren",
+    "advanced": "Geavanceerd",
+    "age_verifier": "Leeftijdsverificatie",
+    "age_verifier_minimum": "Minimum leeftijd",
+    "appearance": "Verschijning",
+    "back_to_top": "Terug naar bovenste knop",
+    "background": "Achtergrond",
+    "base_colors": "Basiskleuren",
+    "btn_bg": "Opvulkleur van de knop",
+    "btn_bg_hover": "Opvulkleur van knop (zweven)",
+    "btn_shape": "Knoopvorm",
+    "btn_text": "Kleur van het knoplabel",
+    "buttons": "Knoppen",
+    "behavior": "Gedrag",
+    "body_font": "Lichaamslettertype",
+    "body_font_size": "Lettergrootte van het lichaam",
+    "border_radius_lg": "Randradius (groot)",
+    "border_radius_md": "Randradius (medium)",
+    "border_radius_sm": "Randradius (klein)",
+    "color_border": "Randkleur",
+    "color_overlay": "Overlay-kleur",
+    "color_overlay_opacity": "Overlay-dekking",
+    "color_primary": "Primaire kleur",
+    "color_primary_hover": "Primaire kleur (zweven)",
+    "color_scheme": "Kleurenschema",
+    "color_schemes": "Kleurenschema's",
+    "colors": "Kleuren",
+    "copyright_text": "Auteursrechttekst",
+    "cart_type": "Winkelwagentype",
+    "custom_fonts": "Aangepaste lettertypen",
+    "customer_account_menu": "Klantaccounts",
+    "cart_drawer_show_upsell": "Aanbevelingen voor winkelwagenladen",
+    "enable_age_verifier": "Schakel leeftijdsverificatie in",
+    "enable_quick_view": "Snel zicht op productkaarten",
+    "enable_sticky_atc": "Sticky toevoegen aan winkelwagen op productpagina's",
+    "show_post_add_modal": "Na toevoegen aan winkelwagen modaal",
+    "font_pair": "Lettertypekoppeling",
+    "font_pair_preset": "Voorinstellingen voor het koppelen van lettertypen",
+    "footer_bottom_header": "Onderste balk",
+    "foreground": "Voorgrond",
+    "grid_gap": "Raster kloof",
+    "grid_item_width": "Artikelbreedte",
+    "heading_font": "Koplettertype",
+    "heading_scale": "Kopschaal",
+    "heading_size_scale": "Schaal voor kopgrootte",
+    "input_corner_radius": "Hoekradius invoeren",
+    "layout": "Indeling",
+    "localization_header": "Taal en valuta",
+    "logo": "Logo",
+    "logo_header": "Logo",
+    "logo_width": "Logobreedte (px)",
+    "menu": "Menu",
+    "navigation": "Navigatie",
+    "overlay": "Overlay",
+    "page_margin": "Paginamarge",
+    "page_width": "Paginabreedte",
+    "radius": "Hoekradius",
+    "show_announcement_bar": "Aankondigingsbalk weergeven",
+    "show_back_to_top": "Knop Terug naar boven weergeven",
+    "back_to_top_threshold": "Scrollafstand voordat de knop verschijnt",
+    "show_close_button": "Knop Sluiten tonen",
+    "show_country_selector": "Toon land- en valutakiezer",
+    "show_language_selector": "Toon taalkiezer",
+    "show_payment_icons": "Betalingspictogrammen weergeven",
+    "section_spacing": "Sectie-afstand",
+    "sticky_header": "Kleverige kop",
+    "transition_speed": "Overgangssnelheid",
+    "transitions": "Overgangen",
+    "typography": "Typografie",
+    "branding_store": "Bewaar identiteit",
+    "favicon": "Browser tabbladpictogram",
+    "spacing_scale": "Afstandsschaal",
+    "homepage_show_announcement_bar": "Standaard aankondigingsbalk weergeven",
+    "homepage_default_hero_height": "Standaard hero-hoogte voor nieuwe afbeeldingsbanners",
+    "product_show_color_swatches": "Kleurstalen op de productpagina",
+    "product_stock_threshold": "Lage voorraadwaarschuwingsdrempel",
+    "collection_filter_position": "Filterindeling op collectiepagina's",
+    "collection_pagination_mode": "Hoe meer producten in collecties worden geladen",
+    "collection_products_per_page": "Producten per pagina voordat er meer worden geladen",
+    "cart_show_order_note": "Bestelnotitieveld op de winkelwagenpagina",
+    "navigation_enable_mega_menu": "Schakel megamenupanelen in vanuit headerblokken",
+    "footer_show_payment_icons": "Betalingspictogrammen in de voettekst",
+    "footer_show_social_icons": "Sociale iconen worden geblokkeerd in de voettekst"
+  },
+  "info": {
+    "age_verifier_minimum": "Bezoekers onder deze leeftijd worden geblokkeerd.",
+    "body_font": "Wordt gebruikt voor hoofdtekst, bijschriften en UI-tekst.",
+    "btn_bg": "Achtergrond van gevulde (effen) knoppen in dit schema.",
+    "btn_bg_hover": "Vulkleur wanneer u over een effen knop beweegt.",
+    "btn_shape": "Past dezelfde hoekstijl toe op alle knoppen in het thema.",
+    "btn_text": "Tekstkleur op gevulde (ononderbroken) knoppen in dit schema.",
+    "color_overlay_opacity": "Toegepast op beeldoverlays binnen het thema.",
+    "color_primary": "Gebruikt voor knoppen, koppelingen en belangrijke UI-elementen.",
+    "color_primary_hover": "Toegepast bij hover/focus van primaire interactieve elementen.",
+    "copyright_text": "Gebruik {{ year }} voor het huidige jaar.",
+    "custom_fonts": "Upload lettertypen hieronder om de geselecteerde lettertypecombinatie te overschrijven.",
+    "enable_age_verifier": "Toont bij het eerste bezoek een modaal waarin bezoekers worden gevraagd hun leeftijd te bevestigen.",
+    "font_pair": "Kies een gecoördineerde combinatie van koptekst en hoofdlettertype.",
+    "font_pair_preset": "Selecteer een voorinstelling om een ​​samengestelde lettertypekoppeling toe te passen.",
+    "heading_font": "Wordt gebruikt voor alle kopjes en displaytekst.",
+    "heading_size_scale": "Schaalt alle kopgroottes proportioneel omhoog of omlaag.",
+    "logo_width": "Maximale breedte in pixels voor de logoafbeelding.",
+    "show_back_to_top": "Geeft een zwevende knop weer waarmee u terug kunt bladeren naar de bovenkant van de pagina.",
+    "back_to_top_threshold": "Hogere waarden wachten totdat de bezoeker verder naar beneden scrollt op de pagina.",
+    "show_country_selector": "Vereist dat Markten worden geconfigureerd in het Shopify-beheercentrum.",
+    "show_language_selector": "Vereist meerdere talen in het Shopify-beheercentrum.",
+    "section_spacing": "Overschrijft alleen de standaard verticale sectieopvulling voor deze sectie.",
+    "cart_type": "Pagina stuurt shoppers naar /cart. Lade opent alleen een zijpaneel vanuit de koptekst op niet-winkelwagensjablonen (de /cart-route gebruikt altijd de volledige winkelwagenpagina, dus er is nooit een duplicaat winkelwagenformulier). Zonder JavaScript of met verminderde beweging gaat de header-cart-link naar /cart.",
+    "cart_drawer_show_upsell": "Toont een rij met aanbevolen producten wanneer de winkelwagenlade wordt geopend (gebruikt het eerste regelitem).",
+    "show_post_add_modal": "Na het toevoegen vanaf de productpagina (alleen ladewagen), wordt een korte modaal met aanbevelingen weergegeven. Maakt gebruik van de Ajax-winkelwagen-API.",
+    "sticky_header": "Kies wanneer de koptekst zichtbaar moet blijven.",
+    "transition_speed": "Bepaalt de duur van hover- en focusanimaties.",
+    "theme_logo": "Wordt gebruikt als er voor de koptekstsectie geen logo is ingesteld.",
+    "theme_logo_width": "Standaardlogobreedte bij gebruik van het themalogo.",
+    "favicon": "Vierkante PNG of ICO werkt het beste. Getoond in browsertabbladen.",
+    "spacing_scale": "Kleine, gemiddelde of ruime afstand tussen secties en componenten.",
+    "homepage_show_announcement_bar": "Secties kunnen de balk nog steeds afzonderlijk uitschakelen.",
+    "homepage_default_hero_height": "Wordt gebruikt wanneer een bannersectie de hoogte leeg laat.",
+    "enable_quick_view": "Voegt een snelle weergave van productkaarten in rasters toe.",
+    "enable_sticky_atc": "Sticky toevoegen aan winkelwagenbalk op lange productpagina's.",
+    "product_show_color_swatches": "Valt terug naar de productsectie-instelling wanneer deze daar is ingesteld.",
+    "product_stock_threshold": "Toont een bericht over een lage voorraad wanneer de voorraad op of onder dit aantal ligt.",
+    "collection_filter_position": "Zijbalk houdt filters zichtbaar op het bureaublad. Lade verbergt ze achter een knop.",
+    "collection_pagination_mode": "Oneindige ladingen terwijl u scrollt. Paginering maakt gebruik van genummerde links.",
+    "collection_products_per_page": "Is van toepassing wanneer de collectiesectie het standaardthema gebruikt.",
+    "cart_show_order_note": "Wordt weergegeven in de kolom met het winkelwagenoverzicht indien ingeschakeld.",
+    "navigation_enable_mega_menu": "Schakel dit uit om alleen eenvoudige vervolgkeuzelijsten te gebruiken.",
+    "mobile_navigation_drawer": "Kleine schermen maken altijd gebruik van de uitschuifbare navigatielade.",
+    "footer_show_payment_icons": "Wordt weergegeven als uw voettekstsectie dit niet overschrijft.",
+    "footer_show_social_icons": "Verbergt sociale blokkades in de voettekst wanneer uitgeschakeld."
+  },
+  "options": {
+    "alignment": {
+      "left": "Links",
+      "center": "Centrum",
+      "right": "Rechts"
+    },
+    "btn_shape": {
+      "rounded": "Afgerond",
+      "pill": "Pil",
+      "sharp": "Scherp"
+    },
+    "columns": {
+      "two": "2",
+      "three": "3",
+      "four": "4"
+    },
+    "collection_pagination": {
+      "infinite": "Oneindig scrollen (meer laden)",
+      "pagination": "Paginalinks"
+    },
+    "collection_pagination_mode": {
+      "infinite": "Oneindige scroll",
+      "pagination": "Paginalinks"
+    },
+    "collection_filter_position": {
+      "sidebar": "Zijbalk op bureaublad",
+      "drawer": "Lade op alle schermformaten"
+    },
+    "spacing_scale": {
+      "compact": "Compact",
+      "balanced": "Evenwichtig",
+      "spacious": "Ruim"
+    },
+    "cart_type": {
+      "page": "Pagina",
+      "drawer": "Lade"
+    },
+    "article_image_ratio": {
+      "wide_21_9": "Ultrabreed (21:9)",
+      "classic_16_9": "Breed (16:9)",
+      "standard_4_3": "Standaard (4:3)"
+    },
+    "collection_image_ratio": {
+      "21_9": "Ultrabreed (21:9)",
+      "16_9": "Breed (16:9)",
+      "3_1": "Banier (3:1)"
+    },
+    "products_per_page": {
+      "12": "12",
+      "24": "24",
+      "36": "36"
+    },
+    "font_pair": {
+      "fashion_brand": "Modemerk - Playfair + Jost",
+      "beauty_store": "Schoonheidswinkel - Aalscholver + Raleway",
+      "minimal": "Minimaal - Inter + Inter"
+    },
+    "heading_size_scale": {
+      "small": "Klein",
+      "normal": "Normaal",
+      "large": "Groot"
+    },
+    "layout": {
+      "grid": "Rooster",
+      "carousel": "Carrousel"
+    },
+    "orientation": {
+      "horizontal": "Horizontaal",
+      "vertical": "Verticaal"
+    },
+    "page_width": {
+      "narrow": "Smal (1200px)",
+      "wide": "Breed (1440px)"
+    },
+    "size": {
+      "small": "Klein",
+      "medium": "Medium",
+      "large": "Groot",
+      "full": "Volledig scherm"
+    },
+    "section_spacing": {
+      "default": "Standaard (thema-afstand)",
+      "none": "Geen",
+      "xs": "Extra klein",
+      "sm": "Klein",
+      "md": "Medium",
+      "lg": "Groot",
+      "xl": "Extra groot"
+    },
+    "sticky_header": {
+      "always": "Altijd zichtbaar",
+      "on_scroll_up": "Zichtbaar bij omhoog scrollen",
+      "none": "Niet plakkerig"
+    },
+    "text_position": {
+      "left": "Links",
+      "center": "Centrum",
+      "right": "Rechts",
+      "bottom_left": "Linksonder",
+      "bottom_center": "Midden onder",
+      "bottom_right": "Rechtsonder"
+    },
+    "transition_speed": {
+      "fast": "Snel",
+      "normal": "Normaal",
+      "slow": "Langzaam"
+    }
+  },
+  "sections": {
+    "404": {
+      "name": "404 pagina"
+    },
+    "announcement_bar": {
+      "name": "Aankondigingsbalk"
+    },
+    "footer": {
+      "name": "Voettekst"
+    },
+    "slideshow": {
+      "name": "Diavoorstelling",
+      "settings": {
+        "show_arrows": {
+          "label": "Toon navigatiepijlen"
+        },
+        "show_dots": {
+          "label": "Toon puntindicatoren"
+        },
+        "autoplay": {
+          "label": "Dia's automatisch roteren"
+        },
+        "autoplay_speed": {
+          "label": "Interval voor automatisch roteren (seconden)"
+        },
+        "slide_height": {
+          "label": "Glijhoogte"
+        },
+        "color_scheme": {
+          "label": "Kleurenschema"
+        }
+      }
+    },
+    "featured_collection": {
+      "name": "Uitgelichte collectie",
+      "settings": {
+        "title": {
+          "label": "Rubriek"
+        },
+        "collection": {
+          "label": "Verzameling"
+        },
+        "products_count": {
+          "label": "Producten om te laten zien"
+        },
+        "layout": {
+          "label": "Indeling"
+        },
+        "columns_desktop": {
+          "label": "Kolommen op het bureaublad"
+        },
+        "show_vendor": {
+          "label": "Toon leverancier"
+        },
+        "show_view_all": {
+          "label": "Knop Alles weergeven weergeven"
+        },
+        "color_scheme": {
+          "label": "Kleurenschema"
+        }
+      }
+    },
+    "featured_product": {
+      "name": "Uitgelicht product",
+      "settings": {
+        "product": {
+          "label": "Product"
+        },
+        "show_vendor": {
+          "label": "Toon leverancier"
+        },
+        "show_quantity": {
+          "label": "Hoeveelheidskiezer weergeven"
+        },
+        "show_description": {
+          "label": "Beschrijving weergeven"
+        },
+        "button_label": {
+          "label": "Knoplabel toevoegen aan winkelwagen"
+        },
+        "color_scheme": {
+          "label": "Kleurenschema"
+        }
+      }
+    },
+    "image_banner": {
+      "name": "Afbeeldingsbanner",
+      "settings": {
+        "image": {
+          "label": "Afbeelding"
+        },
+        "mobile_image": {
+          "label": "Mobiele afbeelding (optioneel)"
+        },
+        "heading": {
+          "label": "Rubriek"
+        },
+        "text": {
+          "label": "Subtekst"
+        },
+        "button_label": {
+          "label": "Knooplabel"
+        },
+        "button_url": {
+          "label": "Knop koppeling"
+        },
+        "text_position": {
+          "label": "Tekst positie"
+        },
+        "overlay_opacity": {
+          "label": "Overlay-dekking",
+          "info": "0 = transparant, 100 = volledig ondoorzichtig"
+        },
+        "height": {
+          "label": "Hoogte van de banner"
+        },
+        "color_scheme": {
+          "label": "Kleurenschema"
+        }
+      }
+    },
+    "multicolumn": {
+      "name": "Meerkolommen",
+      "presets": {
+        "highlights": "Producthoogtepunten"
+      },
+      "settings": {
+        "title": {
+          "label": "Rubriek"
+        },
+        "columns_desktop": {
+          "label": "Aantal kolommen op bureaublad"
+        },
+        "alignment": {
+          "label": "Uitlijning van kolommen"
+        },
+        "color_scheme": {
+          "label": "Kleurenschema"
+        }
+      }
+    },
+    "rich_text": {
+      "name": "Rijke tekst",
+      "settings": {
+        "eyebrow": {
+          "label": "Wenkbrauw tekst"
+        },
+        "heading": {
+          "label": "Rubriek"
+        },
+        "text": {
+          "label": "Tekst"
+        },
+        "button_label": {
+          "label": "Knooplabel"
+        },
+        "button_url": {
+          "label": "Knop koppeling"
+        },
+        "layout": {
+          "label": "Indeling"
+        },
+        "alignment": {
+          "label": "Uitlijning"
+        },
+        "color_scheme": {
+          "label": "Kleurenschema"
+        }
+      }
+    },
+    "faq": {
+      "name": "Veelgestelde vragen",
+      "settings": {
+        "title": {
+          "label": "Rubriek"
+        },
+        "color_scheme": {
+          "label": "Kleurenschema"
+        }
+      }
+    },
+    "logo_list": {
+      "name": "Logolijst",
+      "settings": {
+        "title": {
+          "label": "Rubriek"
+        },
+        "columns_desktop": {
+          "label": "Kolommen op het bureaublad"
+        },
+        "grayscale": {
+          "label": "Grijswaardenlogo's"
+        },
+        "logo_height": {
+          "label": "Logohoogte (px)"
+        },
+        "color_scheme": {
+          "label": "Kleurenschema"
+        }
+      }
+    },
+    "video": {
+      "name": "Video",
+      "settings": {
+        "video": {
+          "label": "Video (door Shopify gehost)"
+        },
+        "video_url": {
+          "label": "YouTube/Vimeo-URL",
+          "info": "Wordt gebruikt als er geen door Shopify gehoste video is ingesteld. Ondersteunt YouTube-links voor kijken, insluiten, Shorts, live en youtube.be."
+        },
+        "poster_image": {
+          "label": "Omslagafbeelding"
+        },
+        "heading": {
+          "label": "Rubriek"
+        },
+        "description": {
+          "label": "Beschrijving"
+        },
+        "color_scheme": {
+          "label": "Kleurenschema"
+        }
+      }
+    },
+    "email_signup": {
+      "name": "E-mailaanmelding",
+      "settings": {
+        "heading": {
+          "label": "Rubriek"
+        },
+        "subtext": {
+          "label": "Subtekst"
+        },
+        "button_label": {
+          "label": "Knooplabel"
+        },
+        "image": {
+          "label": "Achtergrondafbeelding (optioneel)"
+        },
+        "color_scheme": {
+          "label": "Kleurenschema"
+        }
+      }
+    },
+    "countdown_timer": {
+      "name": "Afteltimer",
+      "settings": {
+        "title": {
+          "label": "Rubriek"
+        },
+        "end_date": {
+          "label": "Einddatum en -tijd",
+          "info": "Gebruik het ISO 8601-formaat, b.v. 31-12-2026T23:59:59"
+        },
+        "timezone_offset": {
+          "label": "Tijdzone UTC-offset (uren)",
+          "info": "bijv. -5 voor EST, 0 voor UTC, 1 voor CET"
+        },
+        "expired_message": {
+          "label": "Verlopen bericht"
+        },
+        "show_days": {
+          "label": "Showdagen"
+        },
+        "button_label": {
+          "label": "Knooplabel (optioneel)"
+        },
+        "button_url": {
+          "label": "Knop koppeling"
+        },
+        "color_scheme": {
+          "label": "Kleurenschema"
+        }
+      }
+    },
+    "before_after": {
+      "name": "Voor / Na",
+      "settings": {
+        "legacy_info": "Gebruik vergelijkingsblokken voor een of meer paren. Twee of meer blokken maken een carrousel mogelijk. Oudere afbeeldingen hieronder worden alleen gebruikt als geen enkel blok beide afbeeldingen heeft ingesteld.",
+        "before_image": {
+          "label": "Vóór afbeelding (verouderd)"
+        },
+        "after_image": {
+          "label": "Na afbeelding (verouderd)"
+        },
+        "before_label": {
+          "label": "Vóór etiket"
+        },
+        "after_label": {
+          "label": "Na etiket"
+        },
+        "orientation": {
+          "label": "Oriëntatie van de scheidingswand"
+        },
+        "heading": {
+          "label": "Rubriek"
+        },
+        "subtext": {
+          "label": "Subtekst"
+        },
+        "color_scheme": {
+          "label": "Kleurenschema"
+        }
+      },
+      "blocks": {
+        "pair": {
+          "name": "Vergelijking"
+        }
+      }
+    },
+    "age_verifier": {
+      "name": "Leeftijdsverificatie",
+      "settings": {
+        "intro": "Wordt weergegeven wanneer Geavanceerd: leeftijdsverificatie inschakelen is ingeschakeld. Tekst gebruikt de minimumleeftijd uit de thema-instellingen.",
+        "heading": {
+          "label": "Rubriek"
+        },
+        "subheading": {
+          "label": "Beschrijving"
+        },
+        "confirm_label": {
+          "label": "Bevestigingsknop"
+        },
+        "decline_label": {
+          "label": "Knop Afwijzen"
+        },
+        "decline_url": {
+          "label": "Omleidings-URL weigeren",
+          "info": "Waar bezoekers naartoe gaan als ze ervoor kiezen niet naar binnen te gaan."
+        }
+      }
+    },
+    "customer_login": {
+      "name": "Klant inloggen"
+    },
+    "cart": {
+      "name": "Winkelwagenpagina",
+      "settings": {
+        "show_breadcrumbs": {
+          "label": "Broodkruimels tonen"
+        },
+        "show_order_note": {
+          "label": "Bestelnotitie tonen"
+        },
+        "show_discount": {
+          "label": "Toon kortingscodeveld"
+        }
+      }
+    },
+    "blog": {
+      "name": "Bloggen",
+      "settings": {
+        "articles_per_page": {
+          "label": "Artikelen per pagina"
+        },
+        "show_tag_filter": {
+          "label": "Toon tagfilterbalk"
+        }
+      }
+    },
+    "page": {
+      "name": "Pagina",
+      "settings": {
+        "show_breadcrumbs": {
+          "label": "Broodkruimels tonen"
+        },
+        "layout": {
+          "label": "Indeling",
+          "options": {
+            "default": "Enkele kolom",
+            "narrow": "Smalle inhoud",
+            "sidebar": "Inhoud met zijbalk"
+          }
+        },
+        "sidebar_content": {
+          "label": "Inhoud zijbalk"
+        }
+      }
+    },
+    "contact": {
+      "name": "Contactpagina",
+      "settings": {
+        "heading": {
+          "label": "Rubriek",
+          "info": "Vervangt de paginatitel indien ingesteld. Laat dit leeg als u de paginatitel wilt gebruiken."
+        },
+        "intro": {
+          "label": "Invoering"
+        },
+        "header_info": "Contactgegevens",
+        "address": {
+          "label": "Adres"
+        },
+        "phone": {
+          "label": "Telefoon"
+        },
+        "email": {
+          "label": "E-mail"
+        },
+        "map_embed_url": {
+          "label": "URL voor insluiting van kaart",
+          "info": "Plak alleen de iframe-src-URL. In Google Maps: Delen - Een kaart insluiten - kopieer de src-waarde uit de iframe-code."
+        }
+      }
+    },
+    "password": {
+      "name": "Wachtwoordpagina",
+      "settings": {
+        "logo": {
+          "label": "Logo-afbeelding",
+          "info": "Optioneel. Valt terug op het logo van de themakop en vervolgens op de winkelnaam."
+        },
+        "heading": {
+          "label": "Rubriek"
+        },
+        "subheading": {
+          "label": "Ondertitel"
+        },
+        "show_newsletter": {
+          "label": "E-mailaanmelding weergeven"
+        }
+      }
+    },
+    "collections": {
+      "settings": {
+        "intro": {
+          "label": "Invoering",
+          "info": "Optionele tekst onder de titel."
+        }
+      }
+    },
+    "predictive_search": {
+      "name": "Voorspellend zoeken"
+    },
+    "search": {
+      "name": "Zoekopdracht",
+      "settings": {
+        "enable_predictive": {
+          "label": "Schakel voorspellend zoeken in",
+          "info": "Toont suggesties tijdens het typen met Shopify Search & Discovery. Vereist een ondersteunde storefront-taal."
+        },
+        "results_per_page": {
+          "label": "Resultaten per pagina"
+        },
+        "show_vendor": {
+          "label": "Toon leverancier op productkaarten"
+        },
+        "show_quick_view": {
+          "label": "Toon een snelle weergave op productkaarten"
+        }
+      }
+    },
+    "article": {
+      "name": "Artikel",
+      "settings": {
+        "show_breadcrumbs": {
+          "label": "Broodkruimels tonen"
+        },
+        "show_featured_image": {
+          "label": "Uitgelichte afbeelding weergeven"
+        },
+        "image_ratio": {
+          "label": "Uitgelichte beeldverhouding"
+        },
+        "show_related": {
+          "label": "Toon gerelateerde artikelen"
+        },
+        "related_count": {
+          "label": "Maximaal gerelateerde artikelen"
+        },
+        "comments_per_page": {
+          "label": "Opmerkingen per pagina"
+        }
+      }
+    },
+    "quick_view": {
+      "name": "Snelle weergave (modaal)"
+    },
+    "sticky_atc": {
+      "name": "Sticky toevoegen aan winkelwagen"
+    },
+    "quick_order_list": {
+      "name": "Snelle bestellijst",
+      "settings": {
+        "title": {
+          "label": "Rubriek"
+        },
+        "collection": {
+          "label": "Verzameling"
+        },
+        "products_limit": {
+          "label": "Maximaal aantal producten om te tonen"
+        },
+        "color_scheme": {
+          "label": "Kleurenschema"
+        }
+      }
+    },
+    "collection": {
+      "name": "Verzameling",
+      "settings": {
+        "show_breadcrumbs": {
+          "label": "Broodkruimels tonen"
+        },
+        "show_collection_image": {
+          "label": "Toon collectieafbeeldingbanner"
+        },
+        "image_ratio": {
+          "label": "Beeldverhouding banner"
+        },
+        "columns_desktop": {
+          "label": "Productkolommen op desktop"
+        },
+        "products_per_page": {
+          "label": "Producten per pagina"
+        },
+        "pagination_mode": {
+          "label": "Paginering van producten",
+          "info": "Oneindig scrollen laadt de volgende pagina terwijl u scrolt (met een fallback voor meer laden zonder JavaScript). Paginalinks gebruiken standaard genummerde paginering."
+        },
+        "enable_filtering": {
+          "label": "Filters weergeven",
+          "info": "Vereist filters die zijn geconfigureerd in Zoeken en ontdekken. Collecties van meer dan 5.000 producten kunnen geen filters tonen."
+        },
+        "show_vendor": {
+          "label": "Toon leverancier op productkaarten"
+        },
+        "color_scheme": {
+          "label": "Kleurenschema"
+        }
+      }
+    },
+    "product": {
+      "name": "Productinformatie",
+      "settings": {
+        "enable_variant_url": {
+          "label": "Update de URL wanneer de variant verandert"
+        },
+        "stock_threshold": {
+          "label": "Lage voorraaddrempel",
+          "info": "Toon lage voorraad wanneer de hoeveelheid op of onder dit aantal ligt."
+        },
+        "show_color_swatches": {
+          "label": "Kleurstalen op variantkiezer"
+        },
+        "color_swatch_metaobject_namespace": {
+          "label": "Metaveldnaamruimte voor kleurstaal",
+          "info": "Naamruimte voor het product-metaveld waarin kleurmetaobjecten worden vermeld (taxonomie maakt gebruik van shopify). Wordt gebruikt wanneer het ingebouwde optiestaal leeg is."
+        },
+        "color_swatch_metaobject_key": {
+          "label": "Metaveldsleutel voor kleurstaal",
+          "info": "Sleutel voor dat metaveld (de kleurenlijst van de taxonomie is meestal een kleurenpatroon). Match uw product Kleur/kleurpatroonveld."
+        }
+      },
+      "blocks": {
+        "breadcrumbs": {
+          "name": "Paneermeel",
+          "settings": {
+            "show_breadcrumbs": {
+              "label": "Broodkruimels tonen"
+            }
+          }
+        },
+        "title": {
+          "name": "Titel",
+          "settings": {
+            "show_vendor": {
+              "label": "Toon leverancier"
+            }
+          }
+        },
+        "price": {
+          "name": "Prijs"
+        },
+        "variant_picker": {
+          "name": "Variantkiezer",
+          "settings": {
+            "picker_type": {
+              "label": "Picker-stijl",
+              "options": {
+                "buttons": "Knoppen",
+                "dropdown": "Dropdownmenu"
+              }
+            }
+          }
+        },
+        "inventory": {
+          "name": "Voorraad en SKU",
+          "settings": {
+            "show_in_stock_message": {
+              "label": "Toon op voorraad bericht wanneer er geen lage voorraad is"
+            },
+            "show_sku": {
+              "label": "Toon SKU"
+            }
+          }
+        },
+        "selling_plans": {
+          "name": "Abonnementen en verkoopplannen",
+          "settings": {
+            "heading": {
+              "label": "Rubriek"
+            },
+            "one_time_label": {
+              "label": "Eenmalig aankooplabel"
+            },
+            "show_plan_descriptions": {
+              "label": "Toon planbeschrijvingen"
+            }
+          }
+        },
+        "line_item_properties": {
+          "name": "Regelitemeigenschappen",
+          "settings": {
+            "heading": {
+              "label": "Rubriek",
+              "info": "Getoond boven de velden. Laat leeg om te verbergen."
+            },
+            "header_property_1": "Eerste eigendom",
+            "header_property_2": "Tweede woning (optioneel)",
+            "property_label": {
+              "label": "Eigendomsnaam",
+              "info": "Getoond als label en opgeslagen in het regelitem (winkelwagen, bestellingen). Laat dit veld leeg om dit veld te verbergen."
+            },
+            "property_placeholder": {
+              "label": "Tijdelijke aanduiding"
+            },
+            "property_required": {
+              "label": "Vereist"
+            },
+            "enable_property_2": {
+              "label": "Tweede tekstveld weergeven"
+            },
+            "property_2_label": {
+              "label": "Tweede eigenschapsnaam"
+            }
+          }
+        },
+        "buy_buttons": {
+          "name": "Knopen kopen"
+        },
+        "description": {
+          "name": "Beschrijving",
+          "settings": {
+            "collapsible": {
+              "label": "Beperk de beschrijvingshoogte",
+              "info": "Indien ingeschakeld, worden lange beschrijvingen op een vaste hoogte geknipt, zonder uitbreidingsregeling. Schakel uit om de volledige beschrijving weer te geven."
+            }
+          }
+        },
+        "share": {
+          "name": "Sociaal aandeel"
+        },
+        "tiered_pricing": {
+          "name": "Tabel met volumeprijzen"
+        },
+        "combined_listing": {
+          "name": "Gecombineerde lijstlinks"
+        },
+        "complementary": {
+          "name": "Productaanbevelingen",
+          "settings": {
+            "heading": {
+              "label": "Rubriek"
+            },
+            "product_count": {
+              "label": "Maximale producten"
+            },
+            "intent": {
+              "label": "Aanbevelingstype",
+              "options": {
+                "complementary": "Complementair",
+                "related": "Verwant"
+              }
+            }
+          }
+        }
+      },
+      "presets": {
+        "name": "Product"
+      }
+    },
+    "testimonials": {
+      "name": "Getuigenissen",
+      "settings": {
+        "title": {
+          "label": "Rubriek"
+        },
+        "layout": {
+          "label": "Indeling"
+        },
+        "color_scheme": {
+          "label": "Kleurenschema"
+        }
+      }
+    },
+    "ugc_grid": {
+      "name": "Fotoraster",
+      "settings": {
+        "title": {
+          "label": "Rubriek"
+        },
+        "columns_desktop": {
+          "label": "Kolommen op het bureaublad"
+        },
+        "color_scheme": {
+          "label": "Kleurenschema"
+        }
+      }
+    }
+  },
+  "blocks": {
+    "announcement": {
+      "name": "Aankondiging",
+      "settings": {
+        "text": {
+          "label": "Bericht"
+        },
+        "link": {
+          "label": "Koppeling (optioneel)"
+        }
+      }
+    },
+    "link_list": {
+      "name": "Linklijst",
+      "settings": {
+        "heading": {
+          "label": "Rubriek"
+        },
+        "menu": {
+          "label": "Menu"
+        }
+      }
+    },
+    "newsletter": {
+      "name": "Nieuwsbrief",
+      "settings": {
+        "heading": {
+          "label": "Rubriek"
+        },
+        "description": {
+          "label": "Subtekst"
+        }
+      }
+    },
+    "social": {
+      "name": "Sociale media",
+      "settings": {
+        "heading": {
+          "label": "Rubriek"
+        },
+        "facebook_url": {
+          "label": "Facebook-URL"
+        },
+        "twitter_url": {
+          "label": "X (Twitter)-URL"
+        },
+        "instagram_url": {
+          "label": "Instagram-URL"
+        },
+        "pinterest_url": {
+          "label": "Pinterest-URL"
+        },
+        "tiktok_url": {
+          "label": "TikTok-URL"
+        },
+        "youtube_url": {
+          "label": "YouTube-URL"
+        }
+      }
+    },
+    "text": {
+      "name": "Tekst",
+      "settings": {
+        "heading": {
+          "label": "Rubriek"
+        },
+        "content": {
+          "label": "Inhoud"
+        }
+      }
+    },
+    "mega_menu": {
+      "name": "Mega menukolom",
+      "settings": {
+        "menu_item": {
+          "label": "Menu-item",
+          "info": "Selecteer het navigatie-item op het hoogste niveau waartoe deze kolom behoort"
+        },
+        "promo_image": {
+          "label": "Promo afbeelding"
+        },
+        "promo_heading": {
+          "label": "Promokop"
+        },
+        "promo_subheading": {
+          "label": "Promo-ondertitel"
+        },
+        "promo_cta": {
+          "label": "Promotieknoplabel"
+        },
+        "promo_link": {
+          "label": "Promo-link"
+        },
+        "promo_header": {
+          "content": "Promotieblok"
+        }
+      }
+    },
+    "slide": {
+      "name": "Dia",
+      "settings": {
+        "image": {
+          "label": "Afbeelding"
+        },
+        "heading": {
+          "label": "Rubriek"
+        },
+        "subheading": {
+          "label": "Ondertitel"
+        },
+        "cta_label": {
+          "label": "Knooplabel"
+        },
+        "cta_url": {
+          "label": "Knop koppeling"
+        },
+        "text_position": {
+          "label": "Tekst positie"
+        },
+        "overlay_opacity": {
+          "label": "Overlay-dekking"
+        }
+      }
+    },
+    "column": {
+      "name": "Kolom",
+      "settings": {
+        "image": {
+          "label": "Afbeelding"
+        },
+        "heading": {
+          "label": "Rubriek"
+        },
+        "text": {
+          "label": "Tekst"
+        },
+        "button_label": {
+          "label": "Knooplabel"
+        },
+        "button_url": {
+          "label": "Knop koppeling"
+        }
+      }
+    },
+    "faq_item": {
+      "name": "Vraag",
+      "settings": {
+        "question": {
+          "label": "Vraag"
+        },
+        "answer": {
+          "label": "Antwoord"
+        }
+      }
+    },
+    "logo": {
+      "name": "Logo",
+      "settings": {
+        "image": {
+          "label": "Logo-afbeelding"
+        },
+        "name": {
+          "label": "Bedrijfsnaam"
+        },
+        "url": {
+          "label": "Koppeling (optioneel)"
+        }
+      }
+    },
+    "testimonial": {
+      "name": "Getuigenis",
+      "settings": {
+        "quote": {
+          "label": "Citaat"
+        },
+        "author": {
+          "label": "Naam recensent"
+        },
+        "role": {
+          "label": "Titel / locatie (optioneel)"
+        },
+        "rating": {
+          "label": "Sterrenwaardering"
+        },
+        "image": {
+          "label": "Foto (optioneel)"
+        }
+      }
+    },
+    "photo": {
+      "name": "Foto",
+      "settings": {
+        "image": {
+          "label": "Afbeelding"
+        },
+        "product": {
+          "label": "Link naar product (optioneel)"
+        },
+        "caption": {
+          "label": "Bijschrift (optioneel)"
+        }
+      }
+    }
+  }
+}

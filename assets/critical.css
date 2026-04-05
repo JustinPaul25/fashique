@@ -84,6 +84,53 @@ p:empty {
   border: 0;
 }
 
+/* Skip-to-content — visually hidden until keyboard focus */
+.skip-to-content-link,
+.skip-link {
+  position: absolute;
+  inset-inline-start: 1rem;
+  inset-block-start: 1rem;
+  z-index: 9999;
+  padding: 0.75rem 1.25rem;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-weight: 600;
+  text-decoration: none;
+  border: 2px solid currentcolor;
+  border-radius: var(--radius-sm, 4px);
+  transform: translateY(-150%);
+  transition: transform 0.2s ease;
+}
+
+.skip-to-content-link:focus-visible,
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* Fallback focus ring where components do not define their own */
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/**
+ * Semantic <ul>/<ol> used as grids (UGC photo grid, multicolumn, etc.).
+ * Without this, user-agent list markers show on each <li>.
+ */
+.list-unstyled {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.list-unstyled > li {
+  list-style: none;
+}
+
+.list-unstyled > li::marker {
+  content: none;
+}
+
 /** Theme styles below */
 body {
   font-family: var(--font-body-family);
@@ -114,7 +161,7 @@ h6 { font-size: var(--font-size-h6); }
 
 /**
  * Default vertical padding for sections lives in assets/spacing.css and is
- * driven by the --section-padding-block token (spacing_scale setting).
+ * driven by the --section-padding-block token from css-variables.liquid.
  * Override with padding-block: 0 in any section that manages its own spacing.
  */
 

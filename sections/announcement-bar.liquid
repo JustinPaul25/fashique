@@ -8,10 +8,13 @@
   • Sets --announcement-bar-height on :root so the sticky header can offset itself.
 {%- endcomment -%}
 
-{%- assign announcement_blocks = section.blocks | where: 'type', 'announcement' -%}
-{%- assign message_count = announcement_blocks.size -%}
+{%- liquid
+  assign announcement_blocks = section.blocks | where: 'type', 'announcement'
+  assign message_count = announcement_blocks.size
+  assign show_announcement_bar = section.settings.show_bar | default: settings.homepage_show_announcement_bar, allow_false: true
+-%}
 
-{%- if section.settings.show_bar and message_count > 0 -%}
+{%- if show_announcement_bar and message_count > 0 -%}
 
   {%- comment -%}
     Inline CSS sets an approximate height for --announcement-bar-height so the

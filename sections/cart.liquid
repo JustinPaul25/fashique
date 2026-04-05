@@ -1,41 +1,182 @@
-{% comment %}
-  This section is used in the cart template to render /cart page with an
-  overview of the items in customer's cart.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/cart
-{% endcomment %}
+{%- comment -%}
+  Cart template (Phase 5.4): line items, note, discount, subtotal, checkout, empty state.
+  Upsell row / drawer upsell: Phase 6.
+{%- endcomment -%}
+{%- liquid
+  assign cart_show_order_note = section.settings.show_order_note | default: settings.cart_show_order_note, allow_false: true
+-%}
 
 {%- render 'section-spacing', section: section -%}
-<div class="color-scheme color-{{ section.settings.color_scheme }}">
-<h1>{{ 'cart.title' | t }}</h1>
 
-<form action="{{ routes.cart_url }}" method="post">
-  <table>
-    {% for item in cart.items %}
-      <tr>
-        <td>
-          {% render 'image', image: item.image, url: item.url %}
-        </td>
-        <td>
-          <p>{{ item.product.title }}</p>
-          {{ 'cart.remove' | t | link_to: item.url_to_remove }}
-        </td>
-        <td>
-          <input type="text" name="updates[]" value="{{ item.quantity }}">
-          <input type="submit" value="{{ 'cart.update' | t }}">
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
+<div class="cart-page section-padding color-scheme color-{{ section.settings.color_scheme }}">
+  <div class="cart-page__inner page-width">
+    {%- if section.settings.show_breadcrumbs -%}
+      {% render 'breadcrumbs', show: true %}
+    {%- endif -%}
 
-  <input type="submit" name="checkout" value="{{ 'cart.checkout' | t }}">
-</form>
+    <h1 class="cart-page__title">{{ 'cart.title' | t }}</h1>
+
+    {%- if cart.item_count == 0 -%}
+      <div class="cart-empty">
+        <p class="cart-empty__title">{{ 'cart.empty' | t }}</p>
+        <p class="cart-empty__text">{{ 'cart.empty_subtext' | t }}</p>
+        <a href="{{ routes.collections_url }}" class="btn btn--solid btn--lg">{{ 'cart.continue_shopping' | t }}</a>
+      </div>
+    {%- else -%}
+      {%- form 'cart', cart, class: 'cart-page__form', id: 'CartPageForm' -%}
+        <div class="cart-page__grid">
+          <div class="cart-page__main">
+            <div class="cart-page__head cart-page__head--desktop">
+              <span class="cart-page__col-product">{{ 'cart.column_product' | t }}</span>
+              <span class="cart-page__col-qty">{{ 'cart.quantity' | t }}</span>
+              <span class="cart-page__col-total">{{ 'cart.column_total' | t }}</span>
+            </div>
+            <div class="cart-lines" role="list">
+              {%- for item in cart.items -%}
+                <div role="listitem">
+                  {% render 'cart-line-item', item: item, line_index: forloop.index %}
+                </div>
+              {%- endfor -%}
+            </div>
+
+            <div class="cart-actions cart-actions--row cart-page__actions-update">
+              <button type="submit" class="btn btn--outline btn--md" name="update">
+                {{ 'cart.update' | t }}
+              </button>
+            </div>
+          </div>
+
+          <aside class="cart-page__aside" aria-labelledby="cart-summary-heading">
+            <h2 id="cart-summary-heading" class="visually-hidden">{{ 'cart.summary_heading' | t }}</h2>
+
+            {%- if cart_show_order_note -%}
+              <div class="cart-field">
+                <label class="cart-field__label" for="CartNote">{{ 'cart.order_note' | t }}</label>
+                <textarea
+                  class="cart-field__textarea"
+                  id="CartNote"
+                  name="note"
+                  placeholder="{{ 'cart.order_note_placeholder' | t }}"
+                  rows="3"
+                >{{ cart.note }}</textarea>
+              </div>
+            {%- endif -%}
+
+            {%- if section.settings.show_discount -%}
+              <div class="cart-field">
+                <label class="cart-field__label" for="CartDiscount">{{ 'cart.discount_code' | t }}</label>
+                <input
+                  type="text"
+                  class="cart-field__input"
+                  id="CartDiscount"
+                  name="discount"
+                  value="{{ cart.discount_application.title }}"
+                  placeholder="{{ 'cart.discount_placeholder' | t }}"
+                  autocomplete="off"
+                >
+              </div>
+            {%- endif -%}
+
+            <div class="cart-summary__subtotal-row">
+              <span>{{ 'cart.subtotal' | t }}</span>
+              <span>{{ cart.total_price | money_with_currency }}</span>
+            </div>
+            <p class="cart-summary__note">{{ 'cart.taxes_shipping_note' | t }}</p>
+
+            <div class="cart-actions">
+              <button type="submit" class="btn btn--solid btn--lg" name="checkout">
+                {{ 'cart.checkout' | t }}
+              </button>
+              {{ form | payment_button }}
+            </div>
+          </aside>
+        </div>
+      {%- endform -%}
+    {%- endif -%}
+  </div>
 </div>
+
+{% stylesheet %}
+  .cart-page__inner {
+    max-width: var(--page-width);
+    margin-inline: auto;
+  }
+
+  .cart-page__title {
+    font-size: var(--font-size-h2);
+    font-family: var(--font-heading-family);
+    margin: 0 0 var(--spacing-lg);
+  }
+
+  .cart-page__grid {
+    display: grid;
+    gap: var(--spacing-xl);
+    align-items: start;
+  }
+
+  @media screen and (min-width: 990px) {
+    .cart-page__grid {
+      grid-template-columns: minmax(0, 1fr) 20rem;
+    }
+  }
+
+  .cart-page__head--desktop {
+    display: none;
+    grid-template-columns: minmax(0, 1fr) 8.5rem 6rem;
+    gap: var(--spacing-md);
+    padding-block-end: var(--spacing-sm);
+    margin-block-end: var(--spacing-sm);
+    border-block-end: 1px solid var(--color-border);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  @media screen and (min-width: 750px) {
+    .cart-page__head--desktop {
+      display: grid;
+    }
+  }
+
+  .cart-page__col-total {
+    justify-self: end;
+  }
+
+  .cart-page__aside {
+    padding: var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--color-foreground) 4%, var(--color-background));
+  }
+
+  .cart-page__actions-update {
+    margin-block-start: var(--spacing-md);
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.cart",
+  "name": "t:sections.cart.name",
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "t:sections.cart.settings.show_breadcrumbs.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_order_note",
+      "label": "t:sections.cart.settings.show_order_note.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount",
+      "label": "t:sections.cart.settings.show_discount.label",
+      "default": true
+    },
     {
       "type": "color_scheme",
       "id": "color_scheme",
@@ -56,7 +197,7 @@
         { "value": "lg",      "label": "t:options.section_spacing.lg"      },
         { "value": "xl",      "label": "t:options.section_spacing.xl"      }
       ],
-      "default": "default"
+      "default": "md"
     }
   ]
 }

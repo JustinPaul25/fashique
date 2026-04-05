@@ -1,0 +1,34 @@
+{% doc %}
+  Shown after Ajax add to cart from the product page (drawer cart + theme setting).
+{% enddoc %}
+
+<dialog
+  id="PostAddDialog"
+  class="post-add-dialog"
+  aria-modal="true"
+  role="dialog"
+  aria-labelledby="post-add-heading"
+  data-cart-url="{{ routes.cart_url | escape }}"
+  data-post-add-empty="{{ 'cart.post_add_empty' | t | escape }}"
+  hidden
+>
+  <div class="post-add-dialog__panel color-scheme color-scheme-1">
+    <button
+      type="button"
+      class="post-add-dialog__close"
+      data-post-add-close
+      aria-label="{{ 'accessibility.close' | t | escape }}"
+    >
+      {{- 'icon-close.svg' | inline_asset_content -}}
+    </button>
+    <h2 id="post-add-heading" class="post-add-dialog__title">{{ 'cart.post_add_title' | t }}</h2>
+    <div class="post-add-dialog__recs" data-post-add-recs></div>
+    <div class="post-add-dialog__actions">
+      <button type="button" class="btn btn--outline" data-post-add-continue>{{ 'cart.post_add_continue' | t }}</button>
+      <button type="button" class="btn btn--solid" data-post-add-view-cart>{{ 'cart.view_cart' | t }}</button>
+    </div>
+  </div>
+</dialog>
+
+{{ 'component-post-add-modal.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'component-post-add-modal.js' | asset_url }}" defer></script>

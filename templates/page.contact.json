@@ -1,0 +1,21 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * Assign this template to a page in the admin (e.g. Contact) for the
+ * contact form, map embed, and contact details section.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "contact",
+      "settings": {
+        "show_breadcrumbs": true
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

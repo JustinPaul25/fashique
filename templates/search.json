@@ -11,7 +11,14 @@
   "sections": {
     "main": {
       "type": "search",
-      "settings": {}
+      "settings": {
+        "enable_predictive": true,
+        "results_per_page": 24,
+        "show_vendor": false,
+        "show_quick_view": true,
+        "color_scheme": "scheme-1",
+        "section_spacing": "md"
+      }
     }
   },
   "order": [

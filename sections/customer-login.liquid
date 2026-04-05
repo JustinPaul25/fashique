@@ -1,0 +1,186 @@
+{%- comment -%}
+  Customer login (Phase 8 / Feature #17). Sign in with Shop via {{ form | login_button }} — do not style the button.
+{%- endcomment -%}
+{%- render 'section-spacing', section: section -%}
+<div
+  class="customer-login section-padding color-scheme color-{{ section.settings.color_scheme }}"
+  data-section-id="{{ section.id }}"
+>
+  <div class="customer-login__inner page-width">
+    <h1 class="customer-login__title">{{ 'customer.login_title' | t }}</h1>
+
+    <div class="customer-login__card">
+      {%- form 'customer_login', novalidate: 'novalidate', class: 'customer-login__form' -%}
+        {%- if form.errors -%}
+          <div class="customer-login__errors">
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div class="customer-login__field">
+          <label class="customer-login__label" for="CustomerEmail-{{ section.id }}">
+            {{- 'customer.email' | t -}}
+          </label>
+          <input
+            type="email"
+            name="customer[email]"
+            id="CustomerEmail-{{ section.id }}"
+            class="customer-login__input field-input"
+            autocomplete="email"
+            required
+            {% if form.email %}
+              value="{{ form.email | escape }}"
+            {% endif %}
+          >
+        </div>
+
+        <div class="customer-login__field">
+          <label class="customer-login__label" for="CustomerPassword-{{ section.id }}">
+            {{- 'customer.password' | t -}}
+          </label>
+          <input
+            type="password"
+            name="customer[password]"
+            id="CustomerPassword-{{ section.id }}"
+            class="customer-login__input field-input"
+            autocomplete="current-password"
+            required
+          >
+        </div>
+
+        <button type="submit" class="btn btn--solid customer-login__submit">
+          {{- 'customer.log_in' | t -}}
+        </button>
+
+        <div class="customer-login__shop-wrap">
+          {{ form | login_button }}
+        </div>
+      {%- endform -%}
+
+      <div class="customer-login__links">
+        <a href="{{ routes.account_register_url }}" class="customer-login__link">
+          {{- 'customer.register' | t -}}
+        </a>
+        <span class="customer-login__sep" aria-hidden="true">·</span>
+        <a href="{{ routes.account_recover_url }}" class="customer-login__link">
+          {{- 'customer.forgot_password' | t -}}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .customer-login {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    padding-block: var(--section-padding-block);
+  }
+
+  .customer-login__inner {
+    max-width: 26rem;
+    margin-inline: auto;
+  }
+
+  .customer-login__title {
+    font-family: var(--font-heading-family);
+    font-size: var(--font-size-h2);
+    margin: 0 0 var(--spacing-lg);
+    text-align: center;
+  }
+
+  .customer-login__card {
+    padding: var(--spacing-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-background);
+  }
+
+  .customer-login__errors {
+    margin-block-end: var(--spacing-md);
+    font-size: 0.875rem;
+    color: var(--color-primary);
+  }
+
+  .customer-login__field {
+    margin-block-end: var(--spacing-md);
+  }
+
+  .customer-login__label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-block-end: 0.35rem;
+  }
+
+  .customer-login__input {
+    width: 100%;
+    padding: 0.625rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font: inherit;
+    background: var(--color-background);
+    color: inherit;
+  }
+
+  .customer-login__submit {
+    width: 100%;
+    margin-block-start: var(--spacing-sm);
+  }
+
+  .customer-login__shop-wrap {
+    margin-block-start: var(--spacing-md);
+    display: flex;
+    justify-content: center;
+  }
+
+  .customer-login__links {
+    margin-block-start: var(--spacing-lg);
+    text-align: center;
+    font-size: 0.875rem;
+  }
+
+  .customer-login__link {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .customer-login__sep {
+    margin-inline: 0.35rem;
+    opacity: 0.45;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.customer_login.name",
+  "tag": "section",
+  "class": "section-customer-login",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "section_spacing",
+      "label": "t:labels.section_spacing",
+      "info": "t:info.section_spacing",
+      "options": [
+        { "value": "default", "label": "t:options.section_spacing.default" },
+        { "value": "none", "label": "t:options.section_spacing.none" },
+        { "value": "xs", "label": "t:options.section_spacing.xs" },
+        { "value": "sm", "label": "t:options.section_spacing.sm" },
+        { "value": "md", "label": "t:options.section_spacing.md" },
+        { "value": "lg", "label": "t:options.section_spacing.lg" },
+        { "value": "xl", "label": "t:options.section_spacing.xl" }
+      ],
+      "default": "md"
+    }
+  ],
+  "presets": [{ "name": "t:sections.customer_login.name" }]
+}
+{% endschema %}

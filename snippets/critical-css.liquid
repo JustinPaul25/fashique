@@ -87,6 +87,21 @@
     margin-block-end: 0;
   }
 
+  /* Semantic <ul> grids — sections use class="… list-unstyled" */
+  .list-unstyled {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .list-unstyled > li {
+    list-style: none;
+  }
+
+  .list-unstyled > li::marker {
+    content: none;
+  }
+
   /* ============================================================
      Section layout grid
      Supports both constrained (default) and full-width children.
@@ -116,22 +131,33 @@
   }
 
   /*
-   * Header and footer section wrappers are always flush — zero block padding
-   * regardless of the spacing_scale theme setting. Placed here (critical inline
-   * styles) so it takes effect immediately, before async stylesheets load.
+   * Pin vertical section padding for chrome so :root's default is not inherited
+   * before spacing.css loads. Header can override via section-spacing.liquid.
+   */
+  .shopify-section-group--header-group,
+  .shopify-section-group--footer-group,
+  #shopify-section-header,
+  #shopify-section-footer {
+    --section-padding-block: 0;
+    --section-gap: 0;
+  }
+
+  /*
+   * Header/footer section wrappers use the token (same as spacing.css).
    */
   .shopify-section-group--header-group .shopify-section,
   .shopify-section-group--footer-group .shopify-section,
   #shopify-section-header,
   #shopify-section-footer {
-    padding-block: 0;
+    padding-block: var(--section-padding-block);
   }
 
   /* ============================================================
      Skip-to-content link (accessibility)
      Visually hidden until focused via keyboard.
      ============================================================ */
-  .skip-to-content-link {
+  .skip-to-content-link,
+  .skip-link {
     position: absolute;
     inset-inline-start: 1rem;
     inset-block-start: 1rem;
@@ -147,7 +173,14 @@
     transition: transform 0.2s ease;
   }
 
-  .skip-to-content-link:focus-visible {
+  .skip-to-content-link:focus-visible,
+  .skip-link:focus-visible {
     transform: translateY(0);
+  }
+
+  /* Fallback focus ring where components do not define their own */
+  :where(a, button, input, select, textarea, summary):focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
 </style>

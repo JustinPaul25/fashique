@@ -42,9 +42,15 @@
       {{- 'pagination.showing_html' | t: shown: shown_count, total: paginate.items -}}
     </p>
 
+    <div class="pagination__loading" data-pagination-loading hidden>
+      <span class="pagination__spinner" aria-hidden="true"></span>
+      <span class="visually-hidden">{{ 'pagination.loading' | t }}</span>
+    </div>
+
     <a
       href="{{ paginate.next.url }}"
       class="btn btn--outline pagination__btn"
+      data-pagination-load-btn
     >
       {{- 'pagination.load_more' | t -}}
     </a>
@@ -77,6 +83,45 @@
 
   .pagination__btn {
     min-width: 12rem;
+  }
+
+  .pagination__loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+  }
+
+  .pagination__loading[hidden] {
+    display: none !important;
+  }
+
+  .pagination__spinner {
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: pagination-spin 0.65s linear infinite;
+  }
+
+  @keyframes pagination-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pagination__spinner {
+      animation: none;
+      border-top-color: var(--color-border);
+      opacity: 0.6;
+    }
+  }
+
+  .pagination.is-loading .pagination__btn {
+    pointer-events: none;
+    opacity: 0.45;
   }
 
   /* "All items shown" — only visible after the last page has loaded */

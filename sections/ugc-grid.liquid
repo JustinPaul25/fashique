@@ -27,9 +27,9 @@
       >
         {%- for block in photo_blocks -%}
           {%- assign ugc_placeholder_num = forloop.index | modulo: 2 | plus: 1 -%}
-          {%- assign ugc_placeholder = 'lifestyle-' | append: ugc_placeholder_num -%}
           <li
             class="ugc-grid__item{% if block.settings.image == blank %} ugc-grid__item--placeholder{% endif %}"
+            data-placeholder-index="{{ ugc_placeholder_num }}"
             {{ block.shopify_attributes }}
           >
             <button
@@ -45,7 +45,7 @@
                 alt: block.settings.image.alt | default: block.settings.caption,
                 class: 'ugc-grid__img',
                 loading: 'lazy',
-                placeholder_type: ugc_placeholder
+                placeholder_type: 'lifestyle-' | append: ugc_placeholder_num
               -%}
               {%- if block.settings.image == blank -%}
                 <span class="visually-hidden">{{ 'sections.ugc_grid.photo_placeholder' | t }}</span>
@@ -88,7 +88,7 @@
                     alt: block.settings.image.alt | default: block.settings.caption,
                     class: 'ugc-lightbox__img',
                     loading: 'lazy',
-                    placeholder_type: ugc_placeholder
+                    placeholder_type: 'lifestyle-' | append: ugc_placeholder_num
                   -%}
                   {%- if block.settings.caption != blank or block.settings.product != blank -%}
                     <div class="ugc-lightbox__meta">
@@ -397,7 +397,7 @@
         { "value": "lg",      "label": "t:options.section_spacing.lg"      },
         { "value": "xl",      "label": "t:options.section_spacing.xl"      }
       ],
-      "default": "default"
+      "default": "none"
     }
   ],
   "blocks": [
@@ -427,8 +427,6 @@
     {
       "name": "t:sections.ugc_grid.name",
       "blocks": [
-        { "type": "photo" },
-        { "type": "photo" },
         { "type": "photo" },
         { "type": "photo" },
         { "type": "photo" },

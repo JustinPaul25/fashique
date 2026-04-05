@@ -6,11 +6,14 @@
   • Overlay opacity, text position, and banner height are all schema-driven.
 {%- endcomment -%}
 
-{%- assign overlay_alpha = section.settings.overlay_opacity | divided_by: 100.0 -%}
+{%- liquid
+  assign overlay_alpha = section.settings.overlay_opacity | divided_by: 100.0
+  assign banner_height = section.settings.height | default: settings.homepage_default_hero_height | default: 'medium'
+-%}
 {%- render 'section-spacing', section: section -%}
 
 <section
-  class="image-banner image-banner--{{ section.settings.height }} color-scheme color-{{ section.settings.color_scheme }}"
+  class="image-banner image-banner--{{ banner_height }} color-scheme color-{{ section.settings.color_scheme }}"
   data-section-id="{{ section.id }}"
 >
   {%- comment -%} Background images {%- endcomment -%}
@@ -274,7 +277,7 @@
         { "value": "lg",      "label": "t:options.section_spacing.lg"      },
         { "value": "xl",      "label": "t:options.section_spacing.xl"      }
       ],
-      "default": "default"
+      "default": "none"
     }
   ],
   "presets": [

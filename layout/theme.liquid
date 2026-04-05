@@ -62,13 +62,29 @@
     {{ content_for_header }}
   </head>
 
-  <body>
+  <body
+    data-theme-root="{{ routes.root_url | escape }}"
+    data-enable-quick-view="{% if settings.enable_quick_view == false %}false{% else %}true{% endif %}"
+    data-enable-sticky-atc="{% if settings.enable_sticky_atc == false %}false{% else %}true{% endif %}"
+    data-cart-drawer-upsell="{% if settings.cart_drawer_show_upsell == false %}false{% else %}true{% endif %}"
+    data-show-post-add-modal="{% if settings.show_post_add_modal == false %}false{% else %}true{% endif %}"
+    data-cart-type="{{ settings.cart_type | escape }}"
+    data-locale="{{ request.locale.iso_code | escape }}"
+    data-currency="{{ cart.currency.iso_code | escape }}"
+  >
     {% comment %} Skip-to-content anchor — visible on keyboard focus only. {% endcomment %}
-    <a href="#main-content" class="skip-to-content-link">
+    <a href="#main-content" class="skip-to-content-link skip-link">
       {{- 'accessibility.skip_to_content' | t -}}
     </a>
 
     {% sections 'header-group' %}
+
+    {%- if settings.cart_type == 'drawer' and template.name != 'cart' -%}
+      {% render 'cart-drawer' %}
+    {%- endif -%}
+    {%- if settings.cart_type == 'drawer' or template.name == 'cart' -%}
+      {% render 'cart-assets' %}
+    {%- endif -%}
 
     <main id="main-content" tabindex="-1">
       {{ content_for_layout }}
@@ -85,7 +101,14 @@
     {%- endif -%}
 
     {%- if settings.enable_age_verifier -%}
-      {% render 'age-verifier' %}
+      {% section 'age-verifier' %}
+    {%- endif -%}
+
+    {%- if settings.enable_quick_view -%}
+      {% render 'quick-view-dialog' %}
+    {%- endif -%}
+    {%- if settings.show_post_add_modal and settings.cart_type == 'drawer' -%}
+      {% render 'post-add-modal' %}
     {%- endif -%}
   </body>
 </html>

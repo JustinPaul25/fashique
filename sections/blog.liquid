@@ -1,38 +1,196 @@
-{% comment %}
-  This section is used in the blog template to render the blog page listing all
-  articles within a blog.
+{%- comment -%}
+  Blog listing (Phase 5.7): header, tag filter, article card grid, pagination.
+{%- endcomment -%}
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/blog
-{% endcomment %}
-
+{%- render 'article-card-styles' -%}
 {%- render 'section-spacing', section: section -%}
-<div class="color-scheme color-{{ section.settings.color_scheme }}">
-<h1>{{ blog.title }}</h1>
 
-{% paginate blog.articles by 5 %}
-  {% for article in blog.articles %}
-    <div>
-      {% if article.image %}
-        {{ article.image | image_url: width: 1000 | image_tag }}
-      {% endif %}
-      <h2>
-        {{ article.title | link_to: article.url }}
-      </h2>
-      {% assign date = article.published_at | time_tag: format: 'date' %}
-      <p>{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
-      <p>{{ article.excerpt }}</p>
-    </div>
-  {% endfor %}
+{%- liquid
+  assign per_page = section.settings.articles_per_page | default: 9 | plus: 0
+  if per_page < 3
+    assign per_page = 3
+  endif
+  if per_page > 24
+    assign per_page = 24
+  endif
+-%}
 
-  {%- if paginate.pages > 1 -%}
-    {{- paginate | default_pagination -}}
-  {%- endif -%}
-{% endpaginate %}
+<div class="blog-section section-padding color-scheme color-{{ section.settings.color_scheme }}">
+  <div class="blog-section__inner page-width">
+    <header class="blog-section__header">
+      <h1 class="blog-section__title">{{ blog.title | escape }}</h1>
+      {%- if blog.description != blank -%}
+        <div class="blog-section__description rte">{{ blog.description }}</div>
+      {%- endif -%}
+    </header>
+
+    {%- if section.settings.show_tag_filter and blog.all_tags.size > 0 -%}
+      <nav class="blog-section__tag-bar" aria-label="{{ 'blog.tag_filter_aria' | t }}">
+        <ul class="blog-section__tag-list list-unstyled" role="list">
+          <li>
+            <a
+              href="{{ blog.url }}"
+              class="blog-section__tag{% if current_tags == blank %} blog-section__tag--active{% endif %}"
+            >
+              {{- 'blog.all_posts' | t -}}
+            </a>
+          </li>
+          {%- for tag in blog.all_tags -%}
+            <li>
+              <a
+                href="{{ blog.url }}/tagged/{{ tag | handle }}"
+                class="blog-section__tag{% if current_tags contains tag %} blog-section__tag--active{% endif %}"
+              >
+                {{- tag | escape -}}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    {%- paginate blog.articles by per_page -%}
+      <div class="blog-section__grid">
+        {%- for article in blog.articles -%}
+          {%- render 'article-card', article: article, class: 'blog-section__card' -%}
+        {%- else -%}
+          <p class="blog-section__empty">{{ 'blog.no_articles_in_view' | t }}</p>
+        {%- endfor -%}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="blog-section__pagination-nav" aria-label="{{ 'blog.pagination_aria' | t }}">
+          {{- paginate | default_pagination -}}
+        </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
 </div>
+
+{% stylesheet %}
+  .blog-section__inner {
+    max-width: var(--page-width);
+    margin-inline: auto;
+  }
+
+  .blog-section__header {
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+  }
+
+  .blog-section__title {
+    margin: 0 0 var(--spacing-sm);
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+  }
+
+  .blog-section__description {
+    margin: 0 auto;
+    max-width: 42rem;
+    opacity: 0.9;
+  }
+
+  .blog-section__tag-bar {
+    margin-bottom: var(--spacing-lg);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: var(--spacing-xs);
+  }
+
+  .blog-section__tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  .blog-section__tag {
+    display: inline-block;
+    padding: 0.4rem 0.85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    text-decoration: none;
+    color: inherit;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    transition:
+      background var(--transition-base),
+      border-color var(--transition-base);
+  }
+
+  .blog-section__tag:hover {
+    border-color: color-mix(in srgb, var(--color-foreground) 30%, var(--color-border));
+  }
+
+  .blog-section__tag--active {
+    background: var(--color-foreground);
+    color: var(--color-background);
+    border-color: var(--color-foreground);
+  }
+
+  .blog-section__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(17rem, 100%), 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .blog-section__card {
+    min-width: 0;
+  }
+
+  .blog-section__empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    margin: var(--spacing-xl) 0;
+    opacity: 0.75;
+  }
+
+  .blog-section__pagination-nav {
+    margin-top: var(--spacing-xl);
+    display: flex;
+    justify-content: center;
+  }
+
+  .blog-section__pagination-nav .pagination,
+  .blog-section__pagination-nav .paginate {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .blog-section__pagination-nav a,
+  .blog-section__pagination-nav span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+    padding: 0 0.5rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    text-decoration: none;
+    color: inherit;
+    font-size: 0.875rem;
+  }
+
+  .blog-section__pagination-nav .current,
+  .blog-section__pagination-nav span.deco {
+    border-color: var(--color-foreground);
+    background: var(--color-foreground);
+    color: var(--color-background);
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.blog",
+  "name": "t:sections.blog.name",
   "settings": [
     {
       "type": "color_scheme",
@@ -47,14 +205,29 @@
       "info": "t:info.section_spacing",
       "options": [
         { "value": "default", "label": "t:options.section_spacing.default" },
-        { "value": "none",    "label": "t:options.section_spacing.none"    },
-        { "value": "xs",      "label": "t:options.section_spacing.xs"      },
-        { "value": "sm",      "label": "t:options.section_spacing.sm"      },
-        { "value": "md",      "label": "t:options.section_spacing.md"      },
-        { "value": "lg",      "label": "t:options.section_spacing.lg"      },
-        { "value": "xl",      "label": "t:options.section_spacing.xl"      }
+        { "value": "none", "label": "t:options.section_spacing.none" },
+        { "value": "xs", "label": "t:options.section_spacing.xs" },
+        { "value": "sm", "label": "t:options.section_spacing.sm" },
+        { "value": "md", "label": "t:options.section_spacing.md" },
+        { "value": "lg", "label": "t:options.section_spacing.lg" },
+        { "value": "xl", "label": "t:options.section_spacing.xl" }
       ],
-      "default": "default"
+      "default": "md"
+    },
+    {
+      "type": "range",
+      "id": "articles_per_page",
+      "label": "t:sections.blog.settings.articles_per_page.label",
+      "min": 3,
+      "max": 24,
+      "step": 1,
+      "default": 9
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tag_filter",
+      "label": "t:sections.blog.settings.show_tag_filter.label",
+      "default": true
     }
   ]
 }

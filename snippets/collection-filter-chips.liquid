@@ -1,0 +1,101 @@
+{% doc %}
+  Active storefront filter chips and clear-all link for collection pages.
+  Render above the product grid so selections stay visible on mobile.
+
+  @param {collection} collection - Active collection (required)
+
+  @example
+  {% render 'collection-filter-chips', collection: collection %}
+{% enddoc %}
+
+{%- if collection.filters != empty -%}
+{%- liquid
+  assign has_active = false
+  for filter in collection.filters
+    if filter.active_values.size > 0
+      assign has_active = true
+      break
+    endif
+    if filter.type == 'price_range'
+      if filter.min_value.value != nil or filter.max_value.value != nil
+        assign has_active = true
+        break
+      endif
+    endif
+  endfor
+-%}
+
+{%- if has_active -%}
+  <div class="collection-filter-chips">
+    <ul class="collection-filter-chips__list list-unstyled" role="list">
+      {%- for filter in collection.filters -%}
+        {%- for value in filter.active_values -%}
+          <li>
+            <a class="collection-filter-chips__chip" href="{{ value.url_to_remove }}">
+              <span>{{ filter.label | escape }}: {{ value.label | escape }}</span>
+            </a>
+          </li>
+        {%- endfor -%}
+        {%- if filter.type == 'price_range' -%}
+          {%- liquid
+            assign pmin = filter.min_value.value
+            assign pmax = filter.max_value.value
+          -%}
+          {%- if pmin != nil or pmax != nil -%}
+            <li>
+              <a class="collection-filter-chips__chip" href="{{ filter.url_to_remove }}">
+                <span>
+                  {{ filter.label | escape }}:
+                  {{ pmin | default: 0 | money }}
+                  –
+                  {{ pmax | default: filter.range_max | money }}
+                </span>
+              </a>
+            </li>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+    <a class="collection-filter-chips__clear link" href="{{ collection.url }}">
+      {{- 'collections.filters_clear_all' | t -}}
+    </a>
+  </div>
+{%- endif -%}
+{%- endif -%}
+
+{% stylesheet %}
+  .collection-filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-block-end: var(--spacing-md);
+  }
+
+  .collection-filter-chips__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .collection-filter-chips__chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.8125rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .collection-filter-chips__chip:hover {
+    border-color: var(--color-primary);
+  }
+
+  .collection-filter-chips__clear {
+    font-size: 0.875rem;
+  }
+{% endstylesheet %}

@@ -1,0 +1,91 @@
+{% doc %}
+  Single before/after comparison slider. Used by `sections/before-after.liquid` (one or many in Splide).
+  Pass `before_image` and `after_image` image drops plus optional label strings.
+
+  @param {string} id_base - Unique id suffix for DOM ids (required)
+  @param {string} orientation - `horizontal` or `vertical`
+  @param {string} [before_label] - Optional label text
+  @param {string} [after_label] - Optional label text
+
+  @example
+  {% render 'before-after-slide',
+    id_base: block.id,
+    orientation: section.settings.orientation,
+    before_image: block.settings.before_image,
+    after_image: block.settings.after_image,
+    before_label: block.settings.before_label,
+    after_label: block.settings.after_label
+  %}
+{% enddoc %}
+
+{%- liquid
+  assign ba_before = 'sections.before_after.before' | t
+  if before_label != blank
+    assign ba_before = before_label
+  endif
+  assign ba_after = 'sections.before_after.after' | t
+  if after_label != blank
+    assign ba_after = after_label
+  endif
+-%}
+
+<div
+  class="before-after__slider before-after__slider--{{ orientation }}"
+  id="before-after-{{ id_base }}"
+  data-ba-slider
+  data-ba-orientation="{{ orientation }}"
+  dir="ltr"
+  role="group"
+  aria-label="{{ ba_before | escape }} / {{ ba_after | escape }}"
+>
+  <div class="before-after__after-wrap">
+    {%- render 'image',
+      image: after_image,
+      widths: '400,700,1000,1400',
+      sizes: '(min-width: 1024px) 80vw, 100vw',
+      alt: after_image.alt | default: ba_after,
+      class: 'before-after__img before-after__img--after',
+      loading: 'lazy',
+      placeholder_type: 'lifestyle-2'
+    -%}
+    <span class="before-after__badge before-after__badge--after" aria-hidden="true">
+      {{- ba_after | escape -}}
+    </span>
+  </div>
+
+  <div class="before-after__before-wrap" data-ba-before id="before-wrap-{{ id_base }}">
+    {%- render 'image',
+      image: before_image,
+      widths: '400,700,1000,1400',
+      sizes: '(min-width: 1024px) 80vw, 100vw',
+      alt: before_image.alt | default: ba_before,
+      class: 'before-after__img before-after__img--before',
+      loading: 'lazy',
+      placeholder_type: 'lifestyle-1'
+    -%}
+    <span class="before-after__badge before-after__badge--before" aria-hidden="true">
+      {{- ba_before | escape -}}
+    </span>
+  </div>
+
+  <div
+    class="before-after__divider"
+    data-ba-divider
+    id="divider-{{ id_base }}"
+    role="slider"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-valuenow="50"
+    aria-label="{{ 'accessibility.drag_handle' | t }}"
+    tabindex="0"
+  >
+    <div class="before-after__handle" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+        <path d="m9 18 6-6-6-6"/>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+        <path d="m15 18-6-6 6-6"/>
+      </svg>
+    </div>
+  </div>
+</div>

@@ -1,8 +1,14 @@
+{%- render 'section-spacing', section: section -%}
 {%- liquid
+  assign cart_drawer_ui = false
+  if settings.cart_type == 'drawer' and template.name != 'cart'
+    assign cart_drawer_ui = true
+  endif
+
   assign menu        = section.settings.menu
   assign sticky      = section.settings.sticky_header
-  assign logo        = section.settings.logo
-  assign logo_width  = section.settings.logo_width
+  assign logo        = section.settings.logo | default: settings.logo
+  assign logo_width  = section.settings.logo_width | default: settings.logo_width | default: 140
   assign show_lang    = section.settings.show_language_selector
   assign show_country = section.settings.show_country_selector
   assign logo_2x      = logo_width | times: 2
@@ -56,12 +62,14 @@
 
           {%- comment -%} Check whether a mega_menu block targets this nav item {%- endcomment -%}
           {%- assign mega_block = null -%}
-          {%- for block in section.blocks -%}
-            {%- if block.type == 'mega_menu' and block.settings.menu_item == link.title -%}
-              {%- assign mega_block = block -%}
-              {%- break -%}
-            {%- endif -%}
-          {%- endfor -%}
+          {%- unless settings.navigation_enable_mega_menu == false -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'mega_menu' and block.settings.menu_item == link.title -%}
+                {%- assign mega_block = block -%}
+                {%- break -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endunless -%}
 
           <li class="site-header__nav-item{% if has_children %} has-dropdown{% if mega_block %} has-mega{% endif %}{% endif %}">
             <a
@@ -70,7 +78,13 @@
               {% if has_children %}
                 aria-haspopup="{% if mega_block %}dialog{% else %}true{% endif %}"
                 aria-expanded="false"
-                {% if mega_block %}data-mega-trigger="{{ link.title | handle }}"{% endif %}
+                {% if mega_block %}
+                  id="mega-trigger-{{ link.title | handle }}"
+                  aria-controls="mega-menu-{{ link.title | handle }}"
+                  data-mega-trigger="{{ link.title | handle }}"
+                {% else %}
+                  aria-controls="header-dropdown-{{ link.title | handle }}"
+                {% endif %}
               {% endif %}
             >
               {{- link.title -}}
@@ -83,7 +97,12 @@
 
             {%- comment -%} Simple dropdown — only when no mega block is configured {%- endcomment -%}
             {%- if has_children and mega_block == null -%}
-              <ul class="site-header__dropdown" role="list" aria-label="{{ link.title }}">
+              <ul
+                id="header-dropdown-{{ link.title | handle }}"
+                class="site-header__dropdown"
+                role="list"
+                aria-label="{{ link.title }}"
+              >
                 {%- for child in link.links -%}
                   <li>
                     <a
@@ -114,22 +133,62 @@
         {{- 'icon-search.svg' | inline_asset_content -}}
       </button>
 
-      {%- comment -%} Account (shopify-account web component) {%- endcomment -%}
+      {%- comment -%} Account dropdown (Phase 8 / Feature #1) {%- endcomment -%}
       {%- if shop.customer_accounts_enabled -%}
-        <shopify-account
-          menu="{{ section.settings.customer_account_menu }}"
-          class="site-header__icon-btn"
-          aria-label="{{ 'accessibility.account' | t }}"
-        >
-          {{- 'icon-account.svg' | inline_asset_content -}}
-        </shopify-account>
+        <details class="site-header__account" data-account-menu>
+          <summary
+            class="site-header__icon-btn site-header__account-summary"
+            aria-label="{{ 'accessibility.account' | t }}"
+          >
+            {{- 'icon-account.svg' | inline_asset_content -}}
+          </summary>
+          <div class="site-header__account-panel" role="menu">
+            {%- if customer -%}
+              {%- assign account_display_name = customer.first_name | default: customer.email | escape -%}
+              <p class="site-header__account-greeting">
+                {{ 'customer.greeting_html' | t: name: account_display_name }}
+              </p>
+              <a href="{{ routes.account_url }}" class="site-header__account-link" role="menuitem">
+                {{- 'customer.account' | t -}}
+              </a>
+              <a
+                href="{{ routes.account_logout_url }}"
+                class="site-header__account-link"
+                role="menuitem"
+              >
+                {{- 'customer.log_out' | t -}}
+              </a>
+            {%- else -%}
+              <a
+                href="{{ routes.account_login_url }}"
+                class="site-header__account-link"
+                role="menuitem"
+              >
+                {{- 'customer.log_in' | t -}}
+              </a>
+              <a
+                href="{{ routes.account_register_url }}"
+                class="site-header__account-link"
+                role="menuitem"
+              >
+                {{- 'customer.register' | t -}}
+              </a>
+            {%- endif -%}
+          </div>
+        </details>
       {%- endif -%}
 
-      {%- comment -%} Cart icon + live count badge {%- endcomment -%}
+      {%- comment -%} Cart icon + live count badge (page vs drawer: theme setting) {%- endcomment -%}
       <a
         href="{{ routes.cart_url }}"
-        class="site-header__icon-btn site-header__cart"
+        class="site-header__icon-btn site-header__cart{% if cart_drawer_ui %} site-header__cart--drawer{% endif %}"
         aria-label="{{ 'accessibility.cart_count' | t: count: cart.item_count }}"
+        {% if cart_drawer_ui %}
+          aria-haspopup="dialog"
+          aria-expanded="false"
+          aria-controls="CartDrawer"
+          data-cart-drawer-trigger
+        {% endif %}
       >
         {{- 'icon-cart.svg' | inline_asset_content -}}
         <span
@@ -198,6 +257,7 @@
   </div>
 
   {%- comment -%} ── Mega menu panels ──────────────────────────────────── {%- endcomment -%}
+  {%- unless settings.navigation_enable_mega_menu == false -%}
   {%- for block in section.blocks -%}
     {%- if block.type == 'mega_menu' -%}
 
@@ -214,7 +274,8 @@
         class="mega-menu"
         id="mega-menu-{{ block.settings.menu_item | handle }}"
         role="dialog"
-        aria-label="{{ block.settings.menu_item }}"
+        aria-modal="false"
+        aria-labelledby="mega-trigger-{{ block.settings.menu_item | handle }}"
         data-mega-panel="{{ block.settings.menu_item | handle }}"
         hidden
         {{ block.shopify_attributes }}
@@ -292,6 +353,7 @@
       </div>
     {%- endif -%}
   {%- endfor -%}
+  {%- endunless -%}
 
   {%- comment -%} ── Search drawer (expands below header bar) ─────────── {%- endcomment -%}
   <div
@@ -376,6 +438,30 @@
         {{- 'icon-close.svg' | inline_asset_content -}}
       </button>
     </div>
+
+    {%- if shop.customer_accounts_enabled -%}
+      <div class="mobile-nav-drawer__account" aria-label="{{ 'accessibility.account' | t }}">
+        {%- if customer -%}
+          {%- assign account_display_name = customer.first_name | default: customer.email | escape -%}
+          <p class="mobile-nav-drawer__account-greeting">
+            {{ 'customer.greeting_html' | t: name: account_display_name }}
+          </p>
+          <a href="{{ routes.account_url }}" class="mobile-nav-drawer__account-link">
+            {{- 'customer.account' | t -}}
+          </a>
+          <a href="{{ routes.account_logout_url }}" class="mobile-nav-drawer__account-link">
+            {{- 'customer.log_out' | t -}}
+          </a>
+        {%- else -%}
+          <a href="{{ routes.account_login_url }}" class="mobile-nav-drawer__account-link">
+            {{- 'customer.log_in' | t -}}
+          </a>
+          <a href="{{ routes.account_register_url }}" class="mobile-nav-drawer__account-link">
+            {{- 'customer.register' | t -}}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
 
     <nav class="mobile-nav-drawer__nav" aria-label="{{ 'accessibility.navigation' | t }}">
       <ul class="mobile-nav-drawer__list" role="list">
@@ -708,7 +794,12 @@
       border-bottom: 1px solid var(--color-border);
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
       z-index: 50;
-      animation: mega-in 0.18s ease both;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .mega-menu {
+        animation: mega-in 0.18s ease both;
+      }
     }
 
     .mega-menu[hidden] {
@@ -862,8 +953,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.75rem;
-    height: 2.75rem;
+    width: 3rem;
+    height: 3rem;
+    min-width: 3rem;
+    min-height: 3rem;
     padding: 0;
     background: none;
     border: none;
@@ -998,6 +1091,66 @@
 
   .site-header__lang-btn:hover,
   .site-header__lang-btn.is-active {
+    background-color: color-mix(in srgb, var(--color-foreground) 6%, transparent);
+    color: var(--color-primary);
+  }
+
+  /* ── Account menu (Phase 8) ───────────────────────────────────────── */
+  .site-header__account {
+    position: relative;
+    display: none;
+  }
+
+  @media (min-width: 990px) {
+    .site-header__account {
+      display: block;
+    }
+  }
+
+  .site-header__account-summary {
+    list-style: none;
+  }
+
+  .site-header__account-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .site-header__account-panel {
+    position: absolute;
+    inset-block-start: calc(100% + 0.5rem);
+    inset-inline-end: 0;
+    min-width: 11rem;
+    background-color: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md, 4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    padding: 0.375rem;
+    z-index: 50;
+  }
+
+  .site-header__account-greeting {
+    margin: 0;
+    padding: 0.5rem 0.75rem 0.35rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .site-header__account-link {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    text-align: start;
+    text-decoration: none;
+    color: inherit;
+    border-radius: var(--radius-sm, 2px);
+    transition:
+      background-color var(--transition-base, 0.25s ease),
+      color var(--transition-base, 0.25s ease);
+  }
+
+  .site-header__account-link:hover {
     background-color: color-mix(in srgb, var(--color-foreground) 6%, transparent);
     color: var(--color-primary);
   }
@@ -1163,6 +1316,33 @@
   .mobile-nav-drawer__close svg {
     width: 1.5rem;
     height: 1.5rem;
+  }
+
+  .mobile-nav-drawer__account {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: var(--spacing-sm) var(--page-margin);
+    border-block-end: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+  }
+
+  .mobile-nav-drawer__account-greeting {
+    margin: 0 0 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .mobile-nav-drawer__account-link {
+    display: block;
+    padding: 0.5rem 0;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    text-decoration: none;
+  }
+
+  .mobile-nav-drawer__account-link:hover {
+    color: var(--color-primary);
   }
 
   .mobile-nav-drawer__nav {
@@ -1360,14 +1540,24 @@
       "default": "scheme-1"
     },
     {
-      "type": "header",
-      "content": "t:labels.account_and_localization"
+      "type": "select",
+      "id": "section_spacing",
+      "label": "t:labels.section_spacing",
+      "info": "t:info.section_spacing",
+      "options": [
+        { "value": "default", "label": "t:options.section_spacing.default" },
+        { "value": "none", "label": "t:options.section_spacing.none" },
+        { "value": "xs", "label": "t:options.section_spacing.xs" },
+        { "value": "sm", "label": "t:options.section_spacing.sm" },
+        { "value": "md", "label": "t:options.section_spacing.md" },
+        { "value": "lg", "label": "t:options.section_spacing.lg" },
+        { "value": "xl", "label": "t:options.section_spacing.xl" }
+      ],
+      "default": "none"
     },
     {
-      "type": "link_list",
-      "id": "customer_account_menu",
-      "label": "t:labels.customer_account_menu",
-      "default": "customer-account-main-menu"
+      "type": "header",
+      "content": "t:labels.account_and_localization"
     },
     {
       "type": "checkbox",

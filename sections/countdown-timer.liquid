@@ -222,6 +222,15 @@
 
   .hidden { display: none !important; }
 
+  @media (prefers-reduced-motion: reduce) {
+    .countdown__timer,
+    .countdown__digits,
+    .countdown__sep {
+      transition: none;
+      animation: none;
+    }
+  }
+
   /* ── Placeholder ─────────────────────────────────────────────────── */
   .countdown__placeholder-hint {
     opacity: 0.5;
@@ -301,7 +310,7 @@
         { "value": "lg",      "label": "t:options.section_spacing.lg"      },
         { "value": "xl",      "label": "t:options.section_spacing.xl"      }
       ],
-      "default": "default"
+      "default": "none"
     }
   ],
   "presets": [

@@ -1,0 +1,142 @@
+{% doc %}
+  Renders the visual for a color option (image circle, filled color, or label fallback).
+
+  Uses `option_value.swatch` when Shopify has saved swatch content. If not, resolves
+  `color` / `image` from (1) a variant metaobject reference, then (2) a product list
+  of color metaobjects (e.g. category metafield `shopify.color-pattern`), matching
+  option label or handle to the metaobject label or handle.
+
+  @param {object} product - The current product
+  @param {object} option_value - The product_option_value drop
+  @param {string} label - Display name for the option value (alt text / fallback)
+  @param {string} [metaobject_namespace] - Metafield namespace (default `shopify`)
+  @param {string} [metaobject_key] - Metafield key (default `color-pattern`)
+  @param {string} [swatch_root_class] - Class on the outer swatch element (default `product-section__swatch`)
+
+  @example
+  {% render 'product-option-color-swatch',
+    product: product,
+    option_value: option_value,
+    label: ov_label,
+    metaobject_namespace: section.settings.color_swatch_metaobject_namespace,
+    metaobject_key: section.settings.color_swatch_metaobject_key
+  %}
+{% enddoc %}
+
+{%- liquid
+  assign sw_img = nil
+  assign sw_hex = nil
+  assign root_cls = swatch_root_class | strip
+  if root_cls == blank
+    assign root_cls = 'product-section__swatch'
+  endif
+
+  assign ns = metaobject_namespace | strip
+  assign ky = metaobject_key | strip
+  if ns == blank
+    assign ns = 'shopify'
+  endif
+  if ky == blank
+    assign ky = 'color-pattern'
+  endif
+
+  assign ov_swatch = option_value.swatch
+  if ov_swatch
+    if ov_swatch.image != blank
+      assign sw_img = ov_swatch.image
+    elsif ov_swatch.color != blank
+      assign sw_hex = ov_swatch.color | color_to_hex
+    endif
+  endif
+
+  assign label_handle = label | handleize
+  assign label_down = label | downcase | strip
+
+  if sw_img == blank and sw_hex == blank and option_value.variant
+    assign vm_root = option_value.variant.metafields[ns]
+    if vm_root
+      assign vmf = vm_root[ky]
+      if vmf and vmf.value
+        assign mo = vmf.value
+        if mo.image.value != blank
+          assign sw_img = mo.image.value
+        elsif mo.color.value != blank
+          assign sw_hex = mo.color.value | color_to_hex
+        endif
+      endif
+    endif
+  endif
+
+  if sw_img == blank and sw_hex == blank
+    assign pm_root = product.metafields[ns]
+    if pm_root
+      assign pmf = pm_root[ky]
+      if pmf and pmf.value
+        if pmf.list?
+          for mo in pmf.value
+            assign mo_label_raw = mo.label.value | default: '' | strip
+            assign mo_label_down = mo_label_raw | downcase
+            assign mo_handle = mo.system.handle | default: '' | strip
+            assign match = false
+            if mo_label_down == label_down
+              assign match = true
+            endif
+            if match == false
+              if mo_handle != blank
+                if mo_handle == label_handle
+                  assign match = true
+                endif
+              endif
+            endif
+            if match
+              if mo.image.value != blank
+                assign sw_img = mo.image.value
+              elsif mo.color.value != blank
+                assign sw_hex = mo.color.value | color_to_hex
+              endif
+              break
+            endif
+          endfor
+        else
+          assign mo = pmf.value
+          assign mo_label_raw = mo.label.value | default: '' | strip
+          assign mo_label_down = mo_label_raw | downcase
+          assign mo_handle = mo.system.handle | default: '' | strip
+          assign match = false
+          if mo_label_down == label_down
+            assign match = true
+          endif
+          if match == false
+            if mo_handle != blank
+              if mo_handle == label_handle
+                assign match = true
+              endif
+            endif
+          endif
+          if match
+            if mo.image.value != blank
+              assign sw_img = mo.image.value
+            elsif mo.color.value != blank
+              assign sw_hex = mo.color.value | color_to_hex
+            endif
+          endif
+        endif
+      endif
+    endif
+  endif
+-%}
+
+<span class="{{ root_cls }}">
+  {%- if sw_img != blank -%}
+    <span class="product-section__swatch-img">
+      {{ sw_img | image_url: width: 80 | image_tag: alt: label, loading: 'lazy' }}
+    </span>
+  {%- elsif sw_hex != blank -%}
+    <span
+      class="product-section__swatch-color"
+      style="--swatch-fill: {{ sw_hex }};"
+    ></span>
+  {%- else -%}
+    <span class="product-section__swatch-fallback">{{ label | escape }}</span>
+  {%- endif -%}
+</span>

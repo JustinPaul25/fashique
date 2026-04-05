@@ -42,7 +42,7 @@ When editing `settings_schema.json`, every `t:` key must exist in the correspond
 
 ### `labels.*` — setting labels
 `font_pair_preset`, `font_pair`, `custom_fonts`, `heading_font`, `body_font`, `body_font_size`,
-`heading_scale`, `heading_size_scale`, `page_width`, `page_margin`, `spacing`, `spacing_scale`,
+`heading_scale`, `heading_size_scale`, `page_width`, `page_margin`, `cart_type`,
 `scheme_1_label` … `scheme_4_label`, `foreground`, `color_primary`, `color_primary_hover`,
 `color_border`, `base_colors`, `accent_colors`, `overlay`, `color_overlay`, `color_overlay_opacity`,
 `radius`, `border_radius_sm`, `border_radius_md`, `border_radius_lg`, `input_corner_radius`,
@@ -56,19 +56,19 @@ When editing `settings_schema.json`, every `t:` key must exist in the correspond
 
 ### `info.*` — helper text
 `font_pair_preset`, `font_pair`, `custom_fonts`, `heading_font`, `body_font`,
-`heading_size_scale`, `spacing_scale`, `scheme_light`, `scheme_dark`, `scheme_muted`, `scheme_accent`,
+`heading_size_scale`, `scheme_light`, `scheme_dark`, `scheme_muted`, `scheme_accent`,
 `color_primary`, `color_primary_hover`, `color_overlay_opacity`, `transition_speed`,
-`show_back_to_top`, `enable_age_verifier`, `age_verifier_minimum`,
+`show_back_to_top`, `enable_age_verifier`, `age_verifier_minimum`, `cart_type`,
 `logo_width`, `copyright_text`, `sticky_header`, `show_country_selector`, `show_language_selector`
 
 ### `options.*` — select/radio values
 `font_pair` (fashion_brand, beauty_store, minimal),
 `heading_size_scale` (small, normal, large),
 `page_width` (narrow, wide),
-`spacing_scale` (compact, balanced, spacious, none),
 `transition_speed` (fast, normal, slow),
 `color_scheme` (light, dark, muted, accent),
 `sticky_header` (always, on_scroll_up, none),
+`cart_type` (page, drawer),
 `layout` (grid, carousel),
 `text_position` (left, center, right, bottom_left, bottom_center, bottom_right),
 `alignment` (left, center, right),

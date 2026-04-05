@@ -38,7 +38,10 @@
   endif
 
   assign render_vendor      = show_vendor      | default: false
-  assign render_quick_view  = show_quick_view  | default: true
+  assign render_quick_view  = show_quick_view
+  if render_quick_view == nil
+    assign render_quick_view = settings.enable_quick_view | default: true
+  endif
   assign render_overlay_atc = show_overlay_atc | default: false
   assign render_swatches    = show_swatches    | default: true
 
@@ -53,11 +56,13 @@
     endif
   endfor
 
-  assign pcard_placeholder_num = product.id | modulo: 6 | plus: 1
-  assign pcard_placeholder = 'product-' | append: pcard_placeholder_num
 -%}
+{%- capture pcard_placeholder_type -%}product-{{ product.id | modulo: 6 | plus: 1 }}{%- endcapture -%}
 
-<div class="product-card{% if class != blank %} {{ class }}{% endif %}">
+<div
+  class="product-card{% if class != blank %} {{ class }}{% endif %}"
+  data-placeholder-type="{{ pcard_placeholder_type }}"
+>
 
   {%- comment -%}── Media ────────────────────────────────────────────────────{%- endcomment -%}
   <div class="product-card__media" data-img-sizes="{{ sizes }}" data-img-loading="{{ loading }}">
@@ -76,7 +81,7 @@
         alt: product.featured_image.alt | default: product.title,
         class: 'product-card__img',
         loading: loading,
-        placeholder_type: pcard_placeholder
+        placeholder_type: pcard_placeholder_type
       -%}
       {%- if product.images.size > 1 -%}
         {%- render 'image',
@@ -150,27 +155,74 @@
       </a>
     </h3>
 
-    {%- comment -%} Color swatches — Phase 7.3 will enhance with hex/image-based colors {%- endcomment -%}
+    {%- comment -%} Color swatches — Shopify `option_value.swatch` + variant media (Phase 7.3) {%- endcomment -%}
     {%- if render_swatches and color_option != nil -%}
       <div
         class="product-card__swatches"
-        role="list"
+        role="group"
         aria-label="{{ color_option.name | escape }}"
       >
-        {%- for value in color_option.values -%}
-          <div class="product-card__swatch-item" role="listitem">
+        {%- for option_value in color_option.values -%}
+          {%- liquid
+            assign ov_label = option_value.name | default: option_value
+            assign ov_variant = option_value.variant
+            assign v_img_primary = product.featured_image
+            assign v_img_hover = nil
+            assign variant_url = product.url
+            assign swatch_active = false
+            case color_option.position
+              when 1
+                if product.selected_or_first_available_variant.option1 == ov_label
+                  assign swatch_active = true
+                endif
+              when 2
+                if product.selected_or_first_available_variant.option2 == ov_label
+                  assign swatch_active = true
+                endif
+              when 3
+                if product.selected_or_first_available_variant.option3 == ov_label
+                  assign swatch_active = true
+                endif
+            endcase
+            if ov_variant
+              assign variant_url = ov_variant.url | default: product.url
+              if ov_variant.featured_image
+                assign v_img_primary = ov_variant.featured_image
+              endif
+              if ov_variant.images.size > 1
+                assign v_img_hover = ov_variant.images[1]
+              elsif product.images.size > 1
+                assign v_img_hover = product.images[1]
+              endif
+            elsif product.images.size > 1
+              assign v_img_hover = product.images[1]
+            endif
+            assign p_src = v_img_primary | image_url: width: 720
+            assign h_src = ''
+            if v_img_hover != blank
+              assign h_src = v_img_hover | image_url: width: 720
+            endif
+          -%}
+          <div class="product-card__swatch-item">
             <button
               type="button"
-              class="swatch swatch--card"
-              title="{{ value | escape }}"
-              aria-label="{{ value | escape }}"
-              data-swatch-value="{{ value | escape }}"
-              data-swatch-handle="{{ value | handleize }}"
-              data-product-url="{{ product.url }}"
-              style="--swatch-color: {{ value | downcase }}"
+              class="swatch swatch--card{% if swatch_active %} is-active{% endif %}"
+              title="{{ ov_label | escape }}"
+              aria-label="{{ 'products.card.color_swatch_for' | t: value: ov_label }}"
+              aria-pressed="{% if swatch_active %}true{% else %}false{% endif %}"
+              data-swatch-interactive
+              data-media-primary="{{ p_src | escape }}"
+              {% if h_src != blank %}
+                data-media-hover="{{ h_src | escape }}"
+              {% endif %}
+              data-variant-url="{{ variant_url | escape }}"
             >
-              <span class="swatch__inner" aria-hidden="true"></span>
-              <span class="visually-hidden">{{ value }}</span>
+              {%- render 'product-option-color-swatch',
+                product: product,
+                option_value: option_value,
+                label: ov_label,
+                swatch_root_class: 'product-card__swatch-root'
+              -%}
             </button>
           </div>
         {%- endfor -%}
@@ -333,21 +385,51 @@
   }
 
   .swatch--card {
-    width: 1.125rem;
-    height: 1.125rem;
+    width: 1.375rem;
+    height: 1.375rem;
     border-radius: 50%;
     border: 1.5px solid var(--color-border);
     transition: border-color var(--transition-base), scale var(--transition-base);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: none;
   }
 
-  .swatch__inner {
-    display: block;
+  .product-card__swatch-root {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    /* --swatch-color is set inline per swatch; CSS named colours work for standard names.
-       Phase 7.3 will replace this with hex/image-based values via JS. */
-    background-color: var(--swatch-color, var(--color-border));
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .product-card__swatch-root .product-section__swatch-img {
+    width: 100%;
+    height: 100%;
+    display: flex;
+  }
+
+  .product-card__swatch-root .product-section__swatch-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-card__swatch-root .product-section__swatch-fallback {
+    font-size: 0.5rem;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    padding: 0.1rem;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .swatch--card:hover,

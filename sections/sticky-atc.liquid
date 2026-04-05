@@ -1,0 +1,131 @@
+{%- comment -%}
+  Sticky add-to-cart bar (Phase 6.1). Shown when main ATC scrolls out of view.
+{%- endcomment -%}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+-%}
+
+{%- if settings.enable_sticky_atc and product != blank -%}
+  <div
+    class="sticky-atc color-scheme color-{{ section.settings.color_scheme }}"
+    id="shopify-section-{{ section.id }}"
+    data-sticky-atc
+    hidden
+  >
+    <div class="sticky-atc__inner page-width">
+      <div class="sticky-atc__text">
+        <p class="sticky-atc__title" data-sticky-atc-title>{{ product.title | escape }}</p>
+        <p class="sticky-atc__meta" data-sticky-atc-variant>{{ current_variant.title | escape }}</p>
+      </div>
+      <div class="sticky-atc__price" data-sticky-atc-price>
+        {%- render 'price', product: product, variant: current_variant -%}
+      </div>
+      <button
+        type="submit"
+        class="btn btn--solid sticky-atc__btn"
+        name="add"
+        data-sticky-atc-submit
+        {% unless current_variant.available %}disabled{% endunless %}
+      >
+        {%- if current_variant.available -%}
+          {{- 'products.product.add_to_cart' | t -}}
+        {%- else -%}
+          {{- 'products.product.sold_out' | t -}}
+        {%- endif -%}
+      </button>
+    </div>
+  </div>
+
+  <script src="{{ 'sticky-atc.js' | asset_url }}" defer></script>
+{%- endif -%}
+
+{% stylesheet %}
+  .sticky-atc {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-background);
+    color: var(--color-foreground);
+    box-shadow: 0 -4px 24px rgb(0 0 0 / 0.08);
+    transform: translateY(100%);
+    transition: transform 0.25s ease;
+    pointer-events: none;
+  }
+
+  .sticky-atc.is-visible {
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .sticky-atc__inner {
+    max-width: var(--page-width);
+    margin-inline: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-sm);
+    justify-content: space-between;
+  }
+
+  .sticky-atc__text {
+    flex: 1 1 10rem;
+    min-width: 0;
+  }
+
+  .sticky-atc__title {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .sticky-atc__meta {
+    margin: 0.15rem 0 0;
+    font-size: 0.8125rem;
+    opacity: 0.8;
+  }
+
+  .sticky-atc__price {
+    flex: 0 0 auto;
+  }
+
+  .sticky-atc__price .price {
+    font-size: 0.9375rem;
+  }
+
+  .sticky-atc__btn {
+    flex: 0 0 auto;
+    min-width: 10rem;
+    min-height: 3rem;
+  }
+
+  @media screen and (min-width: 990px) {
+    .sticky-atc__inner {
+      max-width: min(var(--page-width), 48rem);
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.sticky_atc.name",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    }
+  ]
+}
+{% endschema %}

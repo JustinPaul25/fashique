@@ -35,45 +35,7 @@
             <ul class="splide__list">
               {%- for block in testimonial_blocks -%}
                 <li class="splide__slide" {{ block.shopify_attributes }}>
-                  {%- render 'testimonial-card',
-                    block: block
-                  -%}
-                  {%- comment -%} Inline card markup (render doesn't support block passthrough) {%- endcomment -%}
-                  <article class="testimonial-card">
-                    {%- assign rating = block.settings.rating | default: 5 | plus: 0 -%}
-                    <div class="testimonial-card__stars" aria-label="{{ 'accessibility.star_rating' | t: rating: rating }}">
-                      {%- for i in (1..5) -%}
-                        <svg class="star{% if i <= rating %} star--filled{% endif %}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                      {%- endfor -%}
-                    </div>
-                    {%- if block.settings.quote != blank -%}
-                      <blockquote class="testimonial-card__quote">
-                        <p>{{ block.settings.quote | escape }}</p>
-                      </blockquote>
-                    {%- endif -%}
-                    <footer class="testimonial-card__footer">
-                      <div class="testimonial-card__avatar-wrap">
-                        {%- render 'image',
-                          image: block.settings.image,
-                          widths: '80,160',
-                          sizes: '2.5rem',
-                          alt: block.settings.author,
-                          class: 'testimonial-card__avatar',
-                          placeholder_type: 'image'
-                        -%}
-                      </div>
-                      <div class="testimonial-card__author-info">
-                        {%- if block.settings.author != blank -%}
-                          <cite class="testimonial-card__author">{{ block.settings.author | escape }}</cite>
-                        {%- endif -%}
-                        {%- if block.settings.role != blank -%}
-                          <p class="testimonial-card__role">{{ block.settings.role | escape }}</p>
-                        {%- endif -%}
-                      </div>
-                    </footer>
-                  </article>
+                  {%- render 'testimonial-card', block: block -%}
                 </li>
               {%- endfor -%}
             </ul>
@@ -90,41 +52,7 @@
         <ul class="testimonials__grid list-unstyled" role="list">
           {%- for block in testimonial_blocks -%}
             <li {{ block.shopify_attributes }}>
-              {%- assign rating = block.settings.rating | default: 5 | plus: 0 -%}
-              <article class="testimonial-card">
-                <div class="testimonial-card__stars" aria-label="{{ 'accessibility.star_rating' | t: rating: rating }}">
-                  {%- for i in (1..5) -%}
-                    <svg class="star{% if i <= rating %} star--filled{% endif %}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                    </svg>
-                  {%- endfor -%}
-                </div>
-                {%- if block.settings.quote != blank -%}
-                  <blockquote class="testimonial-card__quote">
-                    <p>{{ block.settings.quote | escape }}</p>
-                  </blockquote>
-                {%- endif -%}
-                <footer class="testimonial-card__footer">
-                  <div class="testimonial-card__avatar-wrap">
-                    {%- render 'image',
-                      image: block.settings.image,
-                      widths: '80,160',
-                      sizes: '2.5rem',
-                      alt: block.settings.author,
-                      class: 'testimonial-card__avatar',
-                      placeholder_type: 'image'
-                    -%}
-                  </div>
-                  <div class="testimonial-card__author-info">
-                    {%- if block.settings.author != blank -%}
-                      <cite class="testimonial-card__author">{{ block.settings.author | escape }}</cite>
-                    {%- endif -%}
-                    {%- if block.settings.role != blank -%}
-                      <p class="testimonial-card__role">{{ block.settings.role | escape }}</p>
-                    {%- endif -%}
-                  </div>
-                </footer>
-              </article>
+              {%- render 'testimonial-card', block: block -%}
             </li>
           {%- endfor -%}
         </ul>
@@ -334,7 +262,7 @@
         { "value": "lg",      "label": "t:options.section_spacing.lg"      },
         { "value": "xl",      "label": "t:options.section_spacing.xl"      }
       ],
-      "default": "default"
+      "default": "none"
     }
   ],
   "blocks": [

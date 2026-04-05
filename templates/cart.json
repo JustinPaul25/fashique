@@ -11,7 +11,13 @@
   "sections": {
     "main": {
       "type": "cart",
-      "settings": {}
+      "settings": {
+        "show_breadcrumbs": true,
+        "show_order_note": true,
+        "show_discount": true,
+        "color_scheme": "scheme-1",
+        "section_spacing": "md"
+      }
     }
   },
   "order": [

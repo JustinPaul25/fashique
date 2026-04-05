@@ -2,10 +2,9 @@
  * Spacing utilities
  *
  * All values are derived from --spacing-* and --section-padding-block tokens
- * set in snippets/css-variables.liquid. Changing the `spacing_scale` theme
- * setting (Compact / Balanced / Spacious) updates every rule here automatically.
+ * set in snippets/css-variables.liquid (fixed theme scale).
  *
- * Token reference (all driven by spacing_scale):
+ * Token reference:
  *   --spacing-xs               extra-small step
  *   --spacing-sm               small step
  *   --spacing-md               medium step
@@ -39,33 +38,25 @@
 }
 
 /*
- * Header, footer and announcement bar are always flush — they manage their
- * own internal spacing with fixed values and must never inherit the global
- * --section-padding-block token.
+ * Header and footer: default to flush vertical padding via --section-padding-block: 0
+ * below. Padding uses the variable so the header "Section spacing" setting
+ * (section-spacing.liquid) can override --section-padding-block on
+ * #shopify-section-header. Footer stays flush unless given its own spacing later.
  *
- * Two layers of protection:
- *
- *  1. Section-group wrapper class  — covers all sections inside the
- *     header-group / footer-group when rendered via `{% sections '…-group' %}`.
- *     Specificity (0,2,0) beats the generic .shopify-section rule (0,1,0).
- *
- *  2. Wrapper IDs                  — fallback for any scenario where a section
- *     is rendered outside of a group (e.g. during theme preview / partial
- *     renders).  IDs come from the JSON section keys "header" and "footer"
- *     confirmed in sections/header-group.json and sections/footer-group.json.
+ *  1. Section-group wrapper class  — covers sections inside header-group /
+ *     footer-group from `{% sections '…-group' %}`.
+ *  2. Wrapper IDs                  — fallback (JSON keys "header" / "footer").
  */
 .shopify-section-group--header-group .shopify-section,
 .shopify-section-group--footer-group .shopify-section,
 #shopify-section-header,
 #shopify-section-footer {
-  padding-block: 0;
+  padding-block: var(--section-padding-block);
 }
 
 /*
- * Pin all spacing-scale tokens on header/footer so that changing the
- * spacing_scale theme setting never alters their internal layout.
- * Values match the "balanced" scale — a stable, readable baseline.
- * --section-padding-block and --section-gap stay at 0 (flush).
+ * Pin spacing tokens on header/footer. --section-padding-block defaults to 0 (flush);
+ * --section-gap stays 0. Header can override --section-padding-block via theme editor.
  */
 .shopify-section-group--header-group,
 .shopify-section-group--footer-group,

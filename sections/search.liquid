@@ -6,7 +6,6 @@
 
 {%- liquid
   assign per_page = section.settings.results_per_page | default: 24 | plus: 0
-  assign show_vendor = section.settings.show_vendor
   assign enable_predictive = section.settings.enable_predictive
 -%}
 
@@ -94,7 +93,7 @@
                     {%
                       render 'product-card',
                       product: item,
-                      show_vendor: show_vendor,
+                      show_vendor: section.settings.show_vendor,
                       show_quick_view: section.settings.show_quick_view and settings.enable_quick_view,
                       sizes: '(min-width: 1200px) 25vw, (min-width: 750px) 33vw, 50vw'
                     %}

@@ -13,7 +13,27 @@
   "sections": {
     "header": {
       "type": "header",
-      "settings": {}
+      "settings": {
+        "logo_width": 140,
+        "menu": "main-menu",
+        "sticky_header": "on-scroll-up",
+        "color_scheme": "",
+        "section_spacing": "none",
+        "show_language_selector": false,
+        "show_country_selector": false
+      }
+    },
+    "age_verifier_x3GQtm": {
+      "type": "age-verifier",
+      "name": "t:sections.age_verifier.name",
+      "settings": {
+        "color_scheme": "scheme-2",
+        "heading": "",
+        "subheading": "",
+        "confirm_label": "",
+        "decline_label": "",
+        "decline_url": ""
+      }
     }
   },
   "order": [

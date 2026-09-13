@@ -34,15 +34,7 @@
 
     {%- if section.settings.show_featured_image and article.image != blank -%}
       <div class="article-page__hero article-page__hero--{{ img_ratio }}">
-        {% render 'image',
-          image: article.image,
-          widths: '750,1100,1500,1780,2000,2400',
-          sizes: '100vw',
-          class: 'article-page__hero-img',
-          loading: 'eager',
-          alt: article.image.alt | default: article.title,
-          placeholder_type: 'lifestyle-1'
-        %}
+        {% render 'image', image: article.image, widths: '750,1100,1500,1780,2000,2400', sizes: '100vw', class: 'article-page__hero-img', loading: 'eager', alt: article.image.alt, default: article.title, placeholder_type: 'lifestyle-1' %}
       </div>
     {%- endif -%}
 
@@ -507,3 +499,24 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {% render 'image',
+              image: article.image,
+              widths: '750,1100,1500,1780,2000,2400',
+              sizes: '100vw',
+              class: 'article-page__hero-img',
+              loading: 'eager',
+              alt: article.image.alt | default: article.title,
+              placeholder_type: 'lifestyle-1'
+            %}
+  to: "{% render 'image', image: article.image, widths: '750,1100,1500,1780,2000,2400',
+    sizes: '100vw', class: 'article-page__hero-img', loading: 'eager', alt: article.image.alt,
+    default: article.title, placeholder_type: 'lifestyle-1' %}"
+  position: 1444..1674
+{% endcomment %}

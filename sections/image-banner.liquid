@@ -19,25 +19,9 @@
   {%- comment -%} Background images {%- endcomment -%}
   <div class="image-banner__bg">
     {%- if section.settings.mobile_image != blank -%}
-      {%- render 'image',
-        image: section.settings.mobile_image,
-        widths: '375,750',
-        sizes: '100vw',
-        alt: section.settings.mobile_image.alt | default: section.settings.heading,
-        class: 'image-banner__bg-img image-banner__bg-img--mobile',
-        loading: 'lazy',
-        placeholder_type: 'lifestyle-2'
-      -%}
+      {%- render 'image', image: section.settings.mobile_image, widths: '375,750', sizes: '100vw', alt: section.settings.mobile_image.alt, default: section.settings.heading, class: 'image-banner__bg-img image-banner__bg-img--mobile', loading: 'lazy', placeholder_type: 'lifestyle-2' -%}
     {%- endif -%}
-    {%- render 'image',
-      image: section.settings.image,
-      widths: '750,1100,1500,1780,2000',
-      sizes: '100vw',
-      alt: section.settings.image.alt | default: section.settings.heading,
-      class: 'image-banner__bg-img image-banner__bg-img--desktop',
-      loading: 'lazy',
-      placeholder_type: 'lifestyle-1'
-    -%}
+    {%- render 'image', image: section.settings.image, widths: '750,1100,1500,1780,2000', sizes: '100vw', alt: section.settings.image.alt, default: section.settings.heading, class: 'image-banner__bg-img image-banner__bg-img--desktop', loading: 'lazy', placeholder_type: 'lifestyle-1' -%}
   </div>
 
   {%- comment -%} Overlay {%- endcomment -%}
@@ -295,3 +279,40 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {%- render 'image',
+            image: section.settings.mobile_image,
+            widths: '375,750',
+            sizes: '100vw',
+            alt: section.settings.mobile_image.alt | default: section.settings.heading,
+            class: 'image-banner__bg-img image-banner__bg-img--mobile',
+            loading: 'lazy',
+            placeholder_type: 'lifestyle-2'
+          -%}
+  to: "{%- render 'image', image: section.settings.mobile_image, widths: '375,750',
+    sizes: '100vw', alt: section.settings.mobile_image.alt, default: section.settings.heading,
+    class: 'image-banner__bg-img image-banner__bg-img--mobile', loading: 'lazy', placeholder_type:
+    'lifestyle-2' -%}"
+  position: 852..1132
+- from: |-
+    {%- render 'image',
+          image: section.settings.image,
+          widths: '750,1100,1500,1780,2000',
+          sizes: '100vw',
+          alt: section.settings.image.alt | default: section.settings.heading,
+          class: 'image-banner__bg-img image-banner__bg-img--desktop',
+          loading: 'lazy',
+          placeholder_type: 'lifestyle-1'
+        -%}
+  to: "{%- render 'image', image: section.settings.image, widths: '750,1100,1500,1780,2000',
+    sizes: '100vw', alt: section.settings.image.alt, default: section.settings.heading,
+    class: 'image-banner__bg-img image-banner__bg-img--desktop', loading: 'lazy',
+    placeholder_type: 'lifestyle-1' -%}"
+  position: 1155..1438
+{% endcomment %}

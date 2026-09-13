@@ -90,13 +90,7 @@
               {%- case item.object_type -%}
                 {%- when 'product' -%}
                   <div class="search-page__cell">
-                    {%
-                      render 'product-card',
-                      product: item,
-                      show_vendor: section.settings.show_vendor,
-                      show_quick_view: section.settings.show_quick_view and settings.enable_quick_view,
-                      sizes: '(min-width: 1200px) 25vw, (min-width: 750px) 33vw, 50vw'
-                    %}
+                    {% render 'product-card', product: item, show_vendor: section.settings.show_vendor, show_quick_view: section.settings.show_quick_view, sizes: '(min-width: 1200px) 25vw, (min-width: 750px) 33vw, 50vw' %}
                   </div>
                 {%- when 'article' -%}
                   <div class="search-page__cell search-page__cell--wide">
@@ -420,3 +414,22 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {%
+                          render 'product-card',
+                          product: item,
+                          show_vendor: section.settings.show_vendor,
+                          show_quick_view: section.settings.show_quick_view and settings.enable_quick_view,
+                          sizes: '(min-width: 1200px) 25vw, (min-width: 750px) 33vw, 50vw'
+                        %}
+  to: "{% render 'product-card', product: item, show_vendor: section.settings.show_vendor,
+    show_quick_view: section.settings.show_quick_view, sizes: '(min-width: 1200px)
+    25vw, (min-width: 750px) 33vw, 50vw' %}"
+  position: 3693..3895
+{% endcomment %}

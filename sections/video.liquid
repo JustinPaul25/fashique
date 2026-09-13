@@ -77,15 +77,7 @@
 
         {%- comment -%} Cover image / play overlay {%- endcomment -%}
         <div class="video-section__cover" id="video-cover-{{ section.id }}">
-          {%- render 'image',
-            image: section.settings.poster_image,
-            widths: '750,1100,1500',
-            sizes: '(min-width: 1024px) 80vw, 100vw',
-            alt: section.settings.poster_image.alt | default: section.settings.heading,
-            class: 'video-section__poster',
-            loading: 'lazy',
-            placeholder_type: 'lifestyle-1'
-          -%}
+          {%- render 'image', image: section.settings.poster_image, widths: '750,1100,1500', sizes: '(min-width: 1024px) 80vw, 100vw', alt: section.settings.poster_image.alt, default: section.settings.heading, class: 'video-section__poster', loading: 'lazy', placeholder_type: 'lifestyle-1' -%}
 
           <button
             type="button"
@@ -384,3 +376,25 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {%- render 'image',
+                image: section.settings.poster_image,
+                widths: '750,1100,1500',
+                sizes: '(min-width: 1024px) 80vw, 100vw',
+                alt: section.settings.poster_image.alt | default: section.settings.heading,
+                class: 'video-section__poster',
+                loading: 'lazy',
+                placeholder_type: 'lifestyle-1'
+              -%}
+  to: "{%- render 'image', image: section.settings.poster_image, widths: '750,1100,1500',
+    sizes: '(min-width: 1024px) 80vw, 100vw', alt: section.settings.poster_image.alt,
+    default: section.settings.heading, class: 'video-section__poster', loading: 'lazy',
+    placeholder_type: 'lifestyle-1' -%}"
+  position: 3600..3884
+{% endcomment %}

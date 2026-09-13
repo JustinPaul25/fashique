@@ -74,24 +74,9 @@
       tabindex="-1"
       aria-hidden="true"
     >
-      {%- render 'image',
-        image: product.featured_image,
-        widths: '360,540,720,1080',
-        sizes: sizes,
-        alt: product.featured_image.alt | default: product.title,
-        class: 'product-card__img',
-        loading: loading,
-        placeholder_type: pcard_placeholder_type
-      -%}
+      {%- render 'image', image: product.featured_image, widths: '360,540,720,1080', sizes: sizes, alt: product.featured_image.alt, default: product.title, class: 'product-card__img', loading: loading, placeholder_type: pcard_placeholder_type -%}
       {%- if product.images.size > 1 -%}
-        {%- render 'image',
-          image: product.images[1],
-          widths: '360,540,720,1080',
-          sizes: sizes,
-          alt: product.images[1].alt | default: product.title,
-          class: 'product-card__img product-card__img--hover',
-          loading: 'lazy'
-        -%}
+        {%- render 'image', image: product.images[1], widths: '360,540,720,1080', sizes: sizes, alt: product.images[1].alt, default: product.title, class: 'product-card__img product-card__img--hover', loading: 'lazy' -%}
       {%- endif -%}
     </a>
 
@@ -451,3 +436,38 @@
     margin-block-start: 0.125rem;
   }
 {% endstylesheet %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {%- render 'image',
+            image: product.featured_image,
+            widths: '360,540,720,1080',
+            sizes: sizes,
+            alt: product.featured_image.alt | default: product.title,
+            class: 'product-card__img',
+            loading: loading,
+            placeholder_type: pcard_placeholder_type
+          -%}
+  to: "{%- render 'image', image: product.featured_image, widths: '360,540,720,1080',
+    sizes: sizes, alt: product.featured_image.alt, default: product.title, class:
+    'product-card__img', loading: loading, placeholder_type: pcard_placeholder_type
+    -%}"
+  position: 2783..3023
+- from: |-
+    {%- render 'image',
+              image: product.images[1],
+              widths: '360,540,720,1080',
+              sizes: sizes,
+              alt: product.images[1].alt | default: product.title,
+              class: 'product-card__img product-card__img--hover',
+              loading: 'lazy'
+            -%}
+  to: "{%- render 'image', image: product.images[1], widths: '360,540,720,1080', sizes:
+    sizes, alt: product.images[1].alt, default: product.title, class: 'product-card__img
+    product-card__img--hover', loading: 'lazy' -%}"
+  position: 3073..3285
+{% endcomment %}

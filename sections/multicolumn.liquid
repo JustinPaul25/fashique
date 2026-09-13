@@ -33,14 +33,7 @@
             {{ block.shopify_attributes }}
           >
             <div class="multicolumn__media">
-              {%- render 'image',
-                image: block.settings.image,
-                widths: '200,400,600',
-                sizes: '(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw',
-                alt: block.settings.image.alt | default: block.settings.heading,
-                class: 'multicolumn__img',
-                placeholder_type: 'collection-' | append: col_placeholder_num
-              -%}
+              {%- render 'image', image: block.settings.image, widths: '200,400,600', sizes: '(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw', alt: block.settings.image.alt, default: block.settings.heading, class: 'multicolumn__img', placeholder_type: 'collection-', append: col_placeholder_num -%}
             </div>
 
             {%- if block.settings.heading != blank -%}
@@ -346,3 +339,24 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {%- render 'image',
+                    image: block.settings.image,
+                    widths: '200,400,600',
+                    sizes: '(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw',
+                    alt: block.settings.image.alt | default: block.settings.heading,
+                    class: 'multicolumn__img',
+                    placeholder_type: 'collection-' | append: col_placeholder_num
+                  -%}
+  to: "{%- render 'image', image: block.settings.image, widths: '200,400,600', sizes:
+    '(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw', alt: block.settings.image.alt,
+    default: block.settings.heading, class: 'multicolumn__img', placeholder_type:
+    'collection-', append: col_placeholder_num -%}"
+  position: 1364..1658
+{% endcomment %}

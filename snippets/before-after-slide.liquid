@@ -39,30 +39,14 @@
   aria-label="{{ ba_before | escape }} / {{ ba_after | escape }}"
 >
   <div class="before-after__after-wrap">
-    {%- render 'image',
-      image: after_image,
-      widths: '400,700,1000,1400',
-      sizes: '(min-width: 1024px) 80vw, 100vw',
-      alt: after_image.alt | default: ba_after,
-      class: 'before-after__img before-after__img--after',
-      loading: 'lazy',
-      placeholder_type: 'lifestyle-2'
-    -%}
+    {%- render 'image', image: after_image, widths: '400,700,1000,1400', sizes: '(min-width: 1024px) 80vw, 100vw', alt: after_image.alt, default: ba_after, class: 'before-after__img before-after__img--after', loading: 'lazy', placeholder_type: 'lifestyle-2' -%}
     <span class="before-after__badge before-after__badge--after" aria-hidden="true">
       {{- ba_after | escape -}}
     </span>
   </div>
 
   <div class="before-after__before-wrap" data-ba-before id="before-wrap-{{ id_base }}">
-    {%- render 'image',
-      image: before_image,
-      widths: '400,700,1000,1400',
-      sizes: '(min-width: 1024px) 80vw, 100vw',
-      alt: before_image.alt | default: ba_before,
-      class: 'before-after__img before-after__img--before',
-      loading: 'lazy',
-      placeholder_type: 'lifestyle-1'
-    -%}
+    {%- render 'image', image: before_image, widths: '400,700,1000,1400', sizes: '(min-width: 1024px) 80vw, 100vw', alt: before_image.alt, default: ba_before, class: 'before-after__img before-after__img--before', loading: 'lazy', placeholder_type: 'lifestyle-1' -%}
     <span class="before-after__badge before-after__badge--before" aria-hidden="true">
       {{- ba_before | escape -}}
     </span>
@@ -89,3 +73,40 @@
     </div>
   </div>
 </div>
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {%- render 'image',
+          image: after_image,
+          widths: '400,700,1000,1400',
+          sizes: '(min-width: 1024px) 80vw, 100vw',
+          alt: after_image.alt | default: ba_after,
+          class: 'before-after__img before-after__img--after',
+          loading: 'lazy',
+          placeholder_type: 'lifestyle-2'
+        -%}
+  to: "{%- render 'image', image: after_image, widths: '400,700,1000,1400', sizes:
+    '(min-width: 1024px) 80vw, 100vw', alt: after_image.alt, default: ba_after, class:
+    'before-after__img before-after__img--after', loading: 'lazy', placeholder_type:
+    'lifestyle-2' -%}"
+  position: 1325..1582
+- from: |-
+    {%- render 'image',
+          image: before_image,
+          widths: '400,700,1000,1400',
+          sizes: '(min-width: 1024px) 80vw, 100vw',
+          alt: before_image.alt | default: ba_before,
+          class: 'before-after__img before-after__img--before',
+          loading: 'lazy',
+          placeholder_type: 'lifestyle-1'
+        -%}
+  to: "{%- render 'image', image: before_image, widths: '400,700,1000,1400', sizes:
+    '(min-width: 1024px) 80vw, 100vw', alt: before_image.alt, default: ba_before,
+    class: 'before-after__img before-after__img--before', loading: 'lazy', placeholder_type:
+    'lifestyle-1' -%}"
+  position: 1814..2075
+{% endcomment %}

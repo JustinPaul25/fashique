@@ -28,15 +28,7 @@
   >
     <div class="slideshow__slide" {{ block.shopify_attributes }}>
       <div class="slideshow__bg">
-        {%- render 'image',
-          image: block.settings.image,
-          widths: '750,1100,1500,1780,2000',
-          sizes: '100vw',
-          alt: block.settings.image.alt | default: block.settings.heading,
-          class: 'slideshow__bg-img',
-          loading: 'eager',
-          placeholder_type: 'lifestyle-1'
-        -%}
+        {%- render 'image', image: block.settings.image, widths: '750,1100,1500,1780,2000', sizes: '100vw', alt: block.settings.image.alt, default: block.settings.heading, class: 'slideshow__bg-img', loading: 'eager', placeholder_type: 'lifestyle-1' -%}
       </div>
       <div
         class="slideshow__overlay"
@@ -81,15 +73,7 @@
               {{ block.shopify_attributes }}
             >
               <div class="slideshow__bg">
-                {%- render 'image',
-                  image: block.settings.image,
-                  widths: '750,1100,1500,1780,2000',
-                  sizes: '100vw',
-                  alt: block.settings.image.alt | default: block.settings.heading,
-                  class: 'slideshow__bg-img',
-                  loading: forloop.first | default: 'lazy',
-                  placeholder_type: 'lifestyle-1'
-                -%}
+                {%- render 'image', image: block.settings.image, widths: '750,1100,1500,1780,2000', sizes: '100vw', alt: block.settings.image.alt, default: 'lazy', class: 'slideshow__bg-img', loading: forloop.first, placeholder_type: 'lifestyle-1' -%}
               </div>
               <div
                 class="slideshow__overlay"
@@ -508,3 +492,39 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {%- render 'image',
+              image: block.settings.image,
+              widths: '750,1100,1500,1780,2000',
+              sizes: '100vw',
+              alt: block.settings.image.alt | default: block.settings.heading,
+              class: 'slideshow__bg-img',
+              loading: 'eager',
+              placeholder_type: 'lifestyle-1'
+            -%}
+  to: "{%- render 'image', image: block.settings.image, widths: '750,1100,1500,1780,2000',
+    sizes: '100vw', alt: block.settings.image.alt, default: block.settings.heading,
+    class: 'slideshow__bg-img', loading: 'eager', placeholder_type: 'lifestyle-1'
+    -%}"
+  position: 1323..1568
+- from: |-
+    {%- render 'image',
+                      image: block.settings.image,
+                      widths: '750,1100,1500,1780,2000',
+                      sizes: '100vw',
+                      alt: block.settings.image.alt | default: block.settings.heading,
+                      class: 'slideshow__bg-img',
+                      loading: forloop.first | default: 'lazy',
+                      placeholder_type: 'lifestyle-1'
+                    -%}
+  to: "{%- render 'image', image: block.settings.image, widths: '750,1100,1500,1780,2000',
+    sizes: '100vw', alt: block.settings.image.alt, default: 'lazy', class: 'slideshow__bg-img',
+    loading: forloop.first, placeholder_type: 'lifestyle-1' -%}"
+  position: 3513..3748
+{% endcomment %}

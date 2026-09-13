@@ -16,15 +16,7 @@
 <a href="{{ article.url }}" class="article-card{% if card_class != blank %} {{ card_class }}{% endif %}">
   <div class="article-card__media">
     {%- if img != blank -%}
-      {% render 'image',
-        image: img,
-        widths: '180,360,540,720,800',
-        sizes: '(min-width: 990px) 25vw, 50vw',
-        class: 'article-card__img',
-        loading: 'lazy',
-        alt: img.alt | default: article.title,
-        placeholder_type: 'lifestyle-1'
-      %}
+      {% render 'image', image: img, widths: '180,360,540,720,800', sizes: '(min-width: 990px) 25vw, 50vw', class: 'article-card__img', loading: 'lazy', alt: img.alt, default: article.title, placeholder_type: 'lifestyle-1' %}
     {%- else -%}
       <span class="article-card__placeholder">{{ 'lifestyle-1' | placeholder_svg_tag }}</span>
     {%- endif -%}
@@ -39,3 +31,24 @@
     </time>
   </div>
 </a>
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {% render 'image',
+            image: img,
+            widths: '180,360,540,720,800',
+            sizes: '(min-width: 990px) 25vw, 50vw',
+            class: 'article-card__img',
+            loading: 'lazy',
+            alt: img.alt | default: article.title,
+            placeholder_type: 'lifestyle-1'
+          %}
+  to: "{% render 'image', image: img, widths: '180,360,540,720,800', sizes: '(min-width:
+    990px) 25vw, 50vw', class: 'article-card__img', loading: 'lazy', alt: img.alt,
+    default: article.title, placeholder_type: 'lifestyle-1' %}"
+  position: 536..755
+{% endcomment %}

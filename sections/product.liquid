@@ -52,15 +52,7 @@
             <div class="product-section__media-panel" data-media-id="{{ media.id }}" data-media-position="0">
               {%- case media.media_type -%}
                 {%- when 'image' -%}
-                  {%- render 'image',
-                    image: media,
-                    class: 'product-section__featured-img',
-                    sizes: '(min-width: 990px) 45vw, 100vw',
-                    widths: '540,720,900,1080,1440',
-                    alt: media.alt | default: product.title,
-                    loading: 'eager',
-                    placeholder_type: 'product-1'
-                  -%}
+                  {%- render 'image', image: media, class: 'product-section__featured-img', sizes: '(min-width: 990px) 45vw, 100vw', widths: '540,720,900,1080,1440', alt: media.alt, default: product.title, loading: 'eager', placeholder_type: 'product-1' -%}
                 {%- when 'video' -%}
                   <div class="product-section__video-wrap">
                     {{ media | video_tag: image_size: '1440x', autoplay: false, loop: true, controls: true, muted: false }}
@@ -91,25 +83,9 @@
                   {%- case media.media_type -%}
                     {%- when 'image' -%}
                       {%- if forloop.first -%}
-                        {%- render 'image',
-                          image: media,
-                          class: 'product-section__featured-img',
-                          sizes: '(min-width: 990px) 45vw, 100vw',
-                          widths: '540,720,900,1080,1440',
-                          alt: media.alt | default: product.title,
-                          loading: 'eager',
-                          placeholder_type: 'product-1'
-                        -%}
+                        {%- render 'image', image: media, class: 'product-section__featured-img', sizes: '(min-width: 990px) 45vw, 100vw', widths: '540,720,900,1080,1440', alt: media.alt, default: product.title, loading: 'eager', placeholder_type: 'product-1' -%}
                       {%- else -%}
-                        {%- render 'image',
-                          image: media,
-                          class: 'product-section__featured-img',
-                          sizes: '(min-width: 990px) 45vw, 100vw',
-                          widths: '540,720,900,1080,1440',
-                          alt: media.alt | default: product.title,
-                          loading: 'lazy',
-                          placeholder_type: 'product-1'
-                        -%}
+                        {%- render 'image', image: media, class: 'product-section__featured-img', sizes: '(min-width: 990px) 45vw, 100vw', widths: '540,720,900,1080,1440', alt: media.alt, default: product.title, loading: 'lazy', placeholder_type: 'product-1' -%}
                       {%- endif -%}
                     {%- when 'video' -%}
                       <div class="product-section__video-wrap">
@@ -143,25 +119,9 @@
                     >
                       <span class="product-section__thumb-inner">
                         {%- if media.media_type == 'image' -%}
-                          {%- render 'image',
-                            image: media,
-                            class: 'product-section__thumb-img',
-                            sizes: '80px',
-                            widths: '80,160',
-                            alt: media.alt | default: product.title,
-                            loading: 'lazy',
-                            placeholder_type: 'product-1'
-                          -%}
+                          {%- render 'image', image: media, class: 'product-section__thumb-img', sizes: '80px', widths: '80,160', alt: media.alt, default: product.title, loading: 'lazy', placeholder_type: 'product-1' -%}
                         {%- elsif media.preview_image != blank -%}
-                          {%- render 'image',
-                            image: media.preview_image,
-                            class: 'product-section__thumb-img',
-                            sizes: '80px',
-                            widths: '80,160',
-                            alt: media.alt | default: product.title,
-                            loading: 'lazy',
-                            placeholder_type: 'product-1'
-                          -%}
+                          {%- render 'image', image: media.preview_image, class: 'product-section__thumb-img', sizes: '80px', widths: '80,160', alt: media.alt, default: product.title, loading: 'lazy', placeholder_type: 'product-1' -%}
                           {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
                             <span class="product-section__thumb-badge product-section__thumb-badge--play" aria-hidden="true" title="{{ 'products.product.media_play_label' | t | escape }}">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" focusable="false">
@@ -202,25 +162,9 @@
                       {%- case media.media_type -%}
                         {%- when 'image' -%}
                           {%- if forloop.first -%}
-                            {%- render 'image',
-                              image: media,
-                              class: 'product-section__slide-img',
-                              sizes: '100vw',
-                              widths: '540,720,900,1080',
-                              alt: media.alt | default: product.title,
-                              loading: 'eager',
-                              placeholder_type: 'product-1'
-                            -%}
+                            {%- render 'image', image: media, class: 'product-section__slide-img', sizes: '100vw', widths: '540,720,900,1080', alt: media.alt, default: product.title, loading: 'eager', placeholder_type: 'product-1' -%}
                           {%- else -%}
-                            {%- render 'image',
-                              image: media,
-                              class: 'product-section__slide-img',
-                              sizes: '100vw',
-                              widths: '540,720,900,1080',
-                              alt: media.alt | default: product.title,
-                              loading: 'lazy',
-                              placeholder_type: 'product-1'
-                            -%}
+                            {%- render 'image', image: media, class: 'product-section__slide-img', sizes: '100vw', widths: '540,720,900,1080', alt: media.alt, default: product.title, loading: 'lazy', placeholder_type: 'product-1' -%}
                           {%- endif -%}
                         {%- when 'video' -%}
                           {{ media | video_tag: image_size: '1080x', autoplay: false, loop: true, controls: true }}
@@ -600,12 +544,7 @@
 
             {%- when 'share' -%}
               <div class="product-section__block" {{ block.shopify_attributes }}>
-                {%- render 'social-share',
-                  url: product.url,
-                  title: product.title,
-                  image_url: product.featured_image | image_url: width: 1200,
-                  class: 'product-section__share'
-                -%}
+                {%- render 'social-share', url: product.url, title: product.title, image_url: width, class: 'product-section__share' -%}
               </div>
 
             {%- when 'tiered_pricing' -%}
@@ -1659,3 +1598,118 @@
   }
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {%- render 'image',
+                        image: media,
+                        class: 'product-section__featured-img',
+                        sizes: '(min-width: 990px) 45vw, 100vw',
+                        widths: '540,720,900,1080,1440',
+                        alt: media.alt | default: product.title,
+                        loading: 'eager',
+                        placeholder_type: 'product-1'
+                      -%}
+  to: "{%- render 'image', image: media, class: 'product-section__featured-img', sizes:
+    '(min-width: 990px) 45vw, 100vw', widths: '540,720,900,1080,1440', alt: media.alt,
+    default: product.title, loading: 'eager', placeholder_type: 'product-1' -%}"
+  position: 3000..3239
+- from: |-
+    {%- render 'image',
+                              image: media,
+                              class: 'product-section__featured-img',
+                              sizes: '(min-width: 990px) 45vw, 100vw',
+                              widths: '540,720,900,1080,1440',
+                              alt: media.alt | default: product.title,
+                              loading: 'eager',
+                              placeholder_type: 'product-1'
+                            -%}
+  to: "{%- render 'image', image: media, class: 'product-section__featured-img', sizes:
+    '(min-width: 990px) 45vw, 100vw', widths: '540,720,900,1080,1440', alt: media.alt,
+    default: product.title, loading: 'eager', placeholder_type: 'product-1' -%}"
+  position: 4738..4977
+- from: |-
+    {%- render 'image',
+                              image: media,
+                              class: 'product-section__featured-img',
+                              sizes: '(min-width: 990px) 45vw, 100vw',
+                              widths: '540,720,900,1080,1440',
+                              alt: media.alt | default: product.title,
+                              loading: 'lazy',
+                              placeholder_type: 'product-1'
+                            -%}
+  to: "{%- render 'image', image: media, class: 'product-section__featured-img', sizes:
+    '(min-width: 990px) 45vw, 100vw', widths: '540,720,900,1080,1440', alt: media.alt,
+    default: product.title, loading: 'lazy', placeholder_type: 'product-1' -%}"
+  position: 5037..5275
+- from: |-
+    {%- render 'image',
+                                image: media,
+                                class: 'product-section__thumb-img',
+                                sizes: '80px',
+                                widths: '80,160',
+                                alt: media.alt | default: product.title,
+                                loading: 'lazy',
+                                placeholder_type: 'product-1'
+                              -%}
+  to: "{%- render 'image', image: media, class: 'product-section__thumb-img', sizes:
+    '80px', widths: '80,160', alt: media.alt, default: product.title, loading: 'lazy',
+    placeholder_type: 'product-1' -%}"
+  position: 7017..7211
+- from: |-
+    {%- render 'image',
+                                image: media.preview_image,
+                                class: 'product-section__thumb-img',
+                                sizes: '80px',
+                                widths: '80,160',
+                                alt: media.alt | default: product.title,
+                                loading: 'lazy',
+                                placeholder_type: 'product-1'
+                              -%}
+  to: "{%- render 'image', image: media.preview_image, class: 'product-section__thumb-img',
+    sizes: '80px', widths: '80,160', alt: media.alt, default: product.title, loading:
+    'lazy', placeholder_type: 'product-1' -%}"
+  position: 7305..7513
+- from: |-
+    {%- render 'image',
+                                  image: media,
+                                  class: 'product-section__slide-img',
+                                  sizes: '100vw',
+                                  widths: '540,720,900,1080',
+                                  alt: media.alt | default: product.title,
+                                  loading: 'eager',
+                                  placeholder_type: 'product-1'
+                                -%}
+  to: "{%- render 'image', image: media, class: 'product-section__slide-img', sizes:
+    '100vw', widths: '540,720,900,1080', alt: media.alt, default: product.title, loading:
+    'eager', placeholder_type: 'product-1' -%}"
+  position: 10062..10268
+- from: |-
+    {%- render 'image',
+                                  image: media,
+                                  class: 'product-section__slide-img',
+                                  sizes: '100vw',
+                                  widths: '540,720,900,1080',
+                                  alt: media.alt | default: product.title,
+                                  loading: 'lazy',
+                                  placeholder_type: 'product-1'
+                                -%}
+  to: "{%- render 'image', image: media, class: 'product-section__slide-img', sizes:
+    '100vw', widths: '540,720,900,1080', alt: media.alt, default: product.title, loading:
+    'lazy', placeholder_type: 'product-1' -%}"
+  position: 10336..10541
+- from: |-
+    {%- render 'social-share',
+                      url: product.url,
+                      title: product.title,
+                      image_url: product.featured_image | image_url: width: 1200,
+                      class: 'product-section__share'
+                    -%}
+  to: "{%- render 'social-share', url: product.url, title: product.title, image_url:
+    width, class: 'product-section__share' -%}"
+  position: 30691..30811
+{% endcomment %}

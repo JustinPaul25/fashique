@@ -38,15 +38,7 @@
               aria-label="{{ 'accessibility.view_product' | t: title: block.settings.caption | default: block.settings.image.alt | escape }}"
               data-ugc-open="{{ forloop.index0 }}"
             >
-              {%- render 'image',
-                image: block.settings.image,
-                widths: '300,480,640',
-                sizes: '(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw',
-                alt: block.settings.image.alt | default: block.settings.caption,
-                class: 'ugc-grid__img',
-                loading: 'lazy',
-                placeholder_type: 'lifestyle-' | append: ugc_placeholder_num
-              -%}
+              {%- render 'image', image: block.settings.image, widths: '300,480,640', sizes: '(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw', alt: block.settings.image.alt, default: block.settings.caption, class: 'ugc-grid__img', loading: 'lazy', placeholder_type: 'lifestyle-', append: ugc_placeholder_num -%}
               {%- if block.settings.image == blank -%}
                 <span class="visually-hidden">{{ 'sections.ugc_grid.photo_placeholder' | t }}</span>
               {%- endif -%}
@@ -81,15 +73,7 @@
                 </button>
 
                 <div class="ugc-lightbox__content">
-                  {%- render 'image',
-                    image: block.settings.image,
-                    widths: '600,900,1200',
-                    sizes: '90vw',
-                    alt: block.settings.image.alt | default: block.settings.caption,
-                    class: 'ugc-lightbox__img',
-                    loading: 'lazy',
-                    placeholder_type: 'lifestyle-' | append: ugc_placeholder_num
-                  -%}
+                  {%- render 'image', image: block.settings.image, widths: '600,900,1200', sizes: '90vw', alt: block.settings.image.alt, default: block.settings.caption, class: 'ugc-lightbox__img', loading: 'lazy', placeholder_type: 'lifestyle-', append: ugc_placeholder_num -%}
                   {%- if block.settings.caption != blank or block.settings.product != blank -%}
                     <div class="ugc-lightbox__meta">
                       {%- if block.settings.caption != blank -%}
@@ -438,3 +422,40 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {%- render 'image',
+                    image: block.settings.image,
+                    widths: '300,480,640',
+                    sizes: '(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw',
+                    alt: block.settings.image.alt | default: block.settings.caption,
+                    class: 'ugc-grid__img',
+                    loading: 'lazy',
+                    placeholder_type: 'lifestyle-' | append: ugc_placeholder_num
+                  -%}
+  to: "{%- render 'image', image: block.settings.image, widths: '300,480,640', sizes:
+    '(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw', alt: block.settings.image.alt,
+    default: block.settings.caption, class: 'ugc-grid__img', loading: 'lazy', placeholder_type:
+    'lifestyle-', append: ugc_placeholder_num -%}"
+  position: 1677..1983
+- from: |-
+    {%- render 'image',
+                        image: block.settings.image,
+                        widths: '600,900,1200',
+                        sizes: '90vw',
+                        alt: block.settings.image.alt | default: block.settings.caption,
+                        class: 'ugc-lightbox__img',
+                        loading: 'lazy',
+                        placeholder_type: 'lifestyle-' | append: ugc_placeholder_num
+                      -%}
+  to: "{%- render 'image', image: block.settings.image, widths: '600,900,1200', sizes:
+    '90vw', alt: block.settings.image.alt, default: block.settings.caption, class:
+    'ugc-lightbox__img', loading: 'lazy', placeholder_type: 'lifestyle-', append:
+    ugc_placeholder_num -%}"
+  position: 3779..4039
+{% endcomment %}
